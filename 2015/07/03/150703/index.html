@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Application Fundamentals(应用程序基础)介绍了 Android 应用程序的概念，运行环境及其基本组成结构，是 Android 开发的基础，通过阅读这一章节的内容，将会了解到以下内容">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="API Guides(1) -- Application Fundamentals">
+<meta property="og:url" content="http://09ae9c.com/2015/07/03/150703/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="Application Fundamentals(应用程序基础)介绍了 Android 应用程序的概念，运行环境及其基本组成结构，是 Android 开发的基础，通过阅读这一章节的内容，将会了解到以下内容">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2016-10-17T15:39:07.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="API Guides(1) -- Application Fundamentals">
+<meta name="twitter:description" content="Application Fundamentals(应用程序基础)介绍了 Android 应用程序的概念，运行环境及其基本组成结构，是 Android 开发的基础，通过阅读这一章节的内容，将会了解到以下内容">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>API Guides(1) -- Application Fundamentals</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+    <link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    <script src="/lib/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">09AE9C&#39;s Blog</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2015/07/06/150706/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover="$("#i-prev").toggle();" onmouseout="$("#i-prev").toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2015/06/20/150620/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover="$("#i-next").toggle();" onmouseout="$("#i-next").toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover="$("#i-top").toggle();" onmouseout="$("#i-top").toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover="$("#i-share").toggle();" onmouseout="$("#i-share").toggle();" onclick="$("#share").toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/07/03/150703/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/07/03/150703/&text=API Guides(1) -- Application Fundamentals"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/07/03/150703/&title=API Guides(1) -- Application Fundamentals"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/07/03/150703/&is_video=false&description=API Guides(1) -- Application Fundamentals"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=API Guides(1) -- Application Fundamentals&body=Check out this article: http://09ae9c.com/2015/07/03/150703/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/07/03/150703/&title=API Guides(1) -- Application Fundamentals"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/07/03/150703/&title=API Guides(1) -- Application Fundamentals"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/07/03/150703/&title=API Guides(1) -- Application Fundamentals"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/07/03/150703/&title=API Guides(1) -- Application Fundamentals"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/07/03/150703/&name=API Guides(1) -- Application Fundamentals&description=&lt;p&gt;Application Fundamentals(应用程序基础)介绍了 Android 应用程序的概念，运行环境及其基本组成结构，是 Android 开发的基础，通过阅读这一章节的内容，将会了解到以下内容&lt;br&gt;"><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        API Guides(1) -- Application Fundamentals
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2015-07-03T14:18:24.000Z" itemprop="datePublished">2015-07-03</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Android/">Android</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>Application Fundamentals(应用程序基础)介绍了 Android 应用程序的概念，运行环境及其基本组成结构，是 Android 开发的基础，通过阅读这一章节的内容，将会了解到以下内容<br><a id="more"></a></p>
+<ul>
+<li><p>Android 操作系统是一种多用户的 Linux 系统，每一个应用程序就是一个不同的用户，系统为每一个应用程序分配一个 ID，系统的访问权限根据这个 ID 分配，每一个应用程序运行在独立的进程中，不同的进程（应用程序）间数据共享或访问系统服务通过以下两种方法实现：</p>
+<ul>
+<li><p>应用程序间共享同一个 ID，运行在同一个进程中</p>
+</li>
+<li><p>请求系统权限</p>
+</li>
+</ul>
+</li>
+<li><p>一个 Android 应用程序由各种不同的组件组成，基础的四大组件是：</p>
+<ul>
+<li><p><strong>Activity</strong>：一个 Activity 代表一个单一的用户界面，可以响应用户操作，执行相关逻辑</p>
+</li>
+<li><p><strong>Service</strong>：运行在后台，执行长时间操作，没有用户界面</p>
+</li>
+<li><p><strong>ContentProvider</strong>：一个内容提供者管理一组共享的应用程序数据集</p>
+</li>
+<li><p><strong>BroadcastReceiver</strong>： 响应系统广播或用户自定义的广播</p>
+</li>
+</ul>
+</li>
+<li><p>组件之间的数据传递通过 Intent 实现，<strong>通过 Intent，任何一个应用程序组件能启动另一个应用程序的组件</strong></p>
+</li>
+<li><p>清单文件(AndroidManifest.xml)中申明组件和应用程序相关属性(方便 Google Play 根据应用程序的属性进行分类)，包括：</p>
+<ul>
+<li><p>申明组件及其属性</p>
+</li>
+<li><p>申明应用程序的软硬件特征</p>
+</li>
+<li><p>申明应用程序的权限请求</p>
+</li>
+</ul>
+</li>
+<li><p>应用程序资源(animations,menus,styles,colors,layout…)用 XML 文件进行申明，是为了方便更新和替换各种配置</p>
+</li>
+</ul>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/07/03/150703/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/07/03/150703/&text=API Guides(1) -- Application Fundamentals"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/07/03/150703/&title=API Guides(1) -- Application Fundamentals"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/07/03/150703/&is_video=false&description=API Guides(1) -- Application Fundamentals"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=API Guides(1) -- Application Fundamentals&body=Check out this article: http://09ae9c.com/2015/07/03/150703/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/07/03/150703/&title=API Guides(1) -- Application Fundamentals"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/07/03/150703/&title=API Guides(1) -- Application Fundamentals"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/07/03/150703/&title=API Guides(1) -- Application Fundamentals"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/07/03/150703/&title=API Guides(1) -- Application Fundamentals"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/07/03/150703/&name=API Guides(1) -- Application Fundamentals&description=&lt;p&gt;Application Fundamentals(应用程序基础)介绍了 Android 应用程序的概念，运行环境及其基本组成结构，是 Android 开发的基础，通过阅读这一章节的内容，将会了解到以下内容&lt;br&gt;"><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick="$("#toc-footer").toggle();return false;"><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick="$("#share-footer").toggle();return false;"><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick="$("#nav-footer").toggle();return false;"><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      <script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>

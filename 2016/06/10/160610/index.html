@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="计算机中数据的基本单位是比特(bit)，或者叫做“位”，一个比特只能表示 0 或 1，在比特之上的单位是字节(Byte)，1 Byte = 8 bit，下表是 java 中各种基本数据类型占用存储空间的大小">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基本数据类型之间转换">
+<meta property="og:url" content="http://09ae9c.com/2016/06/10/160610/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="计算机中数据的基本单位是比特(bit)，或者叫做“位”，一个比特只能表示 0 或 1，在比特之上的单位是字节(Byte)，1 Byte = 8 bit，下表是 java 中各种基本数据类型占用存储空间的大小">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2016-10-27T13:15:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基本数据类型之间转换">
+<meta name="twitter:description" content="计算机中数据的基本单位是比特(bit)，或者叫做“位”，一个比特只能表示 0 或 1，在比特之上的单位是字节(Byte)，1 Byte = 8 bit，下表是 java 中各种基本数据类型占用存储空间的大小">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>基本数据类型之间转换</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+    <link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    <script src="/lib/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">09AE9C&#39;s Blog</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2016/07/11/160711/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover="$("#i-prev").toggle();" onmouseout="$("#i-prev").toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2016/06/06/160606/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover="$("#i-next").toggle();" onmouseout="$("#i-next").toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover="$("#i-top").toggle();" onmouseout="$("#i-top").toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover="$("#i-share").toggle();" onmouseout="$("#i-share").toggle();" onclick="$("#share").toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2016/06/10/160610/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2016/06/10/160610/&text=基本数据类型之间转换"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2016/06/10/160610/&title=基本数据类型之间转换"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2016/06/10/160610/&is_video=false&description=基本数据类型之间转换"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=基本数据类型之间转换&body=Check out this article: http://09ae9c.com/2016/06/10/160610/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2016/06/10/160610/&title=基本数据类型之间转换"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2016/06/10/160610/&title=基本数据类型之间转换"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2016/06/10/160610/&title=基本数据类型之间转换"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2016/06/10/160610/&title=基本数据类型之间转换"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2016/06/10/160610/&name=基本数据类型之间转换&description=&lt;p&gt;计算机中数据的基本单位是比特(bit)，或者叫做“位”，一个比特只能表示 0 或 1，在比特之上的单位是字节(Byte)，&lt;strong&gt;1 Byte = 8 bit&lt;/strong&gt;，下表是 java 中各种基本数据类型占用存储空间的大小&lt;/p&gt;"><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#示例"><span class="toc-number">1.</span> <span class="toc-text">示例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#int-类型转-byte-类型"><span class="toc-number">1.1.</span> <span class="toc-text">int 类型转 byte 类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#byte-类型转-int-类型"><span class="toc-number">1.2.</span> <span class="toc-text">byte 类型转 int 类型</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        基本数据类型之间转换
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2016-06-10T13:34:25.000Z" itemprop="datePublished">2016-06-10</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Java/">Java</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>计算机中数据的基本单位是比特(bit)，或者叫做“位”，一个比特只能表示 0 或 1，在比特之上的单位是字节(Byte)，<strong>1 Byte = 8 bit</strong>，下表是 java 中各种基本数据类型占用存储空间的大小</p>
+<a id="more"></a>
+<table>
+<thead>
+<tr>
+<th>数据类型</th>
+<th>大小(bit)</th>
+<th>最小值</th>
+<th>最大值</th>
+<th>包装器类</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>byte</td>
+<td>8</td>
+<td>-128</td>
+<td>127</td>
+<td>Byte</td>
+</tr>
+<tr>
+<td>boolean</td>
+<td>8</td>
+<td>-</td>
+<td>-</td>
+<td>Boolean</td>
+</tr>
+<tr>
+<td>short</td>
+<td>16</td>
+<td>-2^15</td>
+<td>2^15+1</td>
+<td>Short</td>
+</tr>
+<tr>
+<td>int</td>
+<td>32</td>
+<td>-2^31</td>
+<td>2^31+1</td>
+<td>Integer</td>
+</tr>
+<tr>
+<td>long</td>
+<td>64</td>
+<td>-2^63</td>
+<td>-2^63+1</td>
+<td>Long</td>
+</tr>
+<tr>
+<td>float</td>
+<td>32</td>
+<td>-3.403E38</td>
+<td>3.403E38</td>
+<td>Float</td>
+</tr>
+<tr>
+<td>double</td>
+<td>64</td>
+<td>-1.798E308</td>
+<td>1.798E308</td>
+<td>Double</td>
+</tr>
+</tbody>
+</table>
+<p>不同数据类型占用的空间不同，能够表示的数据范围也不同，因此要实现不同数据类型之间的转换，需要考虑数据类型能表示的最大最小范围，在 java 中不同数据类型之间转换的规则是：<strong>小的数据类型向大的数据类型转换，可以直接转换(自动类型转换)，而大的数据类型向小的数据类型转换，超出部分自动舍弃(强制类型转换)</strong>，这也是符合正常逻辑的，就像两个杯子装水一样，一个小杯子，一个大杯子，当小杯子向大杯子倒水时，空的大杯子始终能够装下小杯子中所有的水，而当大杯子向小杯子倒水时，小杯子装满后，大杯子中剩余的水就洒在外面了。</p>
+<h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><p>一个 int 类型数据的大小是 32 位(4 字节)，能表示的数字范围是 [-2^31 ~ 2^31+1]，而一个 byte 类型数据的大小是 8 位(1 字节)，能表示的数据范围是 [-128 ~ 127] ，显然 int 的范围 比 byte 大，在 int 数据类型向 byte 数据类型转换的过程中，始终只取 int 数据的最后一个字节，即最后 8 位；而在 byte 数据类型向 int 数据类型转换时,直接将 byte 数据从右往左放入 int 数据的对应位就可以了，因为 int 的容量大于 byte，所以不用考虑有超出的情况，但是会有 3 个字节的空余部分，这个空余部分的数据会根据 byte 的首位来决定是存放 1 还是 0，(即 byte 数据中的符号位)，如果是 1，则空余部分全部填充 1，否则填充 0，这里涉及到原码，补码等机器码相关的知识，可以参考 <a href="http://www.cnblogs.com/zhangziqiu/archive/2011/03/30/ComputerCode.html" target="_blank" rel="noopener">这篇文章</a></p>
+<h3 id="int-类型转-byte-类型"><a href="#int-类型转-byte-类型" class="headerlink" title="int 类型转 byte 类型"></a>int 类型转 byte 类型</h3><p>例如一个 int 类型数据 <code>int a = 443</code>，它的二进制表示是 <code>00000000 00000000 00000001 10111011</code>，转换成 byte 时只取最后的一个字节 <code>10111011</code>，由于 Java 是用补码存储整数的，二进制形式数据中的首位是符号为，0 表示正数，1 表示负数，显然这里的 <code>10111011</code> 是一个负数，它的值需要通过补码转换得到</p>
+<p>补码的转换规则是：</p>
+<p>从左往右第一位是符号为，0 正 1 负，如果符号位是 0，这个数是正数，补码等于原码，如果符号位是 1，这个数是负数，剩余的数按位取反，再加 1，加上负号</p>
+<p>根据补码的转换规则，示例中的 <code>10111011</code> 是一个负数。看剩余的其他位，按照 <strong>按位取反，再加 1</strong> 进行转换，剩下的 7 个位，每个位取反，然后最后的结果加 1 得到的就是最终的值(如果是负数，还要加上负号)，示例中剩下 7 位分别是 <code>0111011</code> 则按位取反的结果是 <code>1000100</code>,这个值换算成十进制就是 68,然后再加 1，就是 69，最后加上负号，得到的最终结果就是 -69, <strong>int 类型数 433 转换成 byte 类型的结果是 -69</strong></p>
+<h3 id="byte-类型转-int-类型"><a href="#byte-类型转-int-类型" class="headerlink" title="byte 类型转 int 类型"></a>byte 类型转 int 类型</h3><p>接下来再看 byte 类型转 int 类型，假设还是刚才那个数 byte 类型的 -69,如果直接执行 <code>byte b = -69; int i = b;</code>,那 i 的值依然是 -69，并没有变化。原因是：</p>
+<p>变量 b 的二进制表示为 <code>10111011</code>,如果直接将它往 变量 i 的存储空间放，结果是: <code>11111111 11111111 11111111 10111011</code>，这个值就是 -69。</p>
+<p>而要转换成正确的 int 类型数，只需要将原 byte 类型数和 <code>0x00FF</code> 执行逻辑与操作。原理就是去掉符号位的干扰，因为一旦 byte 是一个负数，如果直接将它转成 int 类型，则这个 int 类型也便成了负数，然而在 int 数据中，最后一个字节的首位并不是符号位。在这个例子中，将 b 和 <code>0x00FF</code> 执行逻辑与：<code>10111011</code> &amp; <code>00000000 11111111</code>,这样存放在 i 中的就是 <code>00000000 00000000 00000000 10111011</code>,也就是 <code>187</code></p>
+<p>以上就是一个简单的基本数据类型转换的例子，主要涉及到二进制代码的转换，更多基本数据类型转换的情况可以参看 java 中的 <code>ByteBuffer</code> 和 <code>Bits</code> 类中的代码实现</p>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#示例"><span class="toc-number">1.</span> <span class="toc-text">示例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#int-类型转-byte-类型"><span class="toc-number">1.1.</span> <span class="toc-text">int 类型转 byte 类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#byte-类型转-int-类型"><span class="toc-number">1.2.</span> <span class="toc-text">byte 类型转 int 类型</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2016/06/10/160610/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2016/06/10/160610/&text=基本数据类型之间转换"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2016/06/10/160610/&title=基本数据类型之间转换"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2016/06/10/160610/&is_video=false&description=基本数据类型之间转换"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=基本数据类型之间转换&body=Check out this article: http://09ae9c.com/2016/06/10/160610/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2016/06/10/160610/&title=基本数据类型之间转换"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2016/06/10/160610/&title=基本数据类型之间转换"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2016/06/10/160610/&title=基本数据类型之间转换"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2016/06/10/160610/&title=基本数据类型之间转换"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2016/06/10/160610/&name=基本数据类型之间转换&description=&lt;p&gt;计算机中数据的基本单位是比特(bit)，或者叫做“位”，一个比特只能表示 0 或 1，在比特之上的单位是字节(Byte)，&lt;strong&gt;1 Byte = 8 bit&lt;/strong&gt;，下表是 java 中各种基本数据类型占用存储空间的大小&lt;/p&gt;"><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick="$("#toc-footer").toggle();return false;"><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick="$("#share-footer").toggle();return false;"><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick="$("#nav-footer").toggle();return false;"><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      <script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>

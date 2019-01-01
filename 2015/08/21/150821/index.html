@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Service 是一个可以长时间在后台执行并且没有用户界面的应用程序组件，Service 同 Activity 一样，也可以被设备上的其他应用程序中的组件调用。Service 是运行在主线程（UI Thread）中的，所以，如果要做长时间的操作（比如下载，播放音乐等）应该在 Service 中新建线程或者使用 IntentService，通过阅读这节内容，将会了解到以下内容：">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="API Guides(8) -- Service">
+<meta property="og:url" content="http://09ae9c.com/2015/08/21/150821/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="Service 是一个可以长时间在后台执行并且没有用户界面的应用程序组件，Service 同 Activity 一样，也可以被设备上的其他应用程序中的组件调用。Service 是运行在主线程（UI Thread）中的，所以，如果要做长时间的操作（比如下载，播放音乐等）应该在 Service 中新建线程或者使用 IntentService，通过阅读这节内容，将会了解到以下内容：">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://img.blog.csdn.net/20150731112218908">
+<meta property="og:updated_time" content="2016-10-17T15:39:36.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="API Guides(8) -- Service">
+<meta name="twitter:description" content="Service 是一个可以长时间在后台执行并且没有用户界面的应用程序组件，Service 同 Activity 一样，也可以被设备上的其他应用程序中的组件调用。Service 是运行在主线程（UI Thread）中的，所以，如果要做长时间的操作（比如下载，播放音乐等）应该在 Service 中新建线程或者使用 IntentService，通过阅读这节内容，将会了解到以下内容：">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20150731112218908">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>API Guides(8) -- Service</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+    <link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    <script src="/lib/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">09AE9C&#39;s Blog</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2015/09/02/150902/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover="$("#i-prev").toggle();" onmouseout="$("#i-prev").toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2015/08/12/150812/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover="$("#i-next").toggle();" onmouseout="$("#i-next").toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover="$("#i-top").toggle();" onmouseout="$("#i-top").toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover="$("#i-share").toggle();" onmouseout="$("#i-share").toggle();" onclick="$("#share").toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/08/21/150821/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/08/21/150821/&text=API Guides(8) -- Service"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/08/21/150821/&title=API Guides(8) -- Service"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/08/21/150821/&is_video=false&description=API Guides(8) -- Service"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=API Guides(8) -- Service&body=Check out this article: http://09ae9c.com/2015/08/21/150821/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/08/21/150821/&title=API Guides(8) -- Service"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/08/21/150821/&title=API Guides(8) -- Service"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/08/21/150821/&title=API Guides(8) -- Service"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/08/21/150821/&title=API Guides(8) -- Service"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/08/21/150821/&name=API Guides(8) -- Service&description=&lt;p&gt;Service 是一个可以长时间在后台执行并且&lt;strong&gt;没有用户界面&lt;/strong&gt;的应用程序组件，Service 同 Activity 一样，&lt;strong&gt;也可以被设备上的其他应用程序中的组件调用&lt;/strong&gt;。Service 是运行在主线程&lt;strong&gt;（UI Thread&lt;/strong&gt;）中的，所以，如果要做长时间的操作（比如下载，播放音乐等）应该在 Service 中新建线程或者使用 IntentService，通过阅读这节内容，将会了解到以下内容：&lt;br&gt;"><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#申明一个Service："><span class="toc-number">1.</span> <span class="toc-text">申明一个Service：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#在其他组件中调用Service的两种方式："><span class="toc-number">2.</span> <span class="toc-text">在其他组件中调用Service的两种方式：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Service的生命周期："><span class="toc-number">3.</span> <span class="toc-text">Service的生命周期：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#两种Service类的区别（Service和IntentService）："><span class="toc-number">4.</span> <span class="toc-text">两种Service类的区别（Service和IntentService）：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于onStartCommand-方法："><span class="toc-number">5.</span> <span class="toc-text">关于onStartCommand()方法：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#系统销毁一个Service"><span class="toc-number">6.</span> <span class="toc-text">系统销毁一个Service:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#前台Service（foreground-service）"><span class="toc-number">7.</span> <span class="toc-text">前台Service（foreground service）:</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        API Guides(8) -- Service
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2015-08-21T13:56:34.000Z" itemprop="datePublished">2015-08-21</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Android/">Android</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>Service 是一个可以长时间在后台执行并且<strong>没有用户界面</strong>的应用程序组件，Service 同 Activity 一样，<strong>也可以被设备上的其他应用程序中的组件调用</strong>。Service 是运行在主线程<strong>（UI Thread</strong>）中的，所以，如果要做长时间的操作（比如下载，播放音乐等）应该在 Service 中新建线程或者使用 IntentService，通过阅读这节内容，将会了解到以下内容：<br><a id="more"></a></p>
+<h2 id="申明一个Service："><a href="#申明一个Service：" class="headerlink" title="申明一个Service："></a>申明一个Service：</h2><p>和创建Activity类似，需要在清单文件中（AndroidManifest.xml）申明。</p>
+<ul>
+<li><p>为了保证Service只在自己的应用程序中运行，需要在&lt; service &gt;节点设置属性 android:exported的值为false</p>
+</li>
+<li><p>为了应用程序的安全，请一定要用显示的Intent启动或绑定Service</p>
+</li>
+</ul>
+<h2 id="在其他组件中调用Service的两种方式："><a href="#在其他组件中调用Service的两种方式：" class="headerlink" title="在其他组件中调用Service的两种方式："></a>在其他组件中调用Service的两种方式：</h2><ul>
+<li><p>通过<strong>startService()</strong>启动一个Service：<br>一旦启动，便拥有其<strong>独立的生命周期</strong>，并且可独立的在后台无限运行（即使调用它的组件被销毁）<br>使用这种方式创建的Service类会继承Service.class或者IntentService.class。</p>
+<ul>
+<li><p>Service.class：继承这个类的Service，所有的操作默认都是<strong>在主线程（main/UI Thread）中进行</strong>，继承它的子类Service在被启动时会首先调用其中的onStartCommand()方法</p>
+</li>
+<li><p>IntentService：IntentService是Service的子类，通过继承这个类的Service是<strong>在其他线程中执行操作</strong>，继承它的子类Service在被启动时会首先调用其中的onHandleIntent()方法</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>   如果调用时需要传递一些数据，则通过Intent，像在Activity中一样添加数据，然后在<strong>onStartCommand()</strong>方法或者<strong>onHandleIntent()</strong>方法中获取Intent</p>
+<ul>
+<li>通过<strong>bindService()</strong>绑定一个Service：<br>  只要有组件与其绑定，就开始运行，<strong>可以同时和多个组件绑定</strong>，直到所有绑定它的组件都解绑（unbind）了才销毁，通过这种方式启动的Service会调用其中的onBind()</li>
+</ul>
+<p><strong>其实，一个Service既可以通过启动（start）运行，也可以通过绑定（bind）运行</strong>，这两种方式并不是完全分离的，有时候会结合着使用，也就是说<strong>，一个启动的Service，仍然可以被绑定</strong>，比如，通过startService()启动一个音乐播放器的Service，如果后来用户想控制这个音乐，比如获取正在播放的音乐的信息，就可以通过<strong>bindService()</strong>实现</p>
+<h2 id="Service的生命周期："><a href="#Service的生命周期：" class="headerlink" title="Service的生命周期："></a>Service的生命周期：</h2><p>Service的生命周期是独立于调用它的组件的，也就是说一个组件一旦调用了这个Service，Service将自生自灭，不受那个组件的生命周期控制。其生命周期图如下：<br><img src="http://img.blog.csdn.net/20150731112218908" alt="Service的生命周期"></p>
+<p>通过生命周期图可以看到，创建一个Service时，根据调用的方式不同，其中执行的方法也不同。</p>
+<ul>
+<li><p>通过startService()启动Service：通过Intent调用startService()可以启动一个Service，系统会调用指定Service中的onStartCommand()方法（<strong>当然，如果这个Service之前没有运行，将会首先调用Service中的onCreate()方法</strong>，然后再调用onStartCommand()方法）</p>
+</li>
+<li><p>停止启动的Service：通常Service是自己管理它的生命周期（而不是由系统管理）也就是说<strong>系统没有办法停止一个Service</strong>，<strong>只有在Service中自己停止自己</strong>，这就需要在onStartCommand()中使用<strong>stopSelf()</strong>方法来停止一个Service，必要的时候也可以在其他组件中通过调用指定Service的stopService()方法来停止一个Service</p>
+</li>
+<li><p>通过bindService()绑定Service：其他组件通过调用bindService()方法来绑定一个Service，为了维持一个长久的连接，通常，绑定连接了，就不运行其他组件通过startService()方法来启动这个已通过绑定连接的Service。客户端（绑定这个Service的组件）和Service之间同连接通过<strong>IBinder</strong>维持，通过绑定，客户端就可以调用Service中的方法，<strong>一个Service可以允许多个组件同时绑定它</strong>。</p>
+</li>
+<li><p>停止绑定Service：当所有的组件都与之解绑了，这个Service也就自动被系统销毁</p>
+</li>
+</ul>
+<h2 id="两种Service类的区别（Service和IntentService）："><a href="#两种Service类的区别（Service和IntentService）：" class="headerlink" title="两种Service类的区别（Service和IntentService）："></a>两种Service类的区别（Service和IntentService）：</h2><ul>
+<li><p><strong>继承IntentService.class</strong>：系统默认在其他线程中执行任务，而且只能执行单线程任务，如果传入多个请求，需要<strong>通过队列排队执行</strong>，也就是虽然是在其他线程中执行任务，但是不能通过多线程执行，需要排队执行。因为大多数的Service不会同时执行多种操作（即，同时开多个线程，当然这样做是危险的），所以官方推荐使用IntentService，使用它的好处是：</p>
+<ul>
+<li><p>继承这个类的Service默认是在其他线程中执行</p>
+</li>
+<li><p>将会创建一个工作队列接收传来的Intent，并通过onHandleIntent()方法来执行</p>
+</li>
+<li><p>当所有请求都通过onHandleIntent()被执行完，Service就会自动停止（不需要调用stopSelf()）默认的onBind()，并返回null</p>
+</li>
+<li><p>提供的onStartCommand()接收Intent，然后发送给工作队列，交给onHandleIntent()处理</p>
+</li>
+</ul>
+<p><strong>注意</strong>，在使用IntentService时通常只需要实现构造方法和onHandleIntent()方法，如果还想要实现其他的方法（如 onCreate(),onStartCommand(),onDestory()等）都需要<strong>返回父类的构造方法</strong>，也就是比如：</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">onStartCommand</span><span class="params">(Intent intent, <span class="keyword">int</span> flags, <span class="keyword">int</span> startId)</span> </span>&#123;</span><br><span class="line">    Toast.makeText(<span class="keyword">this</span>, <span class="string">"service starting"</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.onStartCommand(intent,flags,startId);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>继承Service.class：</strong>可以执行多线程任务（因为你可以自定义创建Thread，如果需要同时处理多个请求，可以创建多个Thread来分别执行）</li>
+</ul>
+<h2 id="关于onStartCommand-方法："><a href="#关于onStartCommand-方法：" class="headerlink" title="关于onStartCommand()方法："></a>关于onStartCommand()方法：</h2><p>onStartCommand()的返回值是一个integer类型的数据，表示：<strong>当系统销毁当前Service后应该怎样恢复</strong>（很重要的！！）</p>
+<ul>
+<li><p><strong>START_NOT_STICKY</strong>:当系统销毁当前Service后，不会重新创建这个Service，除非有别的组件通过Intent重新启动这个Service</p>
+</li>
+<li><p><strong>START_STICKY</strong>:当系统销毁当前Service后，将会重新创建这个Service，并调用其onStartCommand()方法，但是不会处理其中的Intent，因为这个Intent是从别的组件启动这个Service时用的，而重新启动不是从别的组件启动，所以不会处理这个Intent；</p>
+</li>
+<li><p><strong>START_REDELIVER_INTENT</strong>:当系统销毁当前Service后，会重新创建这个Service并调用其onStartCommand()方法，会处理上次传入的Intent，所以的pending Intent（延迟Intent）将会被循环处理一遍（这里不太理解。。。）</p>
+</li>
+</ul>
+<h2 id="系统销毁一个Service"><a href="#系统销毁一个Service" class="headerlink" title="系统销毁一个Service:"></a>系统销毁一个Service:</h2><p>Android系统只有在内存资源严重的不足的时候才会强行停止Service</p>
+<ul>
+<li><p>如果一个Service绑定在一个<strong>正在前台运行的Activity</strong>，则不太可能被系统销毁；</p>
+</li>
+<li><p>如果一个Service申明为“运行在前台”，则也不太可能被销毁。</p>
+</li>
+<li>如果一个Service启动并长时间在后台运行，则有可能被系统销毁</li>
+</ul>
+<h2 id="前台Service（foreground-service）"><a href="#前台Service（foreground-service）" class="headerlink" title="前台Service（foreground service）:"></a>前台Service（foreground service）:</h2><p>前台运行的Service<strong>基本不可能被系统销毁</strong>，它会在状态栏创建一个<strong>常驻的通知条</strong>（想想360在手机状态栏的那个），下面是一个启动前台Service的例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建通知</span></span><br><span class="line">Notification notification = <span class="keyword">new</span> Notification(R.drawable.icon, getText(R.string.ticker_text),</span><br><span class="line">        System.currentTimeMillis());</span><br><span class="line"></span><br><span class="line">Intent notificationIntent = <span class="keyword">new</span> Intent(<span class="keyword">this</span>, ExampleActivity.class);</span><br><span class="line"></span><br><span class="line">PendingIntent pendingIntent = PendingIntent.getActivity(<span class="keyword">this</span>, <span class="number">0</span>, notificationIntent, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">notification.setLatestEventInfo(<span class="keyword">this</span>, getText(R.string.notification_title),</span><br><span class="line">        getText(R.string.notification_message), pendingIntent);</span><br><span class="line"></span><br><span class="line"><span class="comment">//启动一个前台Service，需要一个通知作为参数        </span></span><br><span class="line">startForeground(ONGOING_NOTIFICATION_ID, notification);</span><br></pre></td></tr></table></figure>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#申明一个Service："><span class="toc-number">1.</span> <span class="toc-text">申明一个Service：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#在其他组件中调用Service的两种方式："><span class="toc-number">2.</span> <span class="toc-text">在其他组件中调用Service的两种方式：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Service的生命周期："><span class="toc-number">3.</span> <span class="toc-text">Service的生命周期：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#两种Service类的区别（Service和IntentService）："><span class="toc-number">4.</span> <span class="toc-text">两种Service类的区别（Service和IntentService）：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于onStartCommand-方法："><span class="toc-number">5.</span> <span class="toc-text">关于onStartCommand()方法：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#系统销毁一个Service"><span class="toc-number">6.</span> <span class="toc-text">系统销毁一个Service:</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#前台Service（foreground-service）"><span class="toc-number">7.</span> <span class="toc-text">前台Service（foreground service）:</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/08/21/150821/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/08/21/150821/&text=API Guides(8) -- Service"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/08/21/150821/&title=API Guides(8) -- Service"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/08/21/150821/&is_video=false&description=API Guides(8) -- Service"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=API Guides(8) -- Service&body=Check out this article: http://09ae9c.com/2015/08/21/150821/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/08/21/150821/&title=API Guides(8) -- Service"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/08/21/150821/&title=API Guides(8) -- Service"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/08/21/150821/&title=API Guides(8) -- Service"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/08/21/150821/&title=API Guides(8) -- Service"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/08/21/150821/&name=API Guides(8) -- Service&description=&lt;p&gt;Service 是一个可以长时间在后台执行并且&lt;strong&gt;没有用户界面&lt;/strong&gt;的应用程序组件，Service 同 Activity 一样，&lt;strong&gt;也可以被设备上的其他应用程序中的组件调用&lt;/strong&gt;。Service 是运行在主线程&lt;strong&gt;（UI Thread&lt;/strong&gt;）中的，所以，如果要做长时间的操作（比如下载，播放音乐等）应该在 Service 中新建线程或者使用 IntentService，通过阅读这节内容，将会了解到以下内容：&lt;br&gt;"><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick="$("#toc-footer").toggle();return false;"><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick="$("#share-footer").toggle();return false;"><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick="$("#nav-footer").toggle();return false;"><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      <script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="垃圾回收是 Java 中很重要的概念，虽然日常开发中很少接触到垃圾回收，学习垃圾回收机制对于理解它的原理以及可能由于垃圾回收造成的问题都有很大的帮助">
+<meta name="keywords" content="GC">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 垃圾回收机制">
+<meta property="og:url" content="http://09ae9c.com/2017/03/12/170312/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="垃圾回收是 Java 中很重要的概念，虽然日常开发中很少接触到垃圾回收，学习垃圾回收机制对于理解它的原理以及可能由于垃圾回收造成的问题都有很大的帮助">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2017-03-19T08:11:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java 垃圾回收机制">
+<meta name="twitter:description" content="垃圾回收是 Java 中很重要的概念，虽然日常开发中很少接触到垃圾回收，学习垃圾回收机制对于理解它的原理以及可能由于垃圾回收造成的问题都有很大的帮助">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Java 垃圾回收机制</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+    <link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    <script src="/lib/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">09AE9C&#39;s Blog</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2017/03/10/170310/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover="$("#i-next").toggle();" onmouseout="$("#i-next").toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover="$("#i-top").toggle();" onmouseout="$("#i-top").toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover="$("#i-share").toggle();" onmouseout="$("#i-share").toggle();" onclick="$("#share").toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2017/03/12/170312/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2017/03/12/170312/&text=Java 垃圾回收机制"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2017/03/12/170312/&title=Java 垃圾回收机制"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2017/03/12/170312/&is_video=false&description=Java 垃圾回收机制"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Java 垃圾回收机制&body=Check out this article: http://09ae9c.com/2017/03/12/170312/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2017/03/12/170312/&title=Java 垃圾回收机制"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2017/03/12/170312/&title=Java 垃圾回收机制"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2017/03/12/170312/&title=Java 垃圾回收机制"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2017/03/12/170312/&title=Java 垃圾回收机制"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2017/03/12/170312/&name=Java 垃圾回收机制&description=&lt;p&gt;垃圾回收是 Java 中很重要的概念，虽然日常开发中很少接触到垃圾回收，学习垃圾回收机制对于理解它的原理以及可能由于垃圾回收造成的问题都有很大的帮助&lt;/p&gt;"><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#判断对象是否存活的算法"><span class="toc-number">1.</span> <span class="toc-text">判断对象是否存活的算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#引用计数算法"><span class="toc-number">1.1.</span> <span class="toc-text">引用计数算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#可达性分析算法"><span class="toc-number">1.2.</span> <span class="toc-text">可达性分析算法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#引用"><span class="toc-number">2.</span> <span class="toc-text">引用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#堆中的垃圾回收"><span class="toc-number">3.</span> <span class="toc-text">堆中的垃圾回收</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#垃圾收集算法"><span class="toc-number">4.</span> <span class="toc-text">垃圾收集算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#垃圾收集器"><span class="toc-number">5.</span> <span class="toc-text">垃圾收集器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内存分配"><span class="toc-number">6.</span> <span class="toc-text">内存分配</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Java 垃圾回收机制
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2017-03-12T15:46:22.000Z" itemprop="datePublished">2017-03-12</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/GC/">GC</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>垃圾回收是 Java 中很重要的概念，虽然日常开发中很少接触到垃圾回收，学习垃圾回收机制对于理解它的原理以及可能由于垃圾回收造成的问题都有很大的帮助</p>
+<a id="more"></a>
+<p>Java 内存区域中，堆区 和 方法区 是垃圾收集器主要工作的地方</p>
+<h3 id="判断对象是否存活的算法"><a href="#判断对象是否存活的算法" class="headerlink" title="判断对象是否存活的算法"></a>判断对象是否存活的算法</h3><h4 id="引用计数算法"><a href="#引用计数算法" class="headerlink" title="引用计数算法"></a>引用计数算法</h4><p>在对象中添加一个引用计数器，每当有一个地方引用到它，计数器值加 1 ；引用失效时，计数器值减 1 ，当计数器值为 0 时表示这个对象不再被引用</p>
+<ul>
+<li><p>优点：实现简单，判定效率高</p>
+</li>
+<li><p>缺点：存在对象之间互相循环引用的情况，造成无用对象不能被清理掉</p>
+</li>
+</ul>
+<h4 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h4><p>通过一系列称为 “GC Roots” 的对象作为起始点，从这些节点开始向下搜索，搜索走过的路径称为引用链(Reference Chain)，当一个对象到 GC Roots 没有任何引用链相连时，则说明此对象是不可用的，在 Java 中，可以作为 GC Roots 的对象有这几种：</p>
+<ul>
+<li><p>虚拟机栈(栈帧中的本地变量表)中引用的对象</p>
+</li>
+<li><p>方法区中类静态属性引用的对象</p>
+</li>
+<li><p>方法区中常量引用的对象</p>
+</li>
+<li><p>本地方法栈中 JNI 引用的对象</p>
+</li>
+</ul>
+<h3 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h3><ul>
+<li><p>强引用(Strong Reference)：通过 new 创建的引用，只要强引用还存在，垃圾收集器就永远不会回收掉被引用的对象</p>
+</li>
+<li><p>软引用(Soft Reference)：用来描述一些还有用但并非必须的对象，在系统将要发生内存溢出异常之前，会把软引用的对象进行回收，如果这次回收还没有足够的内存使用，则发生内存溢出</p>
+</li>
+<li><p>弱引用(Weak Reference)：强度比软引用更低，弱引用的对象只能生存到下一次垃圾收集之前，当垃圾收集执行时，无论当前内存是否足够，弱引用的对象都会被回收</p>
+</li>
+<li><p>虚引用(Phantom Reference)：最弱的引用关系，无法通过虚引用取得对象的实例，使用虚引用的唯一目的是能在这个对象被回收是收到系统通知</p>
+</li>
+</ul>
+<h3 id="堆中的垃圾回收"><a href="#堆中的垃圾回收" class="headerlink" title="堆中的垃圾回收"></a>堆中的垃圾回收</h3><p>对象的回收</p>
+<ul>
+<li>对象可以在被 GC 时自我拯救，避免被垃圾收集器回收，但是这种拯救只能有一次，因为一个对象的 finalize() 方法最多只能被系统自动调用一次</li>
+</ul>
+<ul>
+<li><p>新生代 GC（Minor GC）：指发生在新生代的垃圾收集动作，因为 Java 对象大多具备朝生夕灭的特性，所以 Minor GC 非常频繁，通常进行一次垃圾收集可以回收70%～95% 的内存</p>
+</li>
+<li><p>老年代 GC（Major GC／Full GC）：指发生在老年代的垃圾收集动作 ，出现了 Major GC，经常会伴随至少一次的 Minor GC，主要回收两部分：废弃常量和无用的类</p>
+<ul>
+<li><p>废弃常量：没有任何对象引用常量池的中常量时就会发生内存回收</p>
+</li>
+<li><p>无用的类：满足如下条件的类就是无用的类</p>
+<ul>
+<li><p>该类的所有实例都已经被回收，也就是堆总不存在任何该类的实例</p>
+</li>
+<li><p>加载该类的 ClassLoader 已经被回收</p>
+</li>
+<li><p>该类对应的 java.lang.Class 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="垃圾收集算法"><a href="#垃圾收集算法" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h3><ul>
+<li><p>标记－清理算法(Mark-Sweep)：首先标记出所有需要回收的对象(通过可达性分析算法)，在标记完成后统一回收所有标记的对象</p>
+</li>
+<li><p>复制算法(Copying)：将可用内存按容量划分为大小相等的两块，每次只使用其中的一块，当这一块内存用完了，就将还存活这的对象复制到另一块上面，然后再把已使用过的内存空间一次清理掉</p>
+</li>
+<li><p>标记－整理算法(Mark-Compact)：首先标记出所有需要回收的对象，然后让所有存活的对象都向一端移动，接着清理掉端边界以外的内存</p>
+</li>
+<li><p>分代收集算法(Generational Collection)：将 java 堆分为新生代和老年代，在新生代中每次垃圾收集时都会发现大量对象死去，只有少量存活，就使用复制算法；在老年代对象存活率高，没有额外空间对它进行分配担保，就必须使用标记－清理算法或者标记－整理算法</p>
+</li>
+</ul>
+<p><strong>GC 发生时所有 Java 线程都会暂停（Stop The World）</strong></p>
+<h3 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h3><ul>
+<li><p>Serial 收集器：单线程的收集器，工作在新生代，使用复制算法，在进行垃圾收集时，必须暂定其它所有工作线程</p>
+</li>
+<li><p>ParNew 收集器：是 Serial 收集器的多线程版本，默认开启的收集线程和 CPU 的数量相同</p>
+</li>
+<li><p>Parallel Scavenge收集器：工作在新生代，使用复制算法，并行的多线程收集器，可控制吞吐量（即每次收集时最多回收多少内存）</p>
+</li>
+<li><p>Serial Old 收集器：Serial 收集器的老年代版本，单线程，使用 标记－整理 算法</p>
+</li>
+<li><p>Parallel Old 收集器：Parallel Scavenge 收集器的老年代版本，多线程，使用 标记－整理 算法</p>
+</li>
+<li><p>CMS(Concurrent Mark Sweep) 收集器：是一种以获取最短回收停顿时间为目标的收集器，使用 标记－清除 算法，默认启动线程数是 (CPU数量＋3)/4，运行过程如下</p>
+<ul>
+<li><p>初始标记：需要停止所有 java 线程，标记 GC Roots 能直接关联到的对象</p>
+</li>
+<li><p>并发标记：进行GC Roots Tracing 过程</p>
+</li>
+<li><p>重新标记：需要停止所有 java 线程，修正并发标记期间因程序继续运作导致标记产生变动的那一部分对象的标记记录</p>
+</li>
+<li><p>并发清除：并发回收垃圾</p>
+</li>
+</ul>
+</li>
+<li><p>G1(Garbage-First)收集器：将整个 Java 堆划分为多个大小相等的独立区域（Region），跟踪各个区域的垃圾堆积价值大小，并在后台维护一个优先列表，每次回收价值最大的区域。具有并发于并行能力，能够独立管理整个 GC 堆，采用不同方式处理新创建的对象和已经存活很久的对象，从整体看是基于 “标记－清理” 算法，局部看是基于“复制” 算法，可预测 GC 停顿时间。运行过程如下</p>
+<ul>
+<li><p>初始标记：需要停止所有 Java 线程，标记 GC Roots 能直接关联到的对象，并且修改 TAMS(Next Top at Mark Start) 的值，让下一阶段程序并发运行时，能在正确可用的区域中创建对象</p>
+</li>
+<li><p>并发标记：从 GC Roots 开始对堆中对象进行可达性分析，找出存活对象</p>
+</li>
+<li><p>最终标记：需要停止所有 Java 线程，修正在并发阶段因程序继续运行而导致标记产生变动的那一部分对象的标记记录</p>
+</li>
+<li><p>筛选回收：对各个区域的回收价值和成本进行排序，回收价值最大的区域</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="内存分配"><a href="#内存分配" class="headerlink" title="内存分配"></a>内存分配</h3><p>对象主要分配在新生代 Eden 区上，如果启动了本地线程分配缓冲，将按线程优先在 TLAB 上分配，少数情况下也可能直接分配在老年代中。</p>
+<p>对象年龄计数器：如果对象在 Eden 区创建并经历过第一次 Minor GC 后仍然存活，并且能被 Surivor 容纳，将被移动到 Survivor 区，并且对象年龄设为 1，对象在 Survivor 区中，每经历过一次 Minor GC 仍然存活，年龄就加 1 ，当年龄增加到一定程度（默认阈值是 15），就将晋升到老年代中</p>
+<p>动态年龄判定：如果在 Survivor 区中相同年龄所有对象占用内存大小总和大于 Survivor 空间的一半，年龄大于或等于该年龄的对象就可以直接进入老年代，无需等到规定的阈值</p>
+<ul>
+<li><p>对象优先分配在 Eden 区：大多数情况下，对象在新生代的 Eden 区分配，当 Eden区中没有足够空间时，将发起一次 Minor GC</p>
+</li>
+<li><p>大对象直接进入老年代：大对象，指需要大量连续内存空间的 Java 对象，比如很长的字符串或者数组</p>
+</li>
+<li><p>长期存活的对象进入老年代：通过对象年龄计数器管理对象年龄</p>
+</li>
+</ul>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#判断对象是否存活的算法"><span class="toc-number">1.</span> <span class="toc-text">判断对象是否存活的算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#引用计数算法"><span class="toc-number">1.1.</span> <span class="toc-text">引用计数算法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#可达性分析算法"><span class="toc-number">1.2.</span> <span class="toc-text">可达性分析算法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#引用"><span class="toc-number">2.</span> <span class="toc-text">引用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#堆中的垃圾回收"><span class="toc-number">3.</span> <span class="toc-text">堆中的垃圾回收</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#垃圾收集算法"><span class="toc-number">4.</span> <span class="toc-text">垃圾收集算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#垃圾收集器"><span class="toc-number">5.</span> <span class="toc-text">垃圾收集器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内存分配"><span class="toc-number">6.</span> <span class="toc-text">内存分配</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2017/03/12/170312/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2017/03/12/170312/&text=Java 垃圾回收机制"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2017/03/12/170312/&title=Java 垃圾回收机制"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2017/03/12/170312/&is_video=false&description=Java 垃圾回收机制"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Java 垃圾回收机制&body=Check out this article: http://09ae9c.com/2017/03/12/170312/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2017/03/12/170312/&title=Java 垃圾回收机制"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2017/03/12/170312/&title=Java 垃圾回收机制"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2017/03/12/170312/&title=Java 垃圾回收机制"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2017/03/12/170312/&title=Java 垃圾回收机制"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2017/03/12/170312/&name=Java 垃圾回收机制&description=&lt;p&gt;垃圾回收是 Java 中很重要的概念，虽然日常开发中很少接触到垃圾回收，学习垃圾回收机制对于理解它的原理以及可能由于垃圾回收造成的问题都有很大的帮助&lt;/p&gt;"><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick="$("#toc-footer").toggle();return false;"><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick="$("#share-footer").toggle();return false;"><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick="$("#nav-footer").toggle();return false;"><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      <script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Task 是当用户操作时用到的一组 Activity 的集合，运行中的 Activity 放在回退栈中存储（back stack），按执行顺序排列。系统会为每一个运行的应用程序分配一个 Task 和对应的回退栈，一个系统中可以同时存在多个 Task，但是同一时间只能有一个 Task 显示在前台，其他 Task 将处于后台，并且其中的 Activity 都将处于 stop 状态，关于 Task 和">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="API Guides(6) -- Task and Back Stack">
+<meta property="og:url" content="http://09ae9c.com/2015/08/04/150804/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="Task 是当用户操作时用到的一组 Activity 的集合，运行中的 Activity 放在回退栈中存储（back stack），按执行顺序排列。系统会为每一个运行的应用程序分配一个 Task 和对应的回退栈，一个系统中可以同时存在多个 Task，但是同一时间只能有一个 Task 显示在前台，其他 Task 将处于后台，并且其中的 Activity 都将处于 stop 状态，关于 Task 和">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2016-10-17T15:39:28.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="API Guides(6) -- Task and Back Stack">
+<meta name="twitter:description" content="Task 是当用户操作时用到的一组 Activity 的集合，运行中的 Activity 放在回退栈中存储（back stack），按执行顺序排列。系统会为每一个运行的应用程序分配一个 Task 和对应的回退栈，一个系统中可以同时存在多个 Task，但是同一时间只能有一个 Task 显示在前台，其他 Task 将处于后台，并且其中的 Activity 都将处于 stop 状态，关于 Task 和">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>API Guides(6) -- Task and Back Stack</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+    <link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    <script src="/lib/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">09AE9C&#39;s Blog</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2015/08/12/150812/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover="$("#i-prev").toggle();" onmouseout="$("#i-prev").toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2015/08/01/150801/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover="$("#i-next").toggle();" onmouseout="$("#i-next").toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover="$("#i-top").toggle();" onmouseout="$("#i-top").toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover="$("#i-share").toggle();" onmouseout="$("#i-share").toggle();" onclick="$("#share").toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/08/04/150804/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/08/04/150804/&text=API Guides(6) -- Task and Back Stack"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/08/04/150804/&title=API Guides(6) -- Task and Back Stack"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/08/04/150804/&is_video=false&description=API Guides(6) -- Task and Back Stack"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=API Guides(6) -- Task and Back Stack&body=Check out this article: http://09ae9c.com/2015/08/04/150804/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/08/04/150804/&title=API Guides(6) -- Task and Back Stack"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/08/04/150804/&title=API Guides(6) -- Task and Back Stack"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/08/04/150804/&title=API Guides(6) -- Task and Back Stack"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/08/04/150804/&title=API Guides(6) -- Task and Back Stack"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/08/04/150804/&name=API Guides(6) -- Task and Back Stack&description=&lt;p&gt;Task 是当用户操作时用到的一组 Activity 的集合，运行中的 Activity 放在回退栈中存储（back stack），按执行顺序排列。系统会为每一个运行的应用程序分配一个 Task 和对应的回退栈，&lt;strong&gt;一个系统中可以同时存在多个 Task，但是同一时间只能有一个 Task 显示在前台，其他 Task 将处于后台，并且其中的 Activity 都将处于 stop 状态&lt;/strong&gt;，关于 Task 和 Back Stack，需要了解以下几点：&lt;br&gt;"><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#清理回退栈（back-stack）："><span class="toc-number">1.</span> <span class="toc-text">清理回退栈（back stack）：</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        API Guides(6) -- Task and Back Stack
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2015-08-04T14:48:24.000Z" itemprop="datePublished">2015-08-04</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Android/">Android</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>Task 是当用户操作时用到的一组 Activity 的集合，运行中的 Activity 放在回退栈中存储（back stack），按执行顺序排列。系统会为每一个运行的应用程序分配一个 Task 和对应的回退栈，<strong>一个系统中可以同时存在多个 Task，但是同一时间只能有一个 Task 显示在前台，其他 Task 将处于后台，并且其中的 Activity 都将处于 stop 状态</strong>，关于 Task 和 Back Stack，需要了解以下几点：<br><a id="more"></a></p>
+<ul>
+<li><p>设备的主屏幕或者菜单（就是通过点击图标来启动一个应用程序的地方）是 Task 的起点，启动一个应用程序，此应用程序的 Task 就来到前台，如果这个应用程序没有 Task（最近没有使用过这个应用程序），就会为此应用程序新建一个 Task，如果最近使用过此应用程序（系统会将它的 Task 保留在后台），将会重新调用此应用程序的 Task</p>
+</li>
+<li><p>假设有两个 Activity: Activity_A 和 Activity_B，如果从 Activity_A 中启动 Activity_B，则 Activity_B 处于栈顶，Activity_A 会保留在栈中，但是处于 stop 的状态，系统会保留其 UI 的状态，当用户在 Activity_B 中按了物理返回键退出后，Activity_A 就会回到栈顶并恢复其 UI 状态，处于 resume 状态</p>
+</li>
+<li><p>当用户在一个应用程序中持续按返回键（在一个 Activity 中按返回键会将其从栈中弹出），直到回到设备主屏幕，也就是所有的 Activity 都从栈中弹出了，这个应用程序所在的 Task 也就不存在了</p>
+</li>
+<li><p>启动一个应用程序，系统就会自动为其分配 Task 和栈，如果同时存在太多的后台 Task，系统由于内存不足会自动清理一部分后台 Task 中的 Activity，这样，其状态就不存在了，也就是当用户重新回到这个应用程序时，原来的 Activity 将会重新创建<strong>而不是处于 resume 状态</strong></p>
+</li>
+<li><p>由于 Android 系统允许在一个应用程序的 Activity 中启动另一个应用程序的 Activity（这在 Activity 中有笔记），也就是说，一个 Activity 可能会在多个 Task 中存在（当多个应用程序都调用这个 Activity 时），而且是互不关联 ，拥有各自 UI 状态。为了避免这种情况，就需要管理 Task</p>
+</li>
+<li><p>当用户按下 Home 键离开 Task 时，当前 Activity 停止 Task 转入后台,系统会保存 Task 中每个 Activity  的状态。如果用户以后通过选中启动该 Task 的图标来恢复 Task,Task 就会回到前台，栈顶的 Activity 会恢复运行.<br>如果用户按下返回键,当前 Activity 从栈中弹出,并被销毁.栈中前一个 Activity 恢复运行.当 Activity 被销毁时，系统不会保留 Activity 的状态.</p>
+</li>
+<li>Activity 可以在不同的 Task 中被实例化多次</li>
+</ul>
+<p>##通过管理 Task，可以实现如下功能：</p>
+<ul>
+<li><p>让应用程序中的某个 Activity 启动一个新的 Task，<strong>而不是放入当前应用程序的 Task 中</strong></p>
+</li>
+<li><p>让 Activity 启动时是通过从 back stack 中调出之前存入过的，而不是重新创建这个 Activity 并再此将其压入 back stack（<strong>避免同一个 Activity 重复出现在 back stack 中</strong>）</p>
+</li>
+<li>在用户离开当前 Task 时值保留 “根 Activity” 而 back stack 中的其他 Activity 都清空</li>
+</ul>
+<p>##如何管理 Task：<br>通常有两种方式来管理一个 Activity 和它的 Task，一种是直接在其对应的清单文件中的 &lt; activity &gt; 节点下修改相应属性，另一种是在启动某个 Activity</p>
+<ul>
+<li><p>通过清单文件（AndroidManifest.xml）中的 &lt; Activity &gt; 节点属性：</p>
+<ul>
+<li><p><strong>taskAffinity</strong>：affinities 表示 Activity 对 Task 的相关性，默认情况下同一个应用程序中的所有 Activity 都有相同的 affinities 值，可以在清单文件中的 &lt; activity &gt; 节点中修改 taskAffinities 值，通常在两种情况下会使用到 affinities：</p>
+<ul>
+<li><p>当一个 Intent 通过 FLAG_ACTIVITY_NEW TASK 标签启动一个 Activity 时<br>默认情况下，一个新的 Activity 将被放入调用 startActivity() 的 Activity 所在 Task 中,且压入调用者所在的 Back Stack 顶栈</p>
+</li>
+<li><p>当一个 Activity 在其 &lt; activity &gt; 标签添加属性 allowTaskReparenting 并赋值为 true 时<br>在这种情况下，当某个Task 进入前台时,Activity 的affinity 值又与其相同,则它可以从启动时的Task 移入这个Task 中.</p>
+</li>
+</ul>
+</li>
+<li><p><strong>launchMode</strong>：</p>
+<ul>
+<li><strong>standard</strong>（默认模式）：系统将会在当前应用程序的Task中创建一个新的实例，并使Intent指向它，这种模式的 Activity 可以实例化多次，每一个实例可以属于不同的 Task（从不同的 Activity 中使用 Intent 指向它），并且，一个 Task 可以有多个相同的 Activity 实例（原有的 Activity 仍然按顺序存在栈中）</li>
+</ul>
+<ul>
+<li><p><strong>singleTop</strong>（栈顶复用模式)：如果当前应用程序的 Task 中已经存在这个 Activity 的实例了，当通过 Intent 启动这个 Activity 时，会调用 Activity中的onNewIntent()（而不是onCreate()方法，因为onCreate()方法是在Activity新建的时候调用，而这里不是新建）假设Task 的 Back Stack 中包含了根Activity A 和 Activities B、C、D（顺序是 A-B-C-D; D在栈顶. 这时候传过来的是启动D的intent,如果D的启动模式是默认的”standard”，则会启动一个新的实例，栈的内容就会变为 A-B-C-D-D.但是，如果 D 的启动模式是 “singleTop”，则已有的D的实例会通过onNewIntent():接收这个 intent，因为该实例位于栈顶——栈中内容仍然维持 A-B-C-D 不变.当然，如果 intent 是要启动 B 的,则 B 的一个新实例还是会加入栈中,即使 B 的启动模式是”singleTop”也是如此.<strong>栈中内容为A-B-C-D-B</strong></p>
+<ul>
+<li><p><strong>singleTask</strong>（栈内复用模式）：一般作为应用程序主Activity，系统将创建一个新的Task，这个Activity是第一个放入新的Task，如果其他Task（除当前应用程序以外的Task）中已经有实例存在，则会调用其<strong>onNewIntent()</strong>，而不是再创建一个新的Activity，此Activity在同一时刻只能有一个实例存在，虽然启动了一个新的Activity，但是通过返回键仍然可以返回之前的Activity</p>
+</li>
+<li><p><strong>singleInstance</strong>（单实例模式）：大致和singleTask模式相同，唯一的不同是，系统不会在当前Activity所在的Task中启动其他的Activity，也就是说这个Activity总是单独的处在一个Task中（这个Task不允许其他的Activity存在），从这个Activity中启动的Activity也会被分离到其他Task</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><strong>alwaysRetainTaskState</strong>：如果在跟Activity（通常是程序入口Activity）中将此属性值设为true，则即使用户离开一个Task很长时间，系统也不会清除掉这个Task中的任何Activity，所有的Activity都会保留</p>
+</li>
+<li><p><strong>cleanTaskOnLaunch</strong>：这个属性是上面alwaysRetainTaskState的对立面，也就是说，如果将此属性值设为true，则<strong>无论用户离开多久，系统都会将栈中的所有Activity清理掉</strong>（当然，仍然会保留跟Activity），清理回退栈的内容在下面</p>
+</li>
+<li><p><strong>finishOnTaskLaunch</strong>：此属性类似cleanTaskOnLaunch：但是，它只对一个Activity有效（也就是某个在<activity>节点设置了此属性为true的Activity）</activity></p>
+</li>
+</ul>
+</li>
+<li><p>通过调用startActivity()时用到的Intent中的flag：</p>
+<ul>
+<li><p><strong>FLAG_ACTIVITY_NEW _TASK</strong>：和singleTask模式相同，在新的Task中启动目标Activity，如果那个Activity之前已经存在了，它将会回到前台并恢复之前的状态，并调用其onNewIntent()方法</p>
+</li>
+<li><p><strong>FLAG_ACTIVITY_CLEAN_TOP</strong>：和singleTop模式相同，如果要启动的Activity是当前的Activity（位于栈顶），则会调用当前Activity中的onNewIntent()方法，不会创建新的实例</p>
+</li>
+<li><strong>FLAG_ACTIVITY_SINGLE_TOP</strong>：如果要启动的Activity已经在当前Task中运行（不一定处于栈顶），将不会创建一个新的实例，而是会将这个Activity之上的所有其他Activity销毁，然后将此Activity恢复到栈顶，调用其onNewIntent()方法</li>
+</ul>
+</li>
+</ul>
+<p><strong>注意：</strong>如果 Activity A 启动了Activity B，则 Activity B 可以在 manifest 中定义它如何与当之前的Task 关联（如果存在的话），Activity A 也可以要求 Activity B 与当前 task 的关联关系.如果两个Activity都有定义，则 Activity A 的请求（intent 中定义）会比Activity B 的定义（在 manifest 中）优先.</p>
+<h2 id="清理回退栈（back-stack）："><a href="#清理回退栈（back-stack）：" class="headerlink" title="清理回退栈（back stack）："></a>清理回退栈（back stack）：</h2><p>如果用户<strong>长时间离开一个Task</strong>，则系统将会清理掉这个Task中的其他Activity，<strong>只保留栈底的”根Activity“</strong>(一般为程序入口Activity)，当用户重新启动这个Task时，只有根Activity会恢复（因为栈中只有这一个Activity）</p>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#清理回退栈（back-stack）："><span class="toc-number">1.</span> <span class="toc-text">清理回退栈（back stack）：</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/08/04/150804/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/08/04/150804/&text=API Guides(6) -- Task and Back Stack"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/08/04/150804/&title=API Guides(6) -- Task and Back Stack"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/08/04/150804/&is_video=false&description=API Guides(6) -- Task and Back Stack"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=API Guides(6) -- Task and Back Stack&body=Check out this article: http://09ae9c.com/2015/08/04/150804/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/08/04/150804/&title=API Guides(6) -- Task and Back Stack"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/08/04/150804/&title=API Guides(6) -- Task and Back Stack"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/08/04/150804/&title=API Guides(6) -- Task and Back Stack"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/08/04/150804/&title=API Guides(6) -- Task and Back Stack"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/08/04/150804/&name=API Guides(6) -- Task and Back Stack&description=&lt;p&gt;Task 是当用户操作时用到的一组 Activity 的集合，运行中的 Activity 放在回退栈中存储（back stack），按执行顺序排列。系统会为每一个运行的应用程序分配一个 Task 和对应的回退栈，&lt;strong&gt;一个系统中可以同时存在多个 Task，但是同一时间只能有一个 Task 显示在前台，其他 Task 将处于后台，并且其中的 Activity 都将处于 stop 状态&lt;/strong&gt;，关于 Task 和 Back Stack，需要了解以下几点：&lt;br&gt;"><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick="$("#toc-footer").toggle();return false;"><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick="$("#share-footer").toggle();return false;"><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick="$("#nav-footer").toggle();return false;"><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      <script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>

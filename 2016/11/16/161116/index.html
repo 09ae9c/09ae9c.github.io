@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="为什么要使用 Vagrant？Vagrant 的特点是在虚拟环境与真实环境之间有一个同步文件夹，在这个文件夹中的内容会在两个系统中共享，这样就能很轻松的实现 在真实环境开发，在虚拟环境中运行。 这对服务器程序开发是非常便利的。">
+<meta name="keywords" content="Vagrant">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mac 上搭建 Vagrant 虚拟环境">
+<meta property="og:url" content="http://09ae9c.com/2016/11/16/161116/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="为什么要使用 Vagrant？Vagrant 的特点是在虚拟环境与真实环境之间有一个同步文件夹，在这个文件夹中的内容会在两个系统中共享，这样就能很轻松的实现 在真实环境开发，在虚拟环境中运行。 这对服务器程序开发是非常便利的。">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2016-11-26T10:17:39.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mac 上搭建 Vagrant 虚拟环境">
+<meta name="twitter:description" content="为什么要使用 Vagrant？Vagrant 的特点是在虚拟环境与真实环境之间有一个同步文件夹，在这个文件夹中的内容会在两个系统中共享，这样就能很轻松的实现 在真实环境开发，在虚拟环境中运行。 这对服务器程序开发是非常便利的。">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Mac 上搭建 Vagrant 虚拟环境</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+    <link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    <script src="/lib/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">09AE9C&#39;s Blog</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2017/01/06/170106/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover="$("#i-prev").toggle();" onmouseout="$("#i-prev").toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2016/10/27/161027/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover="$("#i-next").toggle();" onmouseout="$("#i-next").toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover="$("#i-top").toggle();" onmouseout="$("#i-top").toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover="$("#i-share").toggle();" onmouseout="$("#i-share").toggle();" onclick="$("#share").toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2016/11/16/161116/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2016/11/16/161116/&text=Mac 上搭建 Vagrant 虚拟环境"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2016/11/16/161116/&title=Mac 上搭建 Vagrant 虚拟环境"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2016/11/16/161116/&is_video=false&description=Mac 上搭建 Vagrant 虚拟环境"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Mac 上搭建 Vagrant 虚拟环境&body=Check out this article: http://09ae9c.com/2016/11/16/161116/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2016/11/16/161116/&title=Mac 上搭建 Vagrant 虚拟环境"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2016/11/16/161116/&title=Mac 上搭建 Vagrant 虚拟环境"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2016/11/16/161116/&title=Mac 上搭建 Vagrant 虚拟环境"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2016/11/16/161116/&title=Mac 上搭建 Vagrant 虚拟环境"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2016/11/16/161116/&name=Mac 上搭建 Vagrant 虚拟环境&description=&lt;p&gt;为什么要使用 Vagrant？Vagrant 的特点是在虚拟环境与真实环境之间有一个同步文件夹，在这个文件夹中的内容会在两个系统中共享，这样就能很轻松的实现 &lt;strong&gt;在真实环境开发，在虚拟环境中运行。&lt;/strong&gt; 这对服务器程序开发是非常便利的。&lt;/p&gt;"><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#准备"><span class="toc-number">1.</span> <span class="toc-text">准备</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#添加虚拟系统"><span class="toc-number">2.</span> <span class="toc-text">添加虚拟系统</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#配置系统"><span class="toc-number">3.</span> <span class="toc-text">配置系统</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#运行"><span class="toc-number">4.</span> <span class="toc-text">运行</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Mac 上搭建 Vagrant 虚拟环境
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2016-11-16T13:20:32.000Z" itemprop="datePublished">2016-11-16</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Vagrant/">Vagrant</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>为什么要使用 Vagrant？Vagrant 的特点是在虚拟环境与真实环境之间有一个同步文件夹，在这个文件夹中的内容会在两个系统中共享，这样就能很轻松的实现 <strong>在真实环境开发，在虚拟环境中运行。</strong> 这对服务器程序开发是非常便利的。</p>
+<a id="more"></a>
+<h1 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h1><ul>
+<li><p>安装 VirtualBox(<a href="https://www.virtualbox.org/wiki/Downloads" target="_blank" rel="noopener">官网下载安装</a>)</p>
+</li>
+<li><p>安装 Vagrant(<a href="https://www.vagrantup.com/" target="_blank" rel="noopener">官网下载安装</a>)</p>
+</li>
+<li><p>确定工作目录：<code>~/Dev/Vagrant</code></p>
+</li>
+<li><p>下载虚拟系统文件(.box)，在 <a href="http://www.vagrantbox.es/" target="_blank" rel="noopener">vagrantbox</a> 下载，存放在 <code>~/Dev/Vagrant/images</code> 目录下</p>
+</li>
+</ul>
+<h1 id="添加虚拟系统"><a href="#添加虚拟系统" class="headerlink" title="添加虚拟系统"></a>添加虚拟系统</h1><p>定位到工作目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">cd ~/Dev/Vagrant</span><br></pre></td></tr></table></figure>
+<p>添加系统文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">vagrant box add ubuntu14 ~/Dev/Vagrant/images/ubuntu14_04.box</span><br></pre></td></tr></table></figure>
+<p>其中 <code>vagrant box</code> 是 Vagrant 的系统管理工具，可以增加删除不同的虚拟系统，参数 <code>add</code> 表示增加一个虚拟系统，后面的 <code>ubuntu14</code> 是自定义的系统名称，再后面就是要添加的系统文件的路径</p>
+<p>初始化</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">vagrant init ubuntu14</span><br></pre></td></tr></table></figure>
+<p>对系统进行初始化，<code>init ubuntu14</code> 表示对刚才创建的虚拟系统 <code>ubuntu14</code> 进行初始化，执行完这个命令后将生成一个 <code>Vagrantfile</code> 文件，就是系统的配置文件</p>
+<h1 id="配置系统"><a href="#配置系统" class="headerlink" title="配置系统"></a>配置系统</h1><p>配置文件 <code>Vagrantfile</code> 主要对虚拟机系统配置以及网络进行设置，可以参考官网的描述以及配置文件中的注释</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Vagrant.configure(&quot;2&quot;) do |config|</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> config.vm.box = &quot;ubuntu14&quot;</span><br><span class="line"></span><br><span class="line">  config.vm.hostname = &quot;ubuntu14&quot;</span><br><span class="line"></span><br><span class="line">  config.vm.synced_folder  &quot;~/Dev/Server/Vagrant/home/vagrant&quot;, &quot;/home/vagrant&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  config.vm.network :private_network, ip: &quot;192.168.50.10&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  config.vm.provider &quot;virtualbox&quot; do |vb|</span><br><span class="line"></span><br><span class="line">     vb.memory = &quot;1024&quot;</span><br><span class="line"></span><br><span class="line">     vb.cpus = 2</span><br><span class="line"></span><br><span class="line">     vb.name = &quot;ubuntu14_vm&quot;</span><br><span class="line"></span><br><span class="line"> end</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<p>注意同步文件夹的挂载问题，在使用虚拟系统 ubuntu14.04 时，可能存在同步文件夹挂载失败，具体体现在启动虚拟机<code>vagrant up</code> 之后，会报如下错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">Vagrant was unable to mount VirtualBox shared folders. This is usually</span><br><span class="line"></span><br><span class="line">because the filesystem &quot;vboxsf&quot; is not available. This filesystem is</span><br><span class="line"></span><br><span class="line">made available via the VirtualBox Guest Additions and kernel module.</span><br><span class="line"></span><br><span class="line">Please verify that these guest additions are properly installed in the</span><br><span class="line"></span><br><span class="line">guest. This is not a bug in Vagrant and is usually caused by a faulty</span><br><span class="line"></span><br><span class="line">Vagrant box. For context, the command attempted was:</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mount -t vboxsf -o uid=1000,gid=1000 vagrant /vagrant</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">The error output from the command was:</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">mount: unknown filesystem type &apos;vboxsf&apos;</span><br></pre></td></tr></table></figure>
+<p>这时候就需要进入虚拟系统手动挂载并安装 <code>VBoxGuestAdditions</code></p>
+<ol>
+<li><p>打开 VirtualBox 登录 Vagrant 的虚拟主机，默认用户名和密码都是 <code>vagrant</code></p>
+</li>
+<li><p>选择 设备 -&gt; 安装增强功能</p>
+</li>
+<li><p>接着执行命令：</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">sudo mount /dev/cdrom  /media/cdrom</span><br><span class="line"></span><br><span class="line">cd /media/cdrom/</span><br><span class="line"></span><br><span class="line">sudo ./VBoxLinuxAddtiions.run</span><br></pre></td></tr></table></figure>
+<p>具体步骤参考 <a href="https://segmentfault.com/a/1190000002869922" target="_blank" rel="noopener">这篇文章</a></p>
+<h1 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h1><p>启动虚拟系统</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">vagrant up</span><br></pre></td></tr></table></figure>
+<p>连接到虚拟系统</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">vagrant ssh</span><br></pre></td></tr></table></figure>
+<p>vagrant 还有其他常用的命令，例如 重启 <code>vagrant reload</code>,关机 <code>vagrant halt</code> 等</p>
+<p>Vagrant 的一个最大的好处就是，可以在本地编写项目，然后进入虚拟系统中运行项目，因为本地的指定文件夹可以和虚拟系统进行共享，这样就省去了很多上传修改文件的操作，直接在本地使用开发工具，然后切换到虚拟环境中去运行</p>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#准备"><span class="toc-number">1.</span> <span class="toc-text">准备</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#添加虚拟系统"><span class="toc-number">2.</span> <span class="toc-text">添加虚拟系统</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#配置系统"><span class="toc-number">3.</span> <span class="toc-text">配置系统</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#运行"><span class="toc-number">4.</span> <span class="toc-text">运行</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2016/11/16/161116/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2016/11/16/161116/&text=Mac 上搭建 Vagrant 虚拟环境"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2016/11/16/161116/&title=Mac 上搭建 Vagrant 虚拟环境"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2016/11/16/161116/&is_video=false&description=Mac 上搭建 Vagrant 虚拟环境"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Mac 上搭建 Vagrant 虚拟环境&body=Check out this article: http://09ae9c.com/2016/11/16/161116/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2016/11/16/161116/&title=Mac 上搭建 Vagrant 虚拟环境"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2016/11/16/161116/&title=Mac 上搭建 Vagrant 虚拟环境"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2016/11/16/161116/&title=Mac 上搭建 Vagrant 虚拟环境"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2016/11/16/161116/&title=Mac 上搭建 Vagrant 虚拟环境"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2016/11/16/161116/&name=Mac 上搭建 Vagrant 虚拟环境&description=&lt;p&gt;为什么要使用 Vagrant？Vagrant 的特点是在虚拟环境与真实环境之间有一个同步文件夹，在这个文件夹中的内容会在两个系统中共享，这样就能很轻松的实现 &lt;strong&gt;在真实环境开发，在虚拟环境中运行。&lt;/strong&gt; 这对服务器程序开发是非常便利的。&lt;/p&gt;"><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick="$("#toc-footer").toggle();return false;"><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick="$("#share-footer").toggle();return false;"><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick="$("#nav-footer").toggle();return false;"><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      <script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>

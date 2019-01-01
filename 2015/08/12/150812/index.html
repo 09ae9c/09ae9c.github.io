@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="这节的内容应该算是上节（Task and Back Stack）的补充，Overview Screen 主要是描述最近任务（task）用以显示最近任务的一个功能（ Android 设备上最右边的按钮），在 Android5.0 之前称为 recents screen（或者 recent task list）可以很方便的让用户切换到不同的应用程序，这个功能不多说，只要使用过 Android 设备，应">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="API Guides(7) -- Overview Screen">
+<meta property="og:url" content="http://09ae9c.com/2015/08/12/150812/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="这节的内容应该算是上节（Task and Back Stack）的补充，Overview Screen 主要是描述最近任务（task）用以显示最近任务的一个功能（ Android 设备上最右边的按钮），在 Android5.0 之前称为 recents screen（或者 recent task list）可以很方便的让用户切换到不同的应用程序，这个功能不多说，只要使用过 Android 设备，应">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2016-10-17T15:39:32.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="API Guides(7) -- Overview Screen">
+<meta name="twitter:description" content="这节的内容应该算是上节（Task and Back Stack）的补充，Overview Screen 主要是描述最近任务（task）用以显示最近任务的一个功能（ Android 设备上最右边的按钮），在 Android5.0 之前称为 recents screen（或者 recent task list）可以很方便的让用户切换到不同的应用程序，这个功能不多说，只要使用过 Android 设备，应">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>API Guides(7) -- Overview Screen</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+    <link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    <script src="/lib/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">09AE9C&#39;s Blog</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2015/08/21/150821/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover="$("#i-prev").toggle();" onmouseout="$("#i-prev").toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2015/08/04/150804/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover="$("#i-next").toggle();" onmouseout="$("#i-next").toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover="$("#i-top").toggle();" onmouseout="$("#i-top").toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover="$("#i-share").toggle();" onmouseout="$("#i-share").toggle();" onclick="$("#share").toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/08/12/150812/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/08/12/150812/&text=API Guides(7) -- Overview Screen"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/08/12/150812/&title=API Guides(7) -- Overview Screen"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/08/12/150812/&is_video=false&description=API Guides(7) -- Overview Screen"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=API Guides(7) -- Overview Screen&body=Check out this article: http://09ae9c.com/2015/08/12/150812/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/08/12/150812/&title=API Guides(7) -- Overview Screen"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/08/12/150812/&title=API Guides(7) -- Overview Screen"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/08/12/150812/&title=API Guides(7) -- Overview Screen"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/08/12/150812/&title=API Guides(7) -- Overview Screen"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/08/12/150812/&name=API Guides(7) -- Overview Screen&description=&lt;p&gt;这节的内容应该算是上节（Task and Back Stack）的补充，Overview Screen 主要是描述最近任务（task）&lt;br&gt;用以显示最近任务的一个功能（ Android 设备上最右边的按钮），在 Android5.0 之前称为 &lt;strong&gt;recents screen&lt;/strong&gt;（或者 recent task list）可以很方便的让用户切换到不同的应用程序，这个功能不多说，只要使用过 Android 设备，应该都了解。通过阅读这一节的内容，将会了解到如何管理 Overview Screen，包括，添加 Task，移除 Task，以及在 Overview Screen 中保留 Task&lt;br&gt;"><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        API Guides(7) -- Overview Screen
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2015-08-12T05:26:22.000Z" itemprop="datePublished">2015-08-12</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Android/">Android</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>这节的内容应该算是上节（Task and Back Stack）的补充，Overview Screen 主要是描述最近任务（task）<br>用以显示最近任务的一个功能（ Android 设备上最右边的按钮），在 Android5.0 之前称为 <strong>recents screen</strong>（或者 recent task list）可以很方便的让用户切换到不同的应用程序，这个功能不多说，只要使用过 Android 设备，应该都了解。通过阅读这一节的内容，将会了解到如何管理 Overview Screen，包括，添加 Task，移除 Task，以及在 Overview Screen 中保留 Task<br><a id="more"></a></p>
+<p>##overview screen 的概念<br>通常是由 Android 系统定义的，如果开发者想要自定义，管理的方法如下：</p>
+<ul>
+<li><p>通过 ActivityManager.AppTask 类进行管理</p>
+</li>
+<li><p>通过启动一个Activity的Intent中的flag进行配置</p>
+</li>
+<li>通过&lt; activity &gt;节点的属性进行配置</li>
+</ul>
+<p>##怎样添加Task到Overview Screen<br>如上节内容所诉，主要通过两种方式</p>
+<ul>
+<li><p>在使用Intent启动一个Activity时，添加flag：</p>
+<ul>
+<li><p><strong>FLAG_ACTIVITY_NEW_DOCUMENT</strong>：当创建新的document（文档上写的是document而不是Activity，对此不太了解，后续补上）时，系统是在逻辑上插入断点，使新启动的Activity在Overview Screen中成为一个新的Task，而事实上并没不是新建一个Task（注意，在Android5.0之后，此常量值替换了FLAG_ACTIVITY_CLEAN_WHEN_TASK_RESET）</p>
+</li>
+<li><p><strong>FLAG_ACTIVITY_MULTIPLE_TASK</strong>：当创建新的document时，系统总是会为将要启动的Activity创建一个新的Task，并使其称为根Activity，这样的设置可以让同一个document在多个Task中打开</p>
+</li>
+</ul>
+</li>
+<li><p>在清单文件中对应&lt; activity &gt;节点下添加属性 <strong>android:documentLaunchMode</strong>，有以下四个值：</p>
+<ul>
+<li><p><strong>intoExisting</strong>：重新使用一个存在的Task，类似设置FLAG_ACTIVITY_NEW_DOCUMENT而不设置FALG_ACTIVITY_MULTIPLE_TASK时的作用</p>
+</li>
+<li><p><strong>always</strong>：为将要打开的document创建一个新的Task，即使这个document已经打开过。类似设置FLAG_ACTIVITY_NEW_DOCUMENT同时也设置了FLAG_ACTIVITY_MULTIPLE的作用</p>
+</li>
+<li><p><strong>none</strong>：不会为将要打开的document创建新的Task，这是overview screen处理Task的默认模式，显示单任务的App</p>
+</li>
+<li><p><strong>never</strong>：不会为将要打开的document创建新的Task，类似设置FLAG_ACTIVITY_NEW_DOCUMENT或者FLAG_ACTIVITY_MULTIPLE_TASK其中一个的作用</p>
+</li>
+</ul>
+<p>注意，在设置none或者never时，应该确保其Activity设置类launchMode的值为standard，如果没有设置这个值，将会使用默认的documentLaunchMode=”none”</p>
+</li>
+</ul>
+<p>##怎样移除一个Task<br>通常，当一个Task中的所有Activity都finish的时候，这个Task是自动从overview screen中移除的。当然，也可以通过Intent的flag或者清单文件中的&lt; activity &gt;节点进行设置来移除</p>
+<ul>
+<li><p>清单文件设置：</p>
+<ul>
+<li><p><strong>android:excludeFromRecents</strong>：通过设置该属性值为true，可以将一个Task总是排除overview screen，也就是让该Activity所在的Task不显示在overview screen中</p>
+</li>
+<li><p><strong>android:maxRecents</strong>：设置应用程序在overview screen中能包含的Task的最大数量，默认值为16，当到达这个数量时，系统将会自动清理掉最近最少使用的Task</p>
+</li>
+</ul>
+</li>
+<li><p>使用AppTask类的方法：<br> 通过AppTask类中的<strong>finishAndRemoveTask()</strong>方法，在创建Task的Activity中指定什么时候移除它（在使用这个的时候会忽略掉FLAG_ACTIVITY_RETAIN_IN_RECENT,也就是说，<strong>移除的权限比保留更高</strong>，当想移除的时候，即使设定了保留的属性，依然会移除掉）</p>
+</li>
+</ul>
+<p>##怎样保留一个Task<br>如果想在overview screen中保留一个Task（即使这个Task对应的Activity已经结束了）</p>
+<ul>
+<li><p>在通过Intent启动这个Activity时，使用flag值为：FLAG_ACTIVITY_RETAIN_IN_RECENTS</p>
+</li>
+<li><p>当然，在&lt; activity &gt;节点设置android:autoRemoveFromRecents的值为false，也能达到同样的效果</p>
+</li>
+</ul>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/08/12/150812/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/08/12/150812/&text=API Guides(7) -- Overview Screen"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/08/12/150812/&title=API Guides(7) -- Overview Screen"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/08/12/150812/&is_video=false&description=API Guides(7) -- Overview Screen"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=API Guides(7) -- Overview Screen&body=Check out this article: http://09ae9c.com/2015/08/12/150812/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/08/12/150812/&title=API Guides(7) -- Overview Screen"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/08/12/150812/&title=API Guides(7) -- Overview Screen"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/08/12/150812/&title=API Guides(7) -- Overview Screen"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/08/12/150812/&title=API Guides(7) -- Overview Screen"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/08/12/150812/&name=API Guides(7) -- Overview Screen&description=&lt;p&gt;这节的内容应该算是上节（Task and Back Stack）的补充，Overview Screen 主要是描述最近任务（task）&lt;br&gt;用以显示最近任务的一个功能（ Android 设备上最右边的按钮），在 Android5.0 之前称为 &lt;strong&gt;recents screen&lt;/strong&gt;（或者 recent task list）可以很方便的让用户切换到不同的应用程序，这个功能不多说，只要使用过 Android 设备，应该都了解。通过阅读这一节的内容，将会了解到如何管理 Overview Screen，包括，添加 Task，移除 Task，以及在 Overview Screen 中保留 Task&lt;br&gt;"><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick="$("#toc-footer").toggle();return false;"><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick="$("#share-footer").toggle();return false;"><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick="$("#nav-footer").toggle();return false;"><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      <script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>

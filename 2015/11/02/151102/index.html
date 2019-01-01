@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="根据 官方文档 的描述，Image PipeLine 用于将数据流转换成在 Android 设备上显示的图片(bitmap)，也就是加载图片的过程，其中数据流可以是内存缓存，磁盘缓存或者网络存储的图片数据">
+<meta name="keywords" content="Fresco">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Image Pipline 流程">
+<meta property="og:url" content="http://09ae9c.com/2015/11/02/151102/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="根据 官方文档 的描述，Image PipeLine 用于将数据流转换成在 Android 设备上显示的图片(bitmap)，也就是加载图片的过程，其中数据流可以是内存缓存，磁盘缓存或者网络存储的图片数据">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://www.fresco-cn.org/static/imagepipeline.png">
+<meta property="og:updated_time" content="2016-10-17T15:40:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Image Pipline 流程">
+<meta name="twitter:description" content="根据 官方文档 的描述，Image PipeLine 用于将数据流转换成在 Android 设备上显示的图片(bitmap)，也就是加载图片的过程，其中数据流可以是内存缓存，磁盘缓存或者网络存储的图片数据">
+<meta name="twitter:image" content="http://www.fresco-cn.org/static/imagepipeline.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Image Pipline 流程</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+    <link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    <script src="/lib/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">09AE9C&#39;s Blog</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2015/11/10/151110/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover="$("#i-prev").toggle();" onmouseout="$("#i-prev").toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2015/10/12/151012/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover="$("#i-next").toggle();" onmouseout="$("#i-next").toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover="$("#i-top").toggle();" onmouseout="$("#i-top").toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover="$("#i-share").toggle();" onmouseout="$("#i-share").toggle();" onclick="$("#share").toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/11/02/151102/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/11/02/151102/&text=Image Pipline 流程"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/11/02/151102/&title=Image Pipline 流程"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/11/02/151102/&is_video=false&description=Image Pipline 流程"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Image Pipline 流程&body=Check out this article: http://09ae9c.com/2015/11/02/151102/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/11/02/151102/&title=Image Pipline 流程"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/11/02/151102/&title=Image Pipline 流程"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/11/02/151102/&title=Image Pipline 流程"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/11/02/151102/&title=Image Pipline 流程"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/11/02/151102/&name=Image Pipline 流程&description=&lt;p&gt;根据 &lt;a href=&#34;http://www.fresco-cn.org/docs/intro-image-pipeline.html#_&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;官方文档&lt;/a&gt; 的描述，Image PipeLine 用于将数据流转换成在 Android 设备上显示的图片(bitmap)，也就是加载图片的过程，其中数据流可以是内存缓存，磁盘缓存或者网络存储的图片数据&lt;br&gt;"><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#配置-Image-Pipeline"><span class="toc-number">1.</span> <span class="toc-text">配置 Image Pipeline</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化-ImagePipelineFactory"><span class="toc-number">1.1.</span> <span class="toc-text">初始化 ImagePipelineFactory</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化-Drawee"><span class="toc-number">1.2.</span> <span class="toc-text">初始化 Drawee</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用-Image-Pipeline"><span class="toc-number">2.</span> <span class="toc-text">使用 Image Pipeline</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建图片请求-ImageRequest"><span class="toc-number">2.1.</span> <span class="toc-text">创建图片请求 ImageRequest</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取数据源-DataSource"><span class="toc-number">2.2.</span> <span class="toc-text">获取数据源 DataSource</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#提交请求"><span class="toc-number">2.2.1.</span> <span class="toc-text">提交请求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#注册订阅者"><span class="toc-number">2.2.2.</span> <span class="toc-text">注册订阅者</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Image Pipline 流程
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2015-11-02T14:53:54.000Z" itemprop="datePublished">2015-11-02</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Fresco/">Fresco</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>根据 <a href="http://www.fresco-cn.org/docs/intro-image-pipeline.html#_" target="_blank" rel="noopener">官方文档</a> 的描述，Image PipeLine 用于将数据流转换成在 Android 设备上显示的图片(bitmap)，也就是加载图片的过程，其中数据流可以是内存缓存，磁盘缓存或者网络存储的图片数据<br><a id="more"></a></p>
+<p>通过官方给出的流程图可以大致了解这个过程：<br><img src="http://www.fresco-cn.org/static/imagepipeline.png" alt="image Pipeline 流程图"></p>
+<p>从图中可以了解到图片请求的流程：</p>
+<ul>
+<li><p>在 UI 线程中检查 Memory Cache 是否有缓存，有则直接返回 Bitmap，否则在后台线程中继续执行</p>
+</li>
+<li><p>在后台线程中，首先检查 Disk Cache 是否有缓存，有则将缓存数据解码返回给 UI 线程进行渲染显示到设备上，并且将数据缓存到 Memory Cache 中，否则联网加载网络数据</p>
+</li>
+<li><p>联网加载到网络数据后，将其转换成字节流并解码返回给 UI 线程进行渲染（同样的，会在 Memory Cache 中缓存），并且将数据缓存到 Disk Cache 中</p>
+</li>
+</ul>
+<p>通过以上描述，能够大概了解 Image Pipeline 的流程，就像管道一样，将不同的数据流输出到同一个地方</p>
+<h2 id="配置-Image-Pipeline"><a href="#配置-Image-Pipeline" class="headerlink" title="配置 Image Pipeline"></a>配置 Image Pipeline</h2><p>就像城市中的管道一样，在使用之前需要先施工建设，建设时会根据实际情况进行不同的配置，比如配置管道的最大最小容量等，在 Image Pipeline 中，可以使用 Fresco 的默认配置，也可以自定义配置，通常在 Application 中进行配置</p>
+<p>使用默认配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Fresco.initialize(context)</span><br></pre></td></tr></table></figure></p>
+<p>使用自定义配置（以下列出了所有可配置的选项，实际中根据需求选择配置项即可）：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">ImagePipelineConfig config = ImagePipelineConfig.newBuilder()</span><br><span class="line">    .setBitmapMemoryCacheParamsSupplier(bitmapCacheParamsSupplier)</span><br><span class="line">    .setCacheKeyFactory(cacheKeyFactory)</span><br><span class="line">    .setEncodedMemoryCacheParamsSupplier(encodedCacheParamsSupplier)</span><br><span class="line">    .setExecutorSupplier(executorSupplier)</span><br><span class="line">    .setImageCacheStatsTracker(imageCacheStatsTracker)</span><br><span class="line">    .setMainDiskCacheConfig(mainDiskCacheConfig)</span><br><span class="line">    .setMemoryTrimmableRegistry(memoryTrimmableRegistry)</span><br><span class="line">    .setNetworkFetchProducer(networkFetchProducer)</span><br><span class="line">    .setPoolFactory(poolFactory)</span><br><span class="line">    .setProgressiveJpegConfig(progressiveJpegConfig)</span><br><span class="line">    .setRequestListeners(requestListeners)</span><br><span class="line">    .setSmallImageDiskCacheConfig(smallImageDiskCacheConfig)</span><br><span class="line">    .build();</span><br><span class="line"> Fresco.initialize(<span class="keyword">this</span>, config);</span><br></pre></td></tr></table></figure></p>
+<p>其中 ImagePipelineConfig 就是自定义配置类，通过建造者模式可以创建不同需求的配置。</p>
+<p>以上就是在使用 Fresco 之前的配置工作，通过 Fresco.java 中的 initialize() 方法应用。下面通过源码分析，一步一步了解它的应用过程</p>
+<p>查看 Fresco.java 中 initialize() 方法的源码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Initializes Fresco with the default config. */</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">   ImagePipelineFactory.initialize(context);</span><br><span class="line">   initializeDrawee(context);</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="comment">/** Initializes Fresco with the specified config. */</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(Context context, ImagePipelineConfig imagePipelineConfig)</span> </span>&#123;</span><br><span class="line">   ImagePipelineFactory.initialize(imagePipelineConfig);</span><br><span class="line">   initializeDrawee(context);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到 initialize() 有两种实现，第一种是使用默认配置，第二种是使用自定义配置，它们的区别在于调用了 ImagePipeliniFactory.initialize() 的不同实现，但都是完成两个初始化工作：初始化 ImagePipelineFactory  和 Drawee。</p>
+<h3 id="初始化-ImagePipelineFactory"><a href="#初始化-ImagePipelineFactory" class="headerlink" title="初始化 ImagePipelineFactory"></a>初始化 ImagePipelineFactory</h3><p>进入到 ImagePipelineFactory.java 中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Initializes &#123;<span class="doctag">@link</span> ImagePipelineFactory&#125; with default config. */</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">   initialize(ImagePipelineConfig.newBuilder(context).build());</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="comment">/** Initializes &#123;<span class="doctag">@link</span> ImagePipelineFactory&#125; with the specified config. */</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">initialize</span><span class="params">(ImagePipelineConfig imagePipelineConfig)</span> </span>&#123;</span><br><span class="line">   sInstance = <span class="keyword">new</span> ImagePipelineFactory(imagePipelineConfig);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>这里的 initialize() 方法同样有两种实现，分为默认配置实现和自定义配置实现，对于默认配置实现，调用了自定义配置的初始化并且传入了一个新建的所有参数都是默认值的 ImagePipelineConfig。而在自定义配置中，使用 ImagePipelineConfig 初始化了一个 ImagePipelineFactory 的实例。</p>
+<p>总结一下，两种配置方式最终都会用于创建一个 ImagePipelineFactory 的实例。</p>
+<h3 id="初始化-Drawee"><a href="#初始化-Drawee" class="headerlink" title="初始化 Drawee"></a>初始化 Drawee</h3><p>在 Fresco.java 中，initializeDrawee()方法如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">initializeDrawee</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">    sDraweeControllerBuilderSupplier = <span class="keyword">new</span> PipelineDraweeControllerBuilderSupplier(context);</span><br><span class="line">    SimpleDraweeView.initialize(sDraweeControllerBuilderSupplier);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>在这里首先创建了一个 PipelineDraweeControllerBuilderSupplier 的实例，在其构造方法中可以找到 ImagePipelineFactory 的踪迹：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">PipelineDraweeControllerBuilderSupplier</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(context, ImagePipelineFactory.getInstance());<span class="comment">//获取配置了的实例用于构造 Supplier</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">PipelineDraweeControllerBuilderSupplier</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">      Context context,</span></span></span><br><span class="line"><span class="function"><span class="params">      ImagePipelineFactory imagePipelineFactory)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>(context, imagePipelineFactory, <span class="keyword">null</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">PipelineDraweeControllerBuilderSupplier</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">      Context context,</span></span></span><br><span class="line"><span class="function"><span class="params">      ImagePipelineFactory imagePipelineFactory,</span></span></span><br><span class="line"><span class="function"><span class="params">      Set&lt;ControllerListener&gt; boundControllerListeners)</span> </span>&#123;</span><br><span class="line">    mContext = context;</span><br><span class="line">    mImagePipeline = imagePipelineFactory.getImagePipeline();<span class="comment">//创建 ImagePipeline</span></span><br><span class="line">    mPipelineDraweeControllerFactory = <span class="keyword">new</span> PipelineDraweeControllerFactory(</span><br><span class="line">        context.getResources(),</span><br><span class="line">        DeferredReleaser.getInstance(),</span><br><span class="line">        imagePipelineFactory.getAnimatedDrawableFactory(),</span><br><span class="line">        UiThreadImmediateExecutorService.getInstance());</span><br><span class="line">    mBoundControllerListeners = boundControllerListeners;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>创建了 PipelineDraweeControllerBuilderSupplier 后，将它用于初始化 SimpleDraweeView 的初始化，到此，初始化的过程就完成了。</p>
+<h2 id="使用-Image-Pipeline"><a href="#使用-Image-Pipeline" class="headerlink" title="使用 Image Pipeline"></a>使用 Image Pipeline</h2><p>配置完成，就可以使用 Image Pipeline 来加载图片了，根据上面的描述，Image Pipeline 加载图片的流程是：首先要有一个图片请求 ImageRequest，接着根据这个请求通过 <em>内存缓存 –&gt; 磁盘缓存 –&gt; 网络</em> 的顺序加载图片</p>
+<h3 id="创建图片请求-ImageRequest"><a href="#创建图片请求-ImageRequest" class="headerlink" title="创建图片请求 ImageRequest"></a>创建图片请求 ImageRequest</h3><p>图片请求有两种创建方式，一种是使用 <code>ImageRequest.fromURI()</code> 创建默认配置的图片请求，另一种是使用    <code>ImageRequestBuilder</code> 创建可选配置的图片请求</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Uri uri = Uri.parse(<span class="string">"https://www.baidu.com/img/bd_logo1.png"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//ImageRequest request = ImageRequest.fromUri(uri);</span></span><br><span class="line"></span><br><span class="line">ImageDecodeOptions decodeOptions = ImageDecodeOptions.newBuilder()</span><br><span class="line">    .setBackgroundColor(Color.GREEN)</span><br><span class="line">    .build();</span><br><span class="line"></span><br><span class="line">ImageRequest request = ImageRequestBuilder.newBuilderWithSource(uri)</span><br><span class="line">    .setImageDecodeOptions(decodeOptions)<span class="comment">// 设置图片解码选项</span></span><br><span class="line">    .setAutoRotateEnabled(<span class="keyword">true</span>)<span class="comment">// 设置是否支持自动旋转</span></span><br><span class="line">    .setLocalThumbnailPreviewsEnabled(<span class="keyword">true</span>)<span class="comment">// 设置是否支持本地缩略图预览</span></span><br><span class="line">    .setLowestPermittedRequestLevel(RequestLevel.FULL_FETCH)<span class="comment">// 设置最低请求级别</span></span><br><span class="line">    .setProgressiveRenderingEnabled(<span class="keyword">false</span>)<span class="comment">// 设置是否支持渐进式加载</span></span><br><span class="line">    .setResizeOptions(<span class="keyword">new</span> ResizeOptions(width, height))<span class="comment">// 设置图片缩放选项</span></span><br><span class="line">    .build();</span><br></pre></td></tr></table></figure>
+<p>其中对于最低请求级别的解释是，按照 ImagePipeline 的请求流程，是需要通过 <em>内存缓存 –&gt; 磁盘缓存 –&gt; 网络</em> 这样一个过程来加载图片的，而这个过程是相当耗时的，而设置 最低请求级别，将直接跳过某些过程直接返回图片资源，如果在某阶段没有图片资源，则不显示，这样可以在相对较少的时间里获取到图片，其可选值有如下：</p>
+<ul>
+<li><p>BITMAP_MEMORY_CACHE:只在内存缓存中请求</p>
+</li>
+<li><p>ENCODED_MEMORY_CACHE:延伸到未解码的内存缓存中请求</p>
+</li>
+<li><p>DISK_CACHE:延伸到磁盘缓存请求</p>
+</li>
+<li><p>FULL_FETCH:完整的请求过程</p>
+</li>
+</ul>
+<h3 id="获取数据源-DataSource"><a href="#获取数据源-DataSource" class="headerlink" title="获取数据源 DataSource"></a>获取数据源 DataSource</h3><p>获取数据源的过程是一个典型的通知者模式的应用，首先请求需要获取的数据（注册通知者），在数据源得到数据后通知并将数据给请求者（发送通知）</p>
+<h4 id="提交请求"><a href="#提交请求" class="headerlink" title="提交请求"></a>提交请求</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DataSource&lt;CloseableReference&lt;CloseableImage&gt;&gt; dataSource = imagePipeline.fetchDecodedImage(request,<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
+<p>其中，imagePipeline 的请求可以有多种方式：</p>
+<ul>
+<li><p>fetchDecodedImage():请求未解码的数据源</p>
+</li>
+<li><p>fetchEncodedImage():请求已解码的数据源</p>
+</li>
+<li><p>fetchImageFromBitmapCache():请求 Bitmap 资源</p>
+</li>
+<li><p>prefetchToDiskCache():请求预加载到磁盘缓存</p>
+</li>
+<li><p>prefetchToBitmapCache():请求预加载到内存缓存</p>
+</li>
+</ul>
+<h4 id="注册订阅者"><a href="#注册订阅者" class="headerlink" title="注册订阅者"></a>注册订阅者</h4><p>通过数据订阅者得到请求的结果，根据不同的请求方式，需要注册不同的订阅者</p>
+<p>下面代码演示了一个通用的注册订阅者并获取数据的过程<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">   DataSubscriber&lt;CloseableReference&lt;T&gt;&gt; dataSubscriber =</span><br><span class="line">       <span class="keyword">new</span> BaseDataSubscriber&lt;CloseableReference&lt;T&gt;&gt;() &#123;</span><br><span class="line">         <span class="meta">@Override</span></span><br><span class="line">         <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onNewResultImpl</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">             DataSource&lt;CloseableReference&lt;T&gt;&gt; dataSource)</span> </span>&#123;</span><br><span class="line">           <span class="keyword">if</span> (!dataSource.isFinished()) &#123;</span><br><span class="line">             <span class="comment">// if we are not interested in the intermediate images,</span></span><br><span class="line">             <span class="comment">// we can just return here.</span></span><br><span class="line">             <span class="keyword">return</span>;</span><br><span class="line">           &#125;</span><br><span class="line">		<span class="comment">//获取数据引用</span></span><br><span class="line">           CloseableReference&lt;T&gt; ref = dataSource.getResult();</span><br><span class="line">           <span class="keyword">if</span> (ref != <span class="keyword">null</span>) &#123;</span><br><span class="line">             <span class="keyword">try</span> &#123;</span><br><span class="line">               <span class="comment">// do somethign with the result</span></span><br><span class="line">               T result = ref.get();</span><br><span class="line">             &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">               CloseableReference.closeSafely(ref);</span><br><span class="line">             &#125;</span><br><span class="line">           &#125;</span><br><span class="line">         &#125;</span><br><span class="line"></span><br><span class="line">         <span class="meta">@Override</span></span><br><span class="line">         <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onFailureImpl</span><span class="params">(DataSource&lt;CloseableReference&lt;T&gt;&gt; dataSource)</span> </span>&#123;</span><br><span class="line">           Throwable t = dataSource.getFailureCause();</span><br><span class="line">           <span class="comment">// handle failure</span></span><br><span class="line">         &#125;</span><br><span class="line">       &#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//注册订阅者</span></span><br><span class="line">   dataSource.subscribe(dataSubscriber, UiThreadExecutorService.getInstance());</span><br></pre></td></tr></table></figure></p>
+<p>在这个过程中获取到一个<strong>可关闭的数据源</strong>，这种方式得到的数据引用只能在 onNewResultImpl 的范围内使用，要想在其它地方维持这个引用，就需要创建一个全局的可关闭数据源的引用，并在使用后需要关闭这个引用，具体代码可以参见 <a href="http://frescolib.org/docs/datasources-datasubscribers.html#_" target="_blank" rel="noopener">官方文档</a></p>
+<p>通过以上流程就能得到一个图片的引用，可以将它转换成 Bitmap 显示到视图中，关于通过其它方式请求的订阅者代码，可以在官方文档中看到，这里就不再赘述</p>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#配置-Image-Pipeline"><span class="toc-number">1.</span> <span class="toc-text">配置 Image Pipeline</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化-ImagePipelineFactory"><span class="toc-number">1.1.</span> <span class="toc-text">初始化 ImagePipelineFactory</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化-Drawee"><span class="toc-number">1.2.</span> <span class="toc-text">初始化 Drawee</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用-Image-Pipeline"><span class="toc-number">2.</span> <span class="toc-text">使用 Image Pipeline</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建图片请求-ImageRequest"><span class="toc-number">2.1.</span> <span class="toc-text">创建图片请求 ImageRequest</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取数据源-DataSource"><span class="toc-number">2.2.</span> <span class="toc-text">获取数据源 DataSource</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#提交请求"><span class="toc-number">2.2.1.</span> <span class="toc-text">提交请求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#注册订阅者"><span class="toc-number">2.2.2.</span> <span class="toc-text">注册订阅者</span></a></li></ol></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/11/02/151102/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/11/02/151102/&text=Image Pipline 流程"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/11/02/151102/&title=Image Pipline 流程"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/11/02/151102/&is_video=false&description=Image Pipline 流程"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Image Pipline 流程&body=Check out this article: http://09ae9c.com/2015/11/02/151102/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/11/02/151102/&title=Image Pipline 流程"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/11/02/151102/&title=Image Pipline 流程"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/11/02/151102/&title=Image Pipline 流程"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/11/02/151102/&title=Image Pipline 流程"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/11/02/151102/&name=Image Pipline 流程&description=&lt;p&gt;根据 &lt;a href=&#34;http://www.fresco-cn.org/docs/intro-image-pipeline.html#_&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;官方文档&lt;/a&gt; 的描述，Image PipeLine 用于将数据流转换成在 Android 设备上显示的图片(bitmap)，也就是加载图片的过程，其中数据流可以是内存缓存，磁盘缓存或者网络存储的图片数据&lt;br&gt;"><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick="$("#toc-footer").toggle();return false;"><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick="$("#share-footer").toggle();return false;"><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick="$("#nav-footer").toggle();return false;"><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      <script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>

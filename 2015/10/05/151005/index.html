@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="本文介绍一下 Facebook 推出的这个强大的图片加载框架以及一些简单的使用，在后续的文章中会逐步深入探究它的实现原理以及一些值得学习的编程思想。">
+<meta name="keywords" content="Fresco">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fresco 基础使用">
+<meta property="og:url" content="http://09ae9c.com/2015/10/05/151005/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="本文介绍一下 Facebook 推出的这个强大的图片加载框架以及一些简单的使用，在后续的文章中会逐步深入探究它的实现原理以及一些值得学习的编程思想。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/tancen94/FrescoUseDemo/master/preview/urlImg.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/tancen94/FrescoUseDemo/master/preview/circleImg.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/tancen94/FrescoUseDemo/master/preview/roundImg.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/tancen94/FrescoUseDemo/master/preview/diffRoundImg.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/tancen94/FrescoUseDemo/master/preview/layRoundImg.png">
+<meta property="og:updated_time" content="2016-10-17T15:39:58.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Fresco 基础使用">
+<meta name="twitter:description" content="本文介绍一下 Facebook 推出的这个强大的图片加载框架以及一些简单的使用，在后续的文章中会逐步深入探究它的实现原理以及一些值得学习的编程思想。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/tancen94/FrescoUseDemo/master/preview/urlImg.gif">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Fresco 基础使用</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+    <link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    <script src="/lib/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">09AE9C&#39;s Blog</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2015/10/06/151006/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover="$("#i-prev").toggle();" onmouseout="$("#i-prev").toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2015/09/27/150927/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover="$("#i-next").toggle();" onmouseout="$("#i-next").toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover="$("#i-top").toggle();" onmouseout="$("#i-top").toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover="$("#i-share").toggle();" onmouseout="$("#i-share").toggle();" onclick="$("#share").toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/10/05/151005/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/10/05/151005/&text=Fresco 基础使用"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/10/05/151005/&title=Fresco 基础使用"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/10/05/151005/&is_video=false&description=Fresco 基础使用"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Fresco 基础使用&body=Check out this article: http://09ae9c.com/2015/10/05/151005/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/10/05/151005/&title=Fresco 基础使用"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/10/05/151005/&title=Fresco 基础使用"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/10/05/151005/&title=Fresco 基础使用"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/10/05/151005/&title=Fresco 基础使用"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/10/05/151005/&name=Fresco 基础使用&description=&lt;p&gt;本文介绍一下 Facebook 推出的这个强大的图片加载框架以及一些简单的使用，在后续的文章中会逐步深入探究它的实现原理以及一些值得学习的编程思想。&lt;/p&gt;"><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Android-中加载图片"><span class="toc-number">1.</span> <span class="toc-text">Android 中加载图片</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么要使用-Fresco"><span class="toc-number">2.</span> <span class="toc-text">为什么要使用 Fresco</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何使用-Fresco"><span class="toc-number">3.</span> <span class="toc-text">如何使用 Fresco</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#图片添加圆角"><span class="toc-number">4.</span> <span class="toc-text">图片添加圆角</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Fresco 基础使用
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2015-10-05T13:53:54.000Z" itemprop="datePublished">2015-10-05</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Fresco/">Fresco</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>本文介绍一下 Facebook 推出的这个强大的图片加载框架以及一些简单的使用，在后续的文章中会逐步深入探究它的实现原理以及一些值得学习的编程思想。</p>
+<a id="more"></a>
+<h2 id="Android-中加载图片"><a href="#Android-中加载图片" class="headerlink" title="Android 中加载图片"></a>Android 中加载图片</h2><p>Android 系统是一个多用户的 Linux 系统，每一个应用会分配一个独立的 Linux 用户进程，基于这样的的运行机制，应用在运行过程中能够使用的内存大小是有限的，一般在设备出厂后，单个应用可分配的最大内存就确定下来了(定义在 /system/build.prop 文件中的 dalvik.vm.heapstartsize = 128)，如果应用需要使用的内存超出了这个大小，便会引起 OOM(Out Of Memory) 错误，也就是所谓的内存泄漏，此时进程会被系统强制 kill 掉，导致应用无法继续正常运行。因此，在进行 Android 应用开发的时候，要尽可能的避免引发内存泄漏问题。</p>
+<p>在 Android 应用中，图片资源(Bitmap)通常需要占用大量内存，图片资源占用内存的计算公式为：</p>
+<p><strong>图片占用的内存</strong> = <strong>图片长度</strong> * <strong>图片宽度</strong> * <strong>单位像素占用的字节数</strong></p>
+<p>其中长度和宽度的单位是像素(px)，单位像素占用的字节数以 ARGB_8888 格式为例，其他图片格式单位像素占用字节数可在 <a href="http://developer.android.com/reference/android/graphics/Bitmap.Config.html" target="_blank" rel="noopener">官方文档</a> 中查看。以一张 500 * 500px 的图片为例，如果在应用中加载，所需要占用的内存为：</p>
+<p>500 * 500 * 4 = 1,000,000字节(大约1M)</p>
+<p>如果需要连续加载 10 张图片，则占用内存 10M，以这样的内存消耗，如果不能及时清理图片资源回收内存，极容易引起内存泄漏。因此，在 Android 应用开发过程中，需要重视图片资源的处理。</p>
+<h2 id="为什么要使用-Fresco"><a href="#为什么要使用-Fresco" class="headerlink" title="为什么要使用 Fresco"></a>为什么要使用 Fresco</h2><p>在 Android 开发中，需要重视图片资源的处理，而图片资源的处理并不简单，涉及到很多方面.比如，何时加载图片何时回收图片，图片是否需要压缩以及怎样压缩，下载网络图片和占位图的处理，是否需要缓存以及怎样缓存，图片圆角处理以及其他修改等许多问题需要解决，而解决这些问题需要丰富的经验以及大量的时间，才能保证尽量减少 OOM 错误，在 Fresco 之前，已经有一些优秀的第三方图片加载库能够帮助开发者处理快速集成图片处理框架，比如 <a href="http://square.github.io/picasso/" target="_blank" rel="noopener">Picasso</a> , <a href="https://github.com/nostra13/Android-Universal-Image-Loader" target="_blank" rel="noopener">Universal-Image-Loader</a> , <a href="https://github.com/bumptech/glide" target="_blank" rel="noopener">Glide</a> 等，使用其中任意一个都能够很好的集成图片处理框架。而 Fresco 综合了之前的图片加载库的优点，并利用本地代码做了性能优化，实现了更好的内存管理和更强大的功能，是一个值得深入学习的图片加载库。</p>
+<p>Fresco 是 Facebook 推出的一个强大的图片加载框架，使用它能够很快速的完成一些日常开发中需要用到图片的需求，包括图片加载与缓存，图片处理以及一些实用功能，<a href="http://frescolib.org/" target="_blank" rel="noopener">官方文档</a> 中详细介绍了它的配置与使用。相比于其他图片加载框架，具有如下特性：</p>
+<ul>
+<li>在 Android5.0 以下系统，图片不存储在 Java heap 中，而是存储在 ashmemheap 中，在图片不显示的时候，占用的内存会自动释放，降低了 OOM 的风险</li>
+<li>可以实现渐进式的 JPEG 图片呈现</li>
+<li>支持 gif 和 WebP 格式图片加载</li>
+<li>image pipeline 设计允许多方面控制图片的加载</li>
+<li>Drawees 设计允许多种方式处理图片的呈现</li>
+</ul>
+<p>关于 Fresco 的底层实现以及内存分配，将在后续文章中介绍，本文主要介绍 Fresco 的配置与圆角图片的使用</p>
+<h2 id="如何使用-Fresco"><a href="#如何使用-Fresco" class="headerlink" title="如何使用 Fresco"></a>如何使用 Fresco</h2><p>按照文档的描述，首先需要进行项目引入，如果使用 AndroidStudio 开发，需要在对应 Module 的 build.gradle 文件中添加如下配置代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">  compile <span class="string">'com.facebook.fresco:fresco:0.7.0+'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Eclipse 用户则需要先下载 library，然后导入到项目中，具体操作可以参见 <a href="http://frescolib.org/docs/index.html#_" target="_blank" rel="noopener">官方文档</a></p>
+<p>一般加载图片都需要从网络加载，所以要记得在 AndroidManifest.xml 文件中添加网络访问权限，以及一些开发需要用到的权限。等待 AndroidStudio 配置完成后便可以开始使用 Fresco 了</p>
+<p>在使用时，首先需要进行初始化，通常是在 Application 中进行全局初始化：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseApplication</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onCreate();</span><br><span class="line">        Fresco.initialize(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>初始化完成后便可以使用 Fresco 加载显示图片了，下面是一个最简单的使用方法</p>
+<ul>
+<li><p>在布局文件的根节点中添加自定义控件的命名空间：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">LinearLayout</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">xmlns:fresco</span>=<span class="string">"http://schemas.android.com/apk/res-auto"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:orientation</span>=<span class="string">"vertical"</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在布局中添加 Fresco 提供的 SimpleDraweeView 控件，用以加载显示图片</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">com.facebook.drawee.view.SimpleDraweeView</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/sdv_image"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"100dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"100dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_margin</span>=<span class="string">"8dp"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">fresco:placeholderImage</span>=<span class="string">"@mipmap/ic_launcher"</span>/&gt;</span><span class="comment">&lt;!--添加占位图--&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在代码中使用 SimpleDraweeView 加载网络图片</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Uri imgUrl = Uri.parse(<span class="string">"https://ss0.bdstatic.com/5aV1bjqh_Q23odCf/static/superman/img/logo/bd_logo1_31bdc765.png"</span>);</span><br><span class="line">    SimpleDraweeView urlImg = (SimpleDraweeView) findViewById(R.id.sdv_image_url);</span><br><span class="line">    urlImg.setImageURI(imgUrl);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>运行效果：<br><img src="https://raw.githubusercontent.com/tancen94/FrescoUseDemo/master/preview/urlImg.gif" alt="urlImg"></p>
+<p>以上，便完成了 Fresco 的最基本使用，实现了从网络下载图片并显示到对应的视图上，下载的图片将会自动缓存(关于 Fresco 的缓存策略将在后续文章中介绍)，在下载没有完成或者网络错误导致下载失败的时候，视图会显示占位图，直到下载完成。当然还有很多可自定义设置来实现一下常用的功能，比如下载失败后点击图片会尝试重新下载，这些功能都可以很方面快速的实现。</p>
+<h2 id="图片添加圆角"><a href="#图片添加圆角" class="headerlink" title="图片添加圆角"></a>图片添加圆角</h2><p>在不使用 SimpleDraweeView 时，要实现带圆角的图片，通常的做法是编写一个继承自 ImageView 的自定义 View，然后绘制一个带圆角的 Bitmap，这种方式需要重新创建一个带圆角的 Bitmap 对象，而在 Fresco 中，并不通过这种方式来实现(关于圆角的实现原理，将在下篇文章中介绍)</p>
+<p>在使用 SimpleDraweeView 时，实现图片圆角有两种方式：</p>
+<ul>
+<li><p><strong>BITMAP_ONLY</strong>(默认)：默认使用一个 shader 绘制圆角，只对占位图和实际显示的图有效，加载失败和重新下载的示意图都没有圆角效果,这种方式实现圆角图片，会有以下几种限制</p>
+<ul>
+<li>只有 BitmapDrawable 和 ColorDrawable 类的图片可以实现圆角，NiniPatchDrawable 和 ShapeDrawable 等其他类型图片不支持圆角处理</li>
+<li>动画( gif 格式图片)不能实现圆角</li>
+<li>由于 Android 的 BitmapShader 的限制，当一个图片不能覆盖全部的 View 的时候，边缘部分会被重复显示，而非留白。对这种情况可以使用不同的缩放类型（比如 centerCrop ）来保证图片覆盖了全部的 View</li>
+</ul>
+</li>
+<li><p><strong>OVERLAY_COLOR</strong>：在原始图片上叠加一个 solid color，类似 PS 中图层的概念，在原图层上添加一个和背景色相同颜色的圆角空心图层，这种方式实现的圆角图片没有上述限制，但是由于这种方式是通过覆盖一层和背景色相同的图层来实现的，因此只有在背景颜色不变的情况下才能获得较好的效果</p>
+</li>
+</ul>
+<p>下面通过代码演示通过不同方式实现圆角</p>
+<ul>
+<li><strong>圆形图片</strong> ：圆形图片其实是一种特殊的圆角图片，当圆角半径为图片最短边宽度一半时,便能够呈现出圆形图片效果，在 xml 文件中，通过设置 roundAsCircle 为 true，就能实现圆形图片<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">com.facebook.drawee.view.SimpleDraweeView</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:id</span>=<span class="string">"@+id/sdv_image_circle"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:layout_width</span>=<span class="string">"100dp"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:layout_height</span>=<span class="string">"100dp"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">fresco:placeholderImage</span>=<span class="string">"@mipmap/img_test"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">fresco:roundAsCircle</span>=<span class="string">"true"</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>运行效果：<br><img src="https://raw.githubusercontent.com/tancen94/FrescoUseDemo/master/preview/circleImg.png" alt="circleImg"></p>
+<ul>
+<li><strong>BITMAP_ONLY方式</strong> ：既可以在 xml 文件中设置，也可以在 java 代码中设置，但是不能在运行时修改，在 xml 文件中，只需要设置 roundedcornerRadius 属性就能设置四个角的圆角半径，同时，也可以指定哪个角使用圆角，哪个不使用，比如 roundBottonLeft = “false” 属性表示左下角不使用圆角，其余三个角同理，默认值为 true<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">com.facebook.drawee.view.SimpleDraweeView</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:id</span>=<span class="string">"@+id/sdv_image_round"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:layout_width</span>=<span class="string">"100dp"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:layout_height</span>=<span class="string">"100dp"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">fresco:placeholderImage</span>=<span class="string">"@mipmap/img_test"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">fresco:roundedCornerRadius</span>=<span class="string">"20dp"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">fresco:roundBottomLeft</span>=<span class="string">"false"</span>/&gt;</span><span class="comment">&lt;!--设置左下角不使用圆角--&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>在代码中设置圆角<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">RoundingParams bitmapOnlyParams = RoundingParams.fromCornersRadius(<span class="number">40</span>)</span><br><span class="line">          .setRoundingMethod(RoundingParams.RoundingMethod.BITMAP_ONLY);</span><br><span class="line"></span><br><span class="line">roundImg.getHierarchy().setRoundingParams(bitmapOnlyParams);</span><br></pre></td></tr></table></figure></p>
+<p>运行效果：<br><img src="https://raw.githubusercontent.com/tancen94/FrescoUseDemo/master/preview/roundImg.png" alt="roundImg"><br><strong>通过这种方式设置圆角，还支持 4 种不同半径的圆角</strong>，但是无法在 xml 中设置，需要在 java 代码中设置<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RoundingParams diffParams = RoundingParams.fromCornersRadii(<span class="number">50</span>, <span class="number">100</span>, <span class="number">150</span>, <span class="number">200</span>);</span><br><span class="line"></span><br><span class="line">diffRoundImg.getHierarchy().setRoundingParams(diffParams);</span><br></pre></td></tr></table></figure></p>
+<p>运行效果：<br><img src="https://raw.githubusercontent.com/tancen94/FrescoUseDemo/master/preview/diffRoundImg.png" alt="diffRoundImg"></p>
+<ul>
+<li><strong>OVERLAY_COLOR 方式</strong>：通过图层覆盖的方式实现的圆角，既可以在 xml 文件中设置，也可以在 java 代码中设置，在 xml 文件中，通过设置 roundWithOverlayColor = “#0000ff” 就能设置覆盖层的颜色，一般设置成背景色<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">com.facebook.drawee.view.SimpleDraweeView</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:id</span>=<span class="string">"@+id/sdv_image_lay"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:layout_width</span>=<span class="string">"100dp"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:layout_height</span>=<span class="string">"100dp"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:layout_margin</span>=<span class="string">"8dp"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">fresco:placeholderImage</span>=<span class="string">"@mipmap/img_test"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">fresco:roundedCornerRadius</span>=<span class="string">"20dp"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">fresco:roundWithOverlayColor</span>=<span class="string">"#0000ff"</span>/&gt;</span><span class="comment">&lt;!--设置覆盖层的颜色--&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>如果在代码中设置，则 xml 中的属性会失效<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">RoundingParams overlayColor = RoundingParams.fromCornersRadius(<span class="number">80</span>)</span><br><span class="line">          .setRoundingMethod(RoundingParams.RoundingMethod.OVERLAY_COLOR)</span><br><span class="line">          .setOverlayColor(Color.WHITE);<span class="comment">//设置覆盖层颜色,这里设置为白色，xml中的属性设置会失效，以这里的属性为准</span></span><br><span class="line"></span><br><span class="line">layRoundImg.getHierarchy().setRoundingParams(overlayColor);</span><br></pre></td></tr></table></figure></p>
+<p>运行效果：<br><img src="https://raw.githubusercontent.com/tancen94/FrescoUseDemo/master/preview/layRoundImg.png" alt="layImg"></p>
+<p>以上，Fresco 中使用圆角的两种方法及其使用就介绍到这里，演示代码见 <a href="https://github.com/tancen94/FrescoUseDemo" target="_blank" rel="noopener">GitHub</a>，下篇文章将深入分析圆角的实现原理以及 Android 中一些能够实现圆角的方案。</p>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Android-中加载图片"><span class="toc-number">1.</span> <span class="toc-text">Android 中加载图片</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#为什么要使用-Fresco"><span class="toc-number">2.</span> <span class="toc-text">为什么要使用 Fresco</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#如何使用-Fresco"><span class="toc-number">3.</span> <span class="toc-text">如何使用 Fresco</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#图片添加圆角"><span class="toc-number">4.</span> <span class="toc-text">图片添加圆角</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/10/05/151005/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/10/05/151005/&text=Fresco 基础使用"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/10/05/151005/&title=Fresco 基础使用"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/10/05/151005/&is_video=false&description=Fresco 基础使用"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Fresco 基础使用&body=Check out this article: http://09ae9c.com/2015/10/05/151005/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/10/05/151005/&title=Fresco 基础使用"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/10/05/151005/&title=Fresco 基础使用"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/10/05/151005/&title=Fresco 基础使用"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/10/05/151005/&title=Fresco 基础使用"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/10/05/151005/&name=Fresco 基础使用&description=&lt;p&gt;本文介绍一下 Facebook 推出的这个强大的图片加载框架以及一些简单的使用，在后续的文章中会逐步深入探究它的实现原理以及一些值得学习的编程思想。&lt;/p&gt;"><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick="$("#toc-footer").toggle();return false;"><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick="$("#share-footer").toggle();return false;"><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick="$("#nav-footer").toggle();return false;"><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      <script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>

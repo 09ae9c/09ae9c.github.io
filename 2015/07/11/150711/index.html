@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Fragment 在一个 Activity 中表示一个行为或用户界面的一部分，可以在一个 Activity 中组合多个 Fragment 形成一个多页的用户界面或者在多个 Activity 中重复使用一个 Fragment，可以认为 Fragment 是一个拥有独立生命周期，独立接收输入事件，并且可以在 Activity 运行时添加或删除的模块化部分（有点像”内嵌的 Activity“），Frag">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="API Guides(4) -- Fragment">
+<meta property="og:url" content="http://09ae9c.com/2015/07/11/150711/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="Fragment 在一个 Activity 中表示一个行为或用户界面的一部分，可以在一个 Activity 中组合多个 Fragment 形成一个多页的用户界面或者在多个 Activity 中重复使用一个 Fragment，可以认为 Fragment 是一个拥有独立生命周期，独立接收输入事件，并且可以在 Activity 运行时添加或删除的模块化部分（有点像”内嵌的 Activity“），Frag">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://img.blog.csdn.net/20150727164314774">
+<meta property="og:image" content="http://img.blog.csdn.net/20150727164220185">
+<meta property="og:updated_time" content="2016-10-17T15:39:21.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="API Guides(4) -- Fragment">
+<meta name="twitter:description" content="Fragment 在一个 Activity 中表示一个行为或用户界面的一部分，可以在一个 Activity 中组合多个 Fragment 形成一个多页的用户界面或者在多个 Activity 中重复使用一个 Fragment，可以认为 Fragment 是一个拥有独立生命周期，独立接收输入事件，并且可以在 Activity 运行时添加或删除的模块化部分（有点像”内嵌的 Activity“），Frag">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20150727164314774">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>API Guides(4) -- Fragment</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+    <link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    <script src="/lib/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">09AE9C&#39;s Blog</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2015/08/01/150801/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover="$("#i-prev").toggle();" onmouseout="$("#i-prev").toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2015/07/08/150708/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover="$("#i-next").toggle();" onmouseout="$("#i-next").toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover="$("#i-top").toggle();" onmouseout="$("#i-top").toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover="$("#i-share").toggle();" onmouseout="$("#i-share").toggle();" onclick="$("#share").toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/07/11/150711/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/07/11/150711/&text=API Guides(4) -- Fragment"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/07/11/150711/&title=API Guides(4) -- Fragment"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/07/11/150711/&is_video=false&description=API Guides(4) -- Fragment"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=API Guides(4) -- Fragment&body=Check out this article: http://09ae9c.com/2015/07/11/150711/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/07/11/150711/&title=API Guides(4) -- Fragment"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/07/11/150711/&title=API Guides(4) -- Fragment"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/07/11/150711/&title=API Guides(4) -- Fragment"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/07/11/150711/&title=API Guides(4) -- Fragment"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/07/11/150711/&name=API Guides(4) -- Fragment&description=&lt;p&gt;Fragment 在一个 Activity 中表示一个行为或用户界面的一部分，可以在一个 Activity 中组合多个 Fragment 形成一个多页的用户界面或者在多个 Activity 中重复使用一个 Fragment，可以认为 Fragment 是一个拥有独立生命周期，独立接收输入事件，并且可以在 Activity 运行时添加或删除的模块化部分（有点像”内嵌的 Activity“），&lt;strong&gt;Fragment 不能单独存在：必须依附于 Activity 并且其生命周期直接受 Activity 的生命周期影响&lt;/strong&gt;&lt;br&gt;"><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        API Guides(4) -- Fragment
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2015-07-11T08:27:33.000Z" itemprop="datePublished">2015-07-11</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Android/">Android</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>Fragment 在一个 Activity 中表示一个行为或用户界面的一部分，可以在一个 Activity 中组合多个 Fragment 形成一个多页的用户界面或者在多个 Activity 中重复使用一个 Fragment，可以认为 Fragment 是一个拥有独立生命周期，独立接收输入事件，并且可以在 Activity 运行时添加或删除的模块化部分（有点像”内嵌的 Activity“），<strong>Fragment 不能单独存在：必须依附于 Activity 并且其生命周期直接受 Activity 的生命周期影响</strong><br><a id="more"></a></p>
+<p>##Fragment 的使用场景</p>
+<ul>
+<li><p>将一个 Activity 分成不同的部分，例如分成导航栏和内容块</p>
+</li>
+<li><p>同一个界面模块可以重复使用时，可以使用 Fragment，这样一个 Fragment 可以在多个 Activity 中使用，避免在一个 Fragment 中直接操作另外一个 Fragment</p>
+</li>
+</ul>
+<p>##Fragment 的常用类型</p>
+<ul>
+<li><p>DialogFragment：显示一个浮动的 Dialog，这和使用 DialogHelper 来显示一个 Dialog 都是可以的，因为你可以把 Fragment 对话框包含在 Activity 管理的回退栈中，允许用户返回到关闭的 Fragment 中（原文，不太理解）</p>
+</li>
+<li><p>ListFragment：显示一个有 Adapter 管理的 List，和 ListActivity 相似</p>
+</li>
+<li>PreferenceFragment：用一个 List 来显示一组 Preference 对象，类似 PreferenceActivity，在创建一个应用程序的设置界面时可能会用到</li>
+</ul>
+<p>##创建一个 Fragment：（Fragment 也有生命周期回调方法，比如 onCreate(),onStart(),etc）</p>
+<ul>
+<li><p>一个 Fragment 至少包含如下三个方法：</p>
+<ul>
+<li><p><strong>onCreate()</strong>：当 Fragment 创建时调用，应该初始化一些你想在 Fragment 暂停或停止时保留的组件</p>
+</li>
+<li><p><strong>onCreateView()</strong>：当 Fragment 第一次绘制 UI 界面的时候调用，提供一个 Layout 布局，对布局中的组件的操作就在这里进行（按钮的点击事件等），注意如果 Fragment 的类型是 ListFragment，将会返回一个 ListView 而不是 View</p>
+</li>
+<li><strong>onPause()</strong>：当用户离开当前 Fragment 时调用，不一定会被销毁，但仍有必要在这里做一些保存持久化数据的操作</li>
+</ul>
+<p>更多关于 Fragment 中的回调方法写在下面</p>
+</li>
+</ul>
+<p>##将 Fragment 添加到 Activity 中的两种方法：</p>
+<ol>
+<li><p><strong>在布局文件中申明 Fragment</strong>：首先创建一个自定义的 Fragment 类，这个类中的 onCreateView() 必须要返回一个 View，也就是说必须为它创建一个对应的布局文件，然后在其他布局中将这个 Fragment 作为一个自定义控件来使用即可，注意，如果有多个 Fragment，必须为每一个 Fragment 提供一个唯一的标识符，如 id 属性，tag 属性</p>
+</li>
+<li><p><strong>在代码中添加 Fragment</strong>：在 Activity 运行的任何时候都可以动态的添加 Fragment，只需要指定一个放置 Fragment 的 ViewGroup（例如 LinearLayout，FrameLayout 等），Activity 对 Fragment 的操作包括添加（add），移除（remove），替换（replace）<br>使用 FragmentTransaction 接口实现这些功能。（当然，这里说的 Fragment 也是指已经创建好的 Fragment 类对象并在其 onCreateView() 方法中指定了布局）</p>
+<p>文档中下一节讲的是没有 UI 界面的 Fragment，我认为暂时不需要用到，所以就不记录，先跳过</p>
+</li>
+</ol>
+<p>##管理一些 Fragments（通过 FragmentManager 类）：</p>
+<ul>
+<li><p>通过 <strong>findFragmentById()</strong> 方法获取一个 Activity 中的 Fragment 实例</p>
+</li>
+<li><p>对 Fragment 回退栈进行操作，取出或者压入等</p>
+</li>
+<li>注册监听事件来监听回退栈的改变，例如 <strong>addOnBackStackChangedListener()</strong></li>
+</ul>
+<p>需要注意一个关于导包的问题：如果导入的是 <strong>android.app.Fragment</strong>,则使用的是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FragmentManager fm = getFragmentManager();</span><br></pre></td></tr></table></figure>
+<p>而如果导入的是 <strong>android.support.v4.app.Fragment</strong>，则应该使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FragmentManager fm = getSupportFragmentManager()</span><br></pre></td></tr></table></figure>
+<p>##操作一些 Fragments（通过 FragmentTransaction 类，主要有 add()，remove()，place() 等操作）：</p>
+<ul>
+<li><p>通过 FragmentManager 获取 <strong>FragmentTransaction</strong> 的实例，接着就能对一些 Fragments 进行 <strong>add()</strong>，<strong>remove()</strong>，或 <strong>place()</strong> 操作了，<strong>最后再执行 commit() 以提交事务</strong>，在执行  commit() 之前如果执行了 <strong>addToBackStack()</strong> 方法，系统将会将执行的这个<strong>事务（transaction）</strong>存放在回退找中，如果之前有多个操作，比如 remove() 了多个 Fragment，最后再执行 commit(),则在返回时（按下返回键）所有这些 Fragment 都将返回<br>也就是说，commit() 相当于一个节点，你在这个节点之前的操作为一个集合，执行返回的时候这个集合中的 Fragment 都将返回<br>比如一个页面有 3 个 Fragment，还有一个按钮，点击事件是将这 3 个 Fragments 移除（remove），然后调用 <strong>addToBackStack()</strong>,将它们添加到回退找，然后提交（commit），这样，在点击按钮的时候，这 3 个 fragments 都将消失，但是当我点击物理返回键的时候，这 3 个 Fragments 都<strong>将重新出现在屏幕上</strong>，<strong>而如果没有执行 addToBackStack() 方法，则不会返回之前的 Fragment。</strong></p>
+</li>
+<li><p>调用 commit() 方法<strong>并不会立即执行事务</strong>（transaction），而是会等待UI线程的调度，待 UI 线程有空闲来执行时才会执行。如果想要让它立即执行，需要在UI线程中使用 <strong>executePendingTransactions()</strong> 方法来执行 commit 提交的事务，但<strong>一般没必要这样做</strong>，除非这个事务是在其他线程中产生的，需要立即执行，注意：只能在用户离开当前 Activity 之前使用 commit() 方法来提交事务，也就是说<strong>必须在系统调用 Activity 的 onSavaInstanceState() 之前提交事务</strong></p>
+</li>
+</ul>
+<p>##Fragment 与 Activity 之前的通信<br>由于 Fragment 总是依附于 Activity 的，所以很多时候需要 Fragment 和 Activity 之间进行数据传递等通信，下面是一个简单的例子，用以说明 Fragment 与 Activity 之前如何通信：<br>假设一个 Activity 中有两个 Fragment（Fragment_A 和 Fragment_B），Fragment_A 中是一个列表（list），Fragment_B 中是列表单个项目的详情页，也就是说，点击 Fragment_A 中的某个项目，就会跳转到Fragment_B 中显示它的详情，这时就需要通过 Activity 监听用户对 Fragment_A 的点击事件，获取到用户点击的项目索引，然后再传递给 Fragment_B，这样 Fragment_B 才知道该显示哪个项目的详情，下面是代码：</p>
+<ul>
+<li>首先在 Fragment_A 中定义一个接口 <strong>OnItemSelectListener</strong>,如下：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Fragment_A</span> <span class="keyword">extends</span> <span class="title">ListFragment</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">OnItemSelectListener</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onItemSelected</span><span class="params">(<span class="keyword">int</span> itemId)</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//其他方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>接着在其 <strong>对应的Activity</strong> 中实现这个接口并重写其中的回调方法 <strong>onItemSelected()</strong>，在这个回调方法中通知 Fragment_B 去显示对应项目的详情</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainActivity</span> <span class="keyword">extends</span> <span class="title">AppCompatActivity</span> <span class="keyword">implements</span> <span class="title">Fragment_A</span>.<span class="title">OnItemSelectListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//实现接口中的方法</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onItemSelected</span><span class="params">(<span class="keyword">int</span> itemId)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	    <span class="comment">//这里的Fragment_B是已经写好的一个自定义Fragment类</span></span><br><span class="line">        Fragment fmB = <span class="keyword">new</span> Fragment_B(itemId);</span><br><span class="line">        FragmentTransaction ft = getFragmentManager().beginTransaction();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//这里的R.id.fm_b是在主布局中(activity_main.xml)中的一个布局控件的id，用来放置Fragment</span></span><br><span class="line">        ft.replace(R.id.fm_b, fmB);</span><br><span class="line">        ft.commit();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//其他方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>然后在 Fragment_A 的 <strong>onAttach()</strong> 方法中（onAttach 方法为 Fragment 生命周期中<strong>首先被调用的方法</strong>，并且需要当前 Activity 实例作为参数）实例化 OnItemSelectListener 接口，获取到对应的 Activity（因为这个 Activity 之前实现了 OnItemSelectListener 接口）</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Fragment_A</span> <span class="keyword">extends</span> <span class="title">ListFragment</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//实例化一个接口对象</span></span><br><span class="line">    <span class="keyword">public</span> OnItemSelectListener listener;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAttach</span><span class="params">(Activity activity)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>.onAttach(activity);</span><br><span class="line">        listener = (OnItemSelectListener) activity;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">OnItemSelectListener</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onItemSelected</span><span class="params">(<span class="keyword">int</span> id)</span></span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onListItemClick</span><span class="params">(ListView l, View v, <span class="keyword">int</span> position, <span class="keyword">long</span> id)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//这里的listener指向MainActivity，因此这是调用MainActivity中的onItemSelected()方法</span></span><br><span class="line">        listener.onItemSelected(id);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//其他方法</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过这样的接口实现，在 Fragment_A 中获取到 Activity 的实例，然后 Fragment_A 就可以在合适的时候调用 Activity 实例的 onItemSelected() 方法来达到回调的目的，这样，一个简单的通过回调实现的 Fragment 与Activity 之间的通信就实现了</p>
+<p>##Fragment 中处理菜单点击事件</p>
+<ul>
+<li><p>Fragment 也可以像 Activity 那样使用菜单，只需要在 Fragment 中实现 <strong>onCreateOptionMenu()</strong> 方法即可，这个操作和在 Activity 中是一样的，注意，为了让 Fragment 接收到菜单的回调，需要在 Fragment 的 onCreate() 方法 中调用 <strong>setHasOptionMenu()</strong>，<strong>否则 Fragment 不能接收到菜单的点击回调</strong>，也就是点了菜单没反应，</p>
+</li>
+<li><p><strong>其实，点击菜单选项这个过程，首先接收到回调的是 Activity，如果 Activity 中没有处理选项点击事件的方法，才会移交给 Fragment</strong></p>
+</li>
+</ul>
+<p>##处理 Fragment 的生命周期</p>
+<ul>
+<li><p>就像 Activity 的生命周期一样，Fragment 也存在这三种状态：</p>
+<ul>
+<li><p><strong>Resumed</strong>(在运行的 Activity 中可见状态)，</p>
+</li>
+<li><p><strong>Paused</strong>(其他 Activity 没有完全挡住当前 Activity，类似点击分享按钮弹出的一个只遮住一部分屏幕的 Activity，后面那个 Activity 就是处于这种状态)，</p>
+</li>
+<li><strong>Stopped</strong>（当前 Fragment 不可见了，或者所在的 Activity 不可见了，或者当前 Fragment 被移除进入回退栈了，但是一个 Stopped 状态的 Fragment 依然是活着的，所有的状态都仍然存在，直到其对应的 Activity 被销毁）</li>
+</ul>
+</li>
+<li><p>Fragment 也具有状态保存的功能，通过在 Fragment 的<strong>onCreate()</strong>,<strong>onCreateView()</strong> 或者 <strong>onActivityCreated()</strong> 这三个系统回调方法中执行 <strong>onSaveInstanceState()</strong></p>
+</li>
+<li><p>Activity 与 Fragment 的生命周期最主要的区别在于他们的<strong>回退栈</strong>：</p>
+<ul>
+<li><p>Activity 的回退栈<strong>由系统管理</strong>，当用户点击物理返回键时，当前 Activity 将由系统默认放置到回退栈中</p>
+</li>
+<li><p>Fragment 的回退栈有<strong>其所在的 Actiity 管理</strong>，而且只有当明确执行了 <strong>addToBackStack()</strong> 方法后，当前 Fragment 在移除时才会被放入回退栈，否则就销毁。</p>
+</li>
+</ul>
+</li>
+<li><p>Fragment 的生命周期与 Activity 是同步的，也就是说，当一个 Activity 含有一个 Fragment 的情况下，当用户退出当前应用，系统会<strong>先调用 Fragment 的 onPause()，再调用 Activity 的 onPause()</strong>,同理，其他几个生命周期回调方法类似，但是因为 Fragment 的生命周期比 Activity 多几个<strong>独有的方法</strong>：</p>
+<ul>
+<li><p><strong>onAttach()</strong>：当 Fragment 关联（依附）到一个 Activity 时调用，也就是在一个 Activity 中创建了一个 Fragment，并调用了 commit() 之后</p>
+</li>
+<li><p><strong>onCreateView()</strong>：当创建 Fragment 的布局时调用</p>
+</li>
+<li><p><strong>onActivityCreateed()</strong>：当对应的 Activity 中的 onCreate() 方法返回时</p>
+</li>
+<li><p><strong>onDestroyView()</strong>：当 Fragment 的布局被移除时调用</p>
+</li>
+<li><strong>onDetach()</strong>：当 Fragment 与 Activity 断开联系时调用</li>
+</ul>
+<p>下面两张图来自 Android 官方文档，<strong>左图为 Fragment 的生命周期图</strong>，<strong>右图为 Activity 的状态与 Fragment 的生命周期对比图</strong><br><img src="http://img.blog.csdn.net/20150727164314774" alt="Fragment的生命周期图">        ————————  <img src="http://img.blog.csdn.net/20150727164220185" alt="Activity与Fragment的生命周期对比图"></p>
+</li>
+</ul>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/07/11/150711/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/07/11/150711/&text=API Guides(4) -- Fragment"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/07/11/150711/&title=API Guides(4) -- Fragment"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/07/11/150711/&is_video=false&description=API Guides(4) -- Fragment"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=API Guides(4) -- Fragment&body=Check out this article: http://09ae9c.com/2015/07/11/150711/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/07/11/150711/&title=API Guides(4) -- Fragment"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/07/11/150711/&title=API Guides(4) -- Fragment"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/07/11/150711/&title=API Guides(4) -- Fragment"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/07/11/150711/&title=API Guides(4) -- Fragment"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/07/11/150711/&name=API Guides(4) -- Fragment&description=&lt;p&gt;Fragment 在一个 Activity 中表示一个行为或用户界面的一部分，可以在一个 Activity 中组合多个 Fragment 形成一个多页的用户界面或者在多个 Activity 中重复使用一个 Fragment，可以认为 Fragment 是一个拥有独立生命周期，独立接收输入事件，并且可以在 Activity 运行时添加或删除的模块化部分（有点像”内嵌的 Activity“），&lt;strong&gt;Fragment 不能单独存在：必须依附于 Activity 并且其生命周期直接受 Activity 的生命周期影响&lt;/strong&gt;&lt;br&gt;"><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick="$("#toc-footer").toggle();return false;"><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick="$("#share-footer").toggle();return false;"><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick="$("#nav-footer").toggle();return false;"><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      <script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="本文转自 Android中自定义视图View之—前奏篇，稍有修改，感谢分享！ 在实现自定义View之前，有必要掌握Android中画图的相关类的使用方法，这是自定义各种酷炫界面的基础。主要使用到以下两个类：  画笔：Paint  画布：Canvas">
+<meta name="keywords" content="Android,自定义 View">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 自定义 View(1) -- 基础">
+<meta property="og:url" content="http://09ae9c.com/2015/09/21/150921/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="本文转自 Android中自定义视图View之—前奏篇，稍有修改，感谢分享！ 在实现自定义View之前，有必要掌握Android中画图的相关类的使用方法，这是自定义各种酷炫界面的基础。主要使用到以下两个类：  画笔：Paint  画布：Canvas">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://img.blog.csdn.net/20150923214554003">
+<meta property="og:image" content="http://img.blog.csdn.net/20150923215524697">
+<meta property="og:image" content="http://img.blog.csdn.net/20150923215727797">
+<meta property="og:image" content="http://img.blog.csdn.net/20150923212202952">
+<meta property="og:image" content="http://img.blog.csdn.net/20150923223814986">
+<meta property="og:image" content="http://img.blog.csdn.net/20150923224520475">
+<meta property="og:image" content="http://img.blog.csdn.net/20150923224656474">
+<meta property="og:image" content="http://img.blog.csdn.net/20150923224749220">
+<meta property="og:image" content="http://img.blog.csdn.net/20150923225105149">
+<meta property="og:image" content="http://img.blog.csdn.net/20150923225302921">
+<meta property="og:image" content="http://img.blog.csdn.net/20150924195611910">
+<meta property="og:image" content="http://img.blog.csdn.net/20150924195712663">
+<meta property="og:image" content="http://img.blog.csdn.net/20150924200023977">
+<meta property="og:image" content="http://img.blog.csdn.net/20150924200157139">
+<meta property="og:image" content="http://img.blog.csdn.net/20150924200434175">
+<meta property="og:updated_time" content="2016-10-17T15:39:45.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 自定义 View(1) -- 基础">
+<meta name="twitter:description" content="本文转自 Android中自定义视图View之—前奏篇，稍有修改，感谢分享！ 在实现自定义View之前，有必要掌握Android中画图的相关类的使用方法，这是自定义各种酷炫界面的基础。主要使用到以下两个类：  画笔：Paint  画布：Canvas">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20150923214554003">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Android 自定义 View(1) -- 基础</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+    <link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    <script src="/lib/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">09AE9C&#39;s Blog</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2015/09/22/150922/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover="$("#i-prev").toggle();" onmouseout="$("#i-prev").toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2015/09/02/150902/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover="$("#i-next").toggle();" onmouseout="$("#i-next").toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover="$("#i-top").toggle();" onmouseout="$("#i-top").toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover="$("#i-share").toggle();" onmouseout="$("#i-share").toggle();" onclick="$("#share").toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/09/21/150921/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/09/21/150921/&text=Android 自定义 View(1) -- 基础"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/09/21/150921/&title=Android 自定义 View(1) -- 基础"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/09/21/150921/&is_video=false&description=Android 自定义 View(1) -- 基础"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Android 自定义 View(1) -- 基础&body=Check out this article: http://09ae9c.com/2015/09/21/150921/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/09/21/150921/&title=Android 自定义 View(1) -- 基础"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/09/21/150921/&title=Android 自定义 View(1) -- 基础"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/09/21/150921/&title=Android 自定义 View(1) -- 基础"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/09/21/150921/&title=Android 自定义 View(1) -- 基础"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/09/21/150921/&name=Android 自定义 View(1) -- 基础&description=&lt;p&gt;本文转自 &lt;a href=&#34;http://blog.csdn.net/jiangwei0910410003/article/details/42640665&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Android中自定义视图View之—前奏篇&lt;/a&gt;，稍有修改，感谢分享！&lt;/p&gt;
+&lt;p&gt;在实现自定义View之前，有必要掌握Android中画图的相关类的使用方法，这是自定义各种酷炫界面的基础。主要使用到以下两个类：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;画笔：Paint&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;画布：Canvas&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;"><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Android中的Paint和Canvas的概念和使用方法"><span class="toc-number">1.</span> <span class="toc-text">1. Android中的Paint和Canvas的概念和使用方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-Paint对象"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 Paint对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-Canvas对象"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 Canvas对象</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-1-画圆（drawCircle"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.2.1 画圆（drawCircle</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-2-画直线（drawLine）"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.2.2 画直线（drawLine）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-3-画矩形（drawRect）"><span class="toc-number">1.2.3.</span> <span class="toc-text">1.2.3 画矩形（drawRect）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-4-画圆角矩形（drawRoundRect"><span class="toc-number">1.2.4.</span> <span class="toc-text">1.2.4 画圆角矩形（drawRoundRect</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-5-画椭圆（drawOval"><span class="toc-number">1.2.5.</span> <span class="toc-text">1.2.5 画椭圆（drawOval</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-6-画弧线-扇形（drawArc）"><span class="toc-number">1.2.6.</span> <span class="toc-text">1.2.6 画弧线/扇形（drawArc）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-7-画三角形-多边形（drawPath）"><span class="toc-number">1.2.7.</span> <span class="toc-text">1.2.7 画三角形/多边形（drawPath）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-8-画点（drawPoint）"><span class="toc-number">1.2.8.</span> <span class="toc-text">1.2.8 画点（drawPoint）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-9-画贝塞尔曲线（drawPath）"><span class="toc-number">1.2.9.</span> <span class="toc-text">1.2.9 画贝塞尔曲线（drawPath）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Android中重要的概念：渲染对象Shader"><span class="toc-number">2.</span> <span class="toc-text">2. Android中重要的概念：渲染对象Shader</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-Shader的使用"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 Shader的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-BitmapShader的使用："><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.1 BitmapShader的使用：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2-LinearGradient的使用"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.2 LinearGradient的使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-4-SweepGradient的使用"><span class="toc-number">2.1.3.</span> <span class="toc-text">2.1.4 SweepGradient的使用</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Android 自定义 View(1) -- 基础
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2015-09-21T14:10:10.000Z" itemprop="datePublished">2015-09-21</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Android/">Android</a>, <a class="tag-link" href="/tags/自定义-View/">自定义 View</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>本文转自 <a href="http://blog.csdn.net/jiangwei0910410003/article/details/42640665" target="_blank" rel="noopener">Android中自定义视图View之—前奏篇</a>，稍有修改，感谢分享！</p>
+<p>在实现自定义View之前，有必要掌握Android中画图的相关类的使用方法，这是自定义各种酷炫界面的基础。主要使用到以下两个类：</p>
+<ul>
+<li><p>画笔：Paint</p>
+</li>
+<li><p>画布：Canvas</p>
+</li>
+</ul>
+<a id="more"></a>
+<h2 id="1-Android中的Paint和Canvas的概念和使用方法"><a href="#1-Android中的Paint和Canvas的概念和使用方法" class="headerlink" title="1. Android中的Paint和Canvas的概念和使用方法"></a>1. Android中的Paint和Canvas的概念和使用方法</h2><p>Android中的Paint和Canvas的概念是很简单的，就是<strong>用画笔在画布上进行绘制</strong>，没什么难度的，只要拿到画笔Paint和画布Canvas对象就可以进行操作了。当然Canvas对象提供了很多绘制图形的方法</p>
+<h3 id="1-1-Paint对象"><a href="#1-1-Paint对象" class="headerlink" title="1.1 Paint对象"></a>1.1 Paint对象</h3><p>新建一个Paint画笔对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Paint p = new Paint();  </span><br><span class="line">p.setColor(Color.RED);// 设置画笔颜色为红色</span><br><span class="line">p.setAntiAlias(true);// 设置画笔的锯齿效果。 true是去除，大家一看效果就明白了</span><br></pre></td></tr></table></figure>
+<p>注：关于这个锯齿，其实很好理解，如果没有锯齿效果，画出来的圆形就很光滑，有锯齿看上去的圆形很粗糙的。但是默认情况下，画笔是有锯齿的。之所以这样，是因为在没有锯齿效果的情况下，绘制图形效率会比有锯齿效果低，所以系统考虑了效率问题，就把默认值设置成有锯齿了，在实际绘图过程中需要衡量一下的。</p>
+<p>对于画笔对象，它有很多的属性：</p>
+<ul>
+<li>void  setARGB(int a, int r, int g, int b)  //设置Paint对象颜色，参数一为alpha透明通道</li>
+<li>void  setAlpha(int a)  //设置alpha不透明度，范围为0~255</li>
+<li>void  setAntiAlias(boolean aa)  //是否抗锯齿，默认值是false</li>
+<li>void  setColor(int color)  //设置颜色，这里Android内部定义的有Color类包含了一些常见颜色定义</li>
+<li>void  setFakeBoldText(boolean fakeBoldText)  //设置伪粗体文本</li>
+<li>void  setLinearText(boolean linearText)  //设置线性文本</li>
+<li>PathEffect  setPathEffect(PathEffect effect)  //设置路径效果</li>
+<li>Rasterizer  setRasterizer(Rasterizer rasterizer) //设置光栅化</li>
+<li>Shader  setShader(Shader shader)  //设置阴影 ,我们在后面会详细说一下Shader对象的</li>
+<li>void  setTextAlign(Paint.Align align)  //设置文本对齐</li>
+<li>void  setTextScaleX(float scaleX)  //设置文本缩放倍数，1.0f为原始</li>
+<li>void  setTextSize(float textSize)  //设置字体大小</li>
+<li><p>Typeface  setTypeface(Typeface typeface)  //设置字体，Typeface包含了字体的类型，粗细，还有倾斜、颜色等<br>注：<br> Paint mp = new paint();<br> mp.setTypeface(Typeface.DEFAULT_BOLD)</p>
+<p> 常用的字体类型名称还有：</p>
+<ul>
+<li>Typeface.DEFAULT //常规字体类型</li>
+<li>Typeface.DEFAULT_BOLD //黑体字体类型</li>
+<li>Typeface.MONOSPACE //等宽字体类型</li>
+<li>Typeface.SANS_SERIF //sans serif字体类型</li>
+<li><p>Typeface.SERIF //serif字体类型</p>
+<p>除了字体类型设置之外，还可以为字体类型设置字体风格，如设置粗体：<br>Paint mp = new Paint();<br>Typeface font = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD);<br>p.setTypeface( font );</p>
+<p>常用的字体风格名称还有：</p>
+</li>
+<li>Typeface.BOLD //粗体</li>
+<li>Typeface.BOLD_ITALIC //粗斜体</li>
+<li>Typeface.ITALIC //斜体</li>
+<li>Typeface.NORMAL //常规</li>
+</ul>
+</li>
+<li><p>void  setUnderlineText(boolean underlineText)  //设置下划线</p>
+</li>
+<li><p>void  setStyle(Style style) //设置画笔样式<br> 常用的样式：</p>
+<ul>
+<li>Paint.Style.FILL</li>
+<li>Paint.Style.STROKE</li>
+<li>Paint.Style.FILL_AND_STROKE<br>这里的FILL和STROKE两种方式用的最多，他们的区别也很好理解的，<strong>FILL就是填充的意思，STROKE就是空心的意思，只有    图形的轮廓形状，内部是空的。</strong></li>
+</ul>
+</li>
+<li><p>void setStrokeWidth(float width) //在画笔的样式为STROKE的时候，图形的轮廓宽度</p>
+</li>
+</ul>
+<h3 id="1-2-Canvas对象"><a href="#1-2-Canvas对象" class="headerlink" title="1.2 Canvas对象"></a>1.2 Canvas对象</h3><p>对于画布对象Canvas我们是从onDraw方法中获取到的，我们在自定义视图的时候都会继承View类，然后在他的onDraw方法中拿到Canvas对象，进行各种绘制了。下面就来看一下各种绘制的方法：</p>
+<h4 id="1-2-1-画圆（drawCircle"><a href="#1-2-1-画圆（drawCircle" class="headerlink" title="1.2.1 画圆（drawCircle"></a>1.2.1 画圆（drawCircle</h4><p>想一下，如果画出一个圆形的话需要哪些要素，学过几何的同学都知道：<strong>圆心坐标+半径</strong> 就可以确定一个圆了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">canvas.drawCircle(120, 20, 20, p); //这里的p是之前讲的Paint对象</span><br></pre></td></tr></table></figure>
+<ul>
+<li>参数一：圆心的x坐标</li>
+<li>参数二：圆心的y坐标</li>
+<li>参数三：圆的半径</li>
+<li>参数四：画笔对象</li>
+</ul>
+<h4 id="1-2-2-画直线（drawLine）"><a href="#1-2-2-画直线（drawLine）" class="headerlink" title="1.2.2 画直线（drawLine）"></a>1.2.2 画直线（drawLine）</h4><p>画出一个直线，需要<strong>起点坐标+终点坐标</strong> 就可以确定一条直线了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">canvas.drawLine(60, 40, 100, 40, p);// 画直线</span><br></pre></td></tr></table></figure>
+<ul>
+<li>参数一：起始点的x坐标</li>
+<li>参数二：起始点的y坐标</li>
+<li>参数三：终点的x坐标</li>
+<li>参数四：终点的y坐标</li>
+<li>参数五：画笔对象</li>
+</ul>
+<h4 id="1-2-3-画矩形（drawRect）"><a href="#1-2-3-画矩形（drawRect）" class="headerlink" title="1.2.3 画矩形（drawRect）"></a>1.2.3 画矩形（drawRect）</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RectF oval1=new RectF(150,20,180,40);  </span><br><span class="line">canvas.drawRect(oval1, p);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>参数一：矩形对象</li>
+<li>参数二：画笔对象</li>
+</ul>
+<p>这里说一下RectF的相关知识：在绘图中这个对象是十分重要的，它表示的是一个<strong>矩形</strong>，它有四个参数：<br>left, top, right, bottom<br>这四个值是<strong>相对于设备屏幕的起始点</strong>开始的。<br>比如上面的这个矩形，是这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RectF oval1=new RectF(150,20,180,40);</span><br></pre></td></tr></table></figure>
+<p><img src="http://img.blog.csdn.net/20150923214554003" alt="这里写图片描述"><br><strong>矩形的左上角的坐标是：(150,20)</strong><br><strong>矩形的右下角的坐标是：(180,30)</strong><br><strong>那么我们就知道这个矩形的宽是：180-150=30；高是：40-20=20</strong></p>
+<p><strong>注：</strong>还有一个与RectF相关的对象：<strong>Rect</strong>，它也是四个参数，和RectF唯一的区别就是，<strong>Rect中的参数是float类型的，RectF中的参数是int类型的</strong></p>
+<h4 id="1-2-4-画圆角矩形（drawRoundRect"><a href="#1-2-4-画圆角矩形（drawRoundRect" class="headerlink" title="1.2.4 画圆角矩形（drawRoundRect"></a>1.2.4 画圆角矩形（drawRoundRect</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RectF oval3 = new RectF(80, 260, 200, 300);// 新建一个矩形  </span><br><span class="line">canvas.drawRoundRect(oval3, 20, 15, p);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>参数一：矩形大小</li>
+<li>参数二：圆角的x半径</li>
+<li>参数三：圆角的y半径</li>
+<li>参数四：画笔对象</li>
+</ul>
+<p><img src="http://img.blog.csdn.net/20150923215524697" alt="这里写图片描述"></p>
+<h4 id="1-2-5-画椭圆（drawOval"><a href="#1-2-5-画椭圆（drawOval" class="headerlink" title="1.2.5 画椭圆（drawOval"></a>1.2.5 画椭圆（drawOval</h4><p>画一个椭圆，需要的要素是<strong>长轴长度+短轴长度</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">RectF oval1=new RectF(150,20,180,40); //新建一个椭圆外接矩形</span><br><span class="line">canvas.drawOval(oval2, p);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>参数一：椭圆的外接矩形</li>
+<li>参数二：画笔对象</li>
+</ul>
+<p>一个矩形可以确定一个椭圆，这个矩形和椭圆外接<br><img src="http://img.blog.csdn.net/20150923215727797" alt="这里写图片描述"><br>椭圆的<strong>长轴就是矩形的宽</strong>，<strong>短轴就是矩形的高</strong><br>这样就可以确定一个椭圆了，如果想画一个<strong>圆形</strong>，用这种方式也是可以的，只要把RectF设置成正方形就可以了。</p>
+<h4 id="1-2-6-画弧线-扇形（drawArc）"><a href="#1-2-6-画弧线-扇形（drawArc）" class="headerlink" title="1.2.6 画弧线/扇形（drawArc）"></a>1.2.6 画弧线/扇形（drawArc）</h4><p>画出一个弧线需要的要素是，起始的弧度+弧线的弧度+外围的矩形大小<br>这个和上面画椭圆很相似的，就相当于在他的基础上多了 起始弧度+弧线的弧度</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">p.setStyle(Paint.Style.STROKE);//设置空心  </span><br><span class="line">RectF oval1=new RectF(150,20,180,40);  </span><br><span class="line">canvas.drawArc(oval1, 180, 180, false, p);//弧形</span><br></pre></td></tr></table></figure>
+<ul>
+<li>参数一：外接矩形</li>
+<li>参数二：弧线开始的弧度</li>
+<li>参数三：弧线的弧度</li>
+<li>参数四：是一个boolean类型的参数：true的时候画扇形，是false的时候画弧线</li>
+<li>参数五：画笔对象</li>
+</ul>
+<h4 id="1-2-7-画三角形-多边形（drawPath）"><a href="#1-2-7-画三角形-多边形（drawPath）" class="headerlink" title="1.2.7 画三角形/多边形（drawPath）"></a>1.2.7 画三角形/多边形（drawPath）</h4><p>画三角形/多边形需要的要素，能确定多边形的形状最重要的因素就是角，这些角的顶点就是一个坐标</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Path path = new Path();  </span><br><span class="line">path.moveTo(80, 200);// 此点为多边形的起点  </span><br><span class="line">path.lineTo(120, 250);  </span><br><span class="line">path.lineTo(80, 250);  </span><br><span class="line">path.close(); // 使这些点构成封闭的多边形  </span><br><span class="line">canvas.drawPath(path, p);</span><br></pre></td></tr></table></figure>
+<p>这里需要介绍一下Path对象，这个对象顾名思义，是<strong>路径</strong>的意思，它有两个参数：</p>
+<ul>
+<li>参数一：x坐标</li>
+<li>参数二：y坐标</li>
+</ul>
+<p>路径是由多个点相连接的。所以Path提供了两个方法：<strong>moveTo()</strong>和<strong>lineTo()</strong></p>
+<ul>
+<li><strong>moveTo</strong>方法的作用是设置路径的开始点，如果没有这个方法的调用的话，系统默认的开始点是<strong>(0,0)</strong>点</li>
+<li><strong>lineTo</strong>方法就是将路径的上一个坐标点和当前坐标点进行连接，或者可以认为设置多边形的每个角的顶点的坐标</li>
+</ul>
+<p>那么对于三角形，需要三个点即可。<br>这个画三角形其实用上面的画直线的方法也可以实现的，反过来也是，我们用Path对象也是可以画出一条直线的，那么他们的本质区别是：</p>
+<ul>
+<li>绘制路径方式的焦点是角的顶点(坐标点)</li>
+<li>绘制直线的方式的焦点是边(长度)</li>
+</ul>
+<h4 id="1-2-8-画点（drawPoint）"><a href="#1-2-8-画点（drawPoint）" class="headerlink" title="1.2.8 画点（drawPoint）"></a>1.2.8 画点（drawPoint）</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">canvas.drawPoint(60, 390, p);//画一个点  </span><br><span class="line">canvas.drawPoints(new float[]&#123;60,400,65,400,70,400&#125;, p);//画多个点</span><br></pre></td></tr></table></figure>
+<p>这里有两个方法：<br>drawPoint（画一个点）</p>
+<ul>
+<li>参数一：点的x坐标</li>
+<li>参数二：点的y坐标</li>
+<li>参数三：画笔对象</li>
+</ul>
+<p>drawPoints（画多个点）</p>
+<ul>
+<li>参数一：多个点的数组</li>
+<li>参数二：画笔对象</li>
+</ul>
+<h4 id="1-2-9-画贝塞尔曲线（drawPath）"><a href="#1-2-9-画贝塞尔曲线（drawPath）" class="headerlink" title="1.2.9 画贝塞尔曲线（drawPath）"></a>1.2.9 画贝塞尔曲线（drawPath）</h4><p>这种曲线其实我们在开发过程中很少用到，在图形学中绘制贝塞尔曲线的时候，需要的要素是：起始点+控制点+终点</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Path path2=new Path();  </span><br><span class="line">path2.moveTo(100, 320);//设置Path的起点  </span><br><span class="line">path2.quadTo(150, 310, 170, 400); //设置贝塞尔曲线的控制点坐标和终点坐标  </span><br><span class="line">canvas.drawPath(path2, p);//画出贝塞尔曲线</span><br></pre></td></tr></table></figure>
+<p>它也是使用Path对象的。不过用的是<strong>quadTo()</strong>方法</p>
+<ul>
+<li>参数一：控制点的x坐标</li>
+<li>参数二：控制点的y坐标</li>
+<li>参数三：终点的x坐标</li>
+<li>参数四：终点的y坐标</li>
+</ul>
+<p>需要注意的是，这里是调用moveTo方法来确定开始坐标，如果没有调用这个方法，起始点坐标默认是：(0,0)</p>
+<p>####<strong>1.2.10 绘制图片（drawBitmap）</strong><br>可以将bitmap对象贴到画布上，也是很常用的一种用法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">//画图片，就是贴图  </span><br><span class="line">Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);  </span><br><span class="line">canvas.drawBitmap(bitmap, 250,360, p);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>参数一：图片Bitmap对象</li>
+<li>参数二：图片<strong>相对于设备屏幕的left值</strong></li>
+<li>参数二：图片<strong>相对于设备屏幕的top值</strong><br>注：可以把图片认为是一个矩形，因为图片本身是有长度和宽度的，所以这里只需要矩形的左上角的坐标点，就可以确定这张图片在屏幕中的位置了。</li>
+</ul>
+<p>上面就介绍完了Paint对象和Canvas对象，他们两个是自定义视图的基础，所以这部分内容一定要掌握，当然这两个对象没什么难度的，这些东西是很简单的。</p>
+<p>下面来看一下实例代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br></pre></td><td class="code"><pre><span class="line">package com.example.drawpathdemo;  </span><br><span class="line"></span><br><span class="line">import android.annotation.SuppressLint;  </span><br><span class="line">import android.content.Context;  </span><br><span class="line">import android.graphics.Bitmap;  </span><br><span class="line">import android.graphics.BitmapFactory;  </span><br><span class="line">import android.graphics.Canvas;  </span><br><span class="line">import android.graphics.Color;  </span><br><span class="line">import android.graphics.LinearGradient;  </span><br><span class="line">import android.graphics.Paint;  </span><br><span class="line">import android.graphics.Path;  </span><br><span class="line">import android.graphics.RectF;  </span><br><span class="line">import android.graphics.Shader;  </span><br><span class="line">import android.util.AttributeSet;  </span><br><span class="line">import android.view.View;  </span><br><span class="line"></span><br><span class="line">public class DrawView extends View &#123;  </span><br><span class="line"></span><br><span class="line">    public DrawView(Context context) &#123;  </span><br><span class="line">        super(context);  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    public DrawView(Context context, AttributeSet attributeSet) &#123;    </span><br><span class="line">        super(context, attributeSet);    </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    @SuppressLint(&quot;DrawAllocation&quot;)  </span><br><span class="line">    @Override  </span><br><span class="line">    protected void onDraw(Canvas canvas) &#123;  </span><br><span class="line">        super.onDraw(canvas);  </span><br><span class="line">        /*</span><br><span class="line">         * 方法 说明</span><br><span class="line">         * drawRect 绘制矩形 drawCircle 绘制圆形 drawOval 绘制椭圆 drawPath 绘制任意多边形</span><br><span class="line">         * drawLine 绘制直线 drawPoin 绘制点</span><br><span class="line">         */  </span><br><span class="line">        // 创建画笔  </span><br><span class="line">        Paint p = new Paint();  </span><br><span class="line">        p.setColor(Color.RED);// 设置红色  </span><br><span class="line"></span><br><span class="line">        canvas.drawText(&quot;画圆：&quot;, 10, 20, p);// 画文本  </span><br><span class="line">        canvas.drawCircle(60, 20, 10, p);// 小圆  </span><br><span class="line">        p.setAntiAlias(true);// 设置画笔的锯齿效果。 true是去除，一看效果就明白了  </span><br><span class="line">        canvas.drawCircle(120, 20, 20, p);// 大圆  </span><br><span class="line"></span><br><span class="line">        canvas.drawText(&quot;画线及弧线：&quot;, 10, 60, p);  </span><br><span class="line">        p.setColor(Color.GREEN);// 设置绿色  </span><br><span class="line">        canvas.drawLine(60, 40, 100, 40, p);// 画线  </span><br><span class="line">        canvas.drawLine(110, 40, 190, 80, p);// 斜线  </span><br><span class="line">        //画笑脸弧线  </span><br><span class="line">        p.setStyle(Paint.Style.STROKE);//设置空心  </span><br><span class="line">        RectF oval1=new RectF(150,20,180,40);  </span><br><span class="line">        canvas.drawArc(oval1, 180, 180, false, p);//小弧形  </span><br><span class="line">        oval1.set(190, 20, 220, 40);  </span><br><span class="line">        canvas.drawArc(oval1, 180, 180, false, p);//小弧形  </span><br><span class="line">        oval1.set(160, 30, 210, 60);  </span><br><span class="line">        canvas.drawArc(oval1, 0, 180, false, p);//小弧形  </span><br><span class="line"></span><br><span class="line">        canvas.drawText(&quot;画矩形：&quot;, 10, 80, p);  </span><br><span class="line">        p.setColor(Color.GRAY);// 设置灰色  </span><br><span class="line">        p.setStyle(Paint.Style.FILL);//设置填满  </span><br><span class="line">        canvas.drawRect(60, 60, 80, 80, p);// 正方形  </span><br><span class="line">        canvas.drawRect(60, 90, 160, 100, p);// 长方形  </span><br><span class="line"></span><br><span class="line">        canvas.drawText(&quot;画扇形和椭圆:&quot;, 10, 120, p);  </span><br><span class="line">        /* 设置渐变色 这个正方形的颜色是改变的 */  </span><br><span class="line">        Shader mShader = new LinearGradient(0, 0, 100, 100,  </span><br><span class="line">                new int[] &#123; Color.RED, Color.GREEN, Color.BLUE, Color.YELLOW,  </span><br><span class="line">                        Color.LTGRAY &#125;, null, Shader.TileMode.REPEAT); // 一个材质,打造出一个线性梯度沿著一条线。  </span><br><span class="line">        p.setShader(mShader);  </span><br><span class="line">        RectF oval2 = new RectF(60, 100, 200, 240);// 设置个新的长方形，扫描测量  </span><br><span class="line">        canvas.drawArc(oval2, 200, 130, true, p);  </span><br><span class="line">        // 画弧，第一个参数是RectF：该类是第二个参数是角度的开始，第三个参数是多少度，第四个参数是true的时候画扇形，是false的时候画弧线  </span><br><span class="line">        //画椭圆，把oval改一下  </span><br><span class="line">        oval2.set(210,100,250,130);  </span><br><span class="line">        canvas.drawOval(oval2, p);  </span><br><span class="line"></span><br><span class="line">        canvas.drawText(&quot;画三角形：&quot;, 10, 200, p);  </span><br><span class="line">        // 绘制这个三角形,你可以绘制任意多边形  </span><br><span class="line">        Path path = new Path();  </span><br><span class="line">        path.moveTo(80, 200);// 此点为多边形的起点  </span><br><span class="line">        path.lineTo(120, 250);  </span><br><span class="line">        path.lineTo(80, 250);  </span><br><span class="line">        path.close(); // 使这些点构成封闭的多边形  </span><br><span class="line">        canvas.drawPath(path, p);  </span><br><span class="line"></span><br><span class="line">        //你可以绘制很多任意多边形，比如下面画六连形  </span><br><span class="line">        p.reset();//重置  </span><br><span class="line">        p.setColor(Color.LTGRAY);  </span><br><span class="line">        p.setStyle(Paint.Style.STROKE);//设置空心  </span><br><span class="line">        Path path1=new Path();  </span><br><span class="line">        path1.moveTo(180, 200);  </span><br><span class="line">        path1.lineTo(200, 200);  </span><br><span class="line">        path1.lineTo(210, 210);  </span><br><span class="line">        path1.lineTo(200, 220);  </span><br><span class="line">        path1.lineTo(180, 220);  </span><br><span class="line">        path1.lineTo(170, 210);  </span><br><span class="line">        path1.close();//封闭  </span><br><span class="line">        canvas.drawPath(path1, p);  </span><br><span class="line">        /*</span><br><span class="line">         * Path类封装复合(多轮廓几何图形的路径</span><br><span class="line">         * 由直线段*、二次曲线,和三次方曲线，也可画以油画。drawPath(路径、油漆),要么已填充的或抚摸</span><br><span class="line">         * (基于油漆的风格),或者可以用于剪断或画画的文本在路径。</span><br><span class="line">         */  </span><br><span class="line"></span><br><span class="line">        //画圆角矩形  </span><br><span class="line">        p.setStyle(Paint.Style.FILL);//充满  </span><br><span class="line">        p.setColor(Color.LTGRAY);  </span><br><span class="line">        p.setAntiAlias(true);// 设置画笔的锯齿效果  </span><br><span class="line">        canvas.drawText(&quot;画圆角矩形:&quot;, 10, 260, p);  </span><br><span class="line">        RectF oval3 = new RectF(80, 260, 200, 300);// 设置个新的长方形  </span><br><span class="line">        canvas.drawRoundRect(oval3, 20, 15, p);//第二个参数是x半径，第三个参数是y半径  </span><br><span class="line"></span><br><span class="line">        //画贝塞尔曲线  </span><br><span class="line">        canvas.drawText(&quot;画贝塞尔曲线:&quot;, 10, 310, p);  </span><br><span class="line">        p.reset();  </span><br><span class="line">        p.setStyle(Paint.Style.STROKE);  </span><br><span class="line">        p.setColor(Color.GREEN);  </span><br><span class="line">        Path path2=new Path();  </span><br><span class="line">        path2.moveTo(100, 320);//设置Path的起点  </span><br><span class="line">        path2.quadTo(150, 310, 170, 400); //设置贝塞尔曲线的控制点坐标和终点坐标  </span><br><span class="line">        canvas.drawPath(path2, p);//画出贝塞尔曲线  </span><br><span class="line"></span><br><span class="line">        //画点  </span><br><span class="line">        p.setStyle(Paint.Style.FILL);  </span><br><span class="line">        canvas.drawText(&quot;画点：&quot;, 10, 390, p);  </span><br><span class="line">        canvas.drawPoint(60, 390, p);//画一个点  </span><br><span class="line">        canvas.drawPoints(new float[]&#123;60,400,65,400,70,400&#125;, p);//画多个点  </span><br><span class="line"></span><br><span class="line">        //画图片，就是贴图  </span><br><span class="line">        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.ic_launcher);  </span><br><span class="line">        canvas.drawBitmap(bitmap, 250,360, p);  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行效果：<br><img src="http://img.blog.csdn.net/20150923212202952" alt="这里写图片描述"></p>
+<h2 id="2-Android中重要的概念：渲染对象Shader"><a href="#2-Android中重要的概念：渲染对象Shader" class="headerlink" title="2. Android中重要的概念：渲染对象Shader"></a>2. Android中重要的概念：渲染对象Shader</h2><p>参考资料：<a href="http://blog.csdn.net/t12x3456/article/details/10473225" target="_blank" rel="noopener">http://blog.csdn.net/t12x3456/article/details/10473225</a></p>
+<p>为什么把Shader对象单独拿出来说一下呢？因为这个对象在对于我们处理图形特效的时候是非常有用</p>
+<p>Shader的直接子类:</p>
+<ul>
+<li>BitmapShader    : 位图图像渲染</li>
+<li>LinearGradient  : 线性渲染</li>
+<li>RadialGradient  : 环形渲染</li>
+<li>SweepGradient   : 扫描渐变渲染/梯度渲染</li>
+<li>ComposeShader   : 组合渲染，可以和其他几个子类组合起来使用</li>
+</ul>
+<p>是不是很像Animation及其子类的关系(AlphaAnimation,RotateAnimation,ScaleAnimation,TranslateAnimation, AnimationSet)<br>既有具体的渲染效果，也有渲染效果的组合</p>
+<p>Shader类作为基类主要是返回绘制时颜色的横向跨度。其子类可以作用于Piant。通过 paint.setShader(Shader shader);来实现一些渲染效果。只作用于图形不作用于bitmap。<br>构造方法为默认的构造方法。  </p>
+<p>枚举：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">emun  Shader.TileMode</span><br></pre></td></tr></table></figure></p>
+<p>定义了平铺的3种模式：</p>
+<ul>
+<li>static final Shader.TileMode CLAMP//边缘拉伸.</li>
+<li>static final Shader.TileMode MIRROR//在水平方向和垂直方向交替景象, 两个相邻图像间没有缝隙.</li>
+<li>static final Shader.TillMode REPETA//在水平方向和垂直方向重复摆放,两个相邻图像间有缝隙缝隙.</li>
+</ul>
+<p>方法：</p>
+<ul>
+<li><p>boolean <strong>getLoaclMatrix</strong>(Matrix localM); //如果shader有一个非本地的矩阵将返回true。localM：如果不为null将被设置为shader的本地矩阵.</p>
+</li>
+<li><p>void <strong>setLocalMatrix</strong>(Matrix localM); //设置shader的本地矩阵,如果localM为空将重置shader的本地矩阵。  </p>
+</li>
+</ul>
+<h3 id="2-1-Shader的使用"><a href="#2-1-Shader的使用" class="headerlink" title="2.1 Shader的使用"></a>2.1 Shader的使用</h3><p>使用步骤总结为：</p>
+<ol>
+<li><strong>构建Shader对象</strong></li>
+<li><strong>通过Paint的setShader方法设置渲染对象</strong></li>
+<li><strong>设置渲染对象</strong></li>
+<li><strong>绘制时使用这个Paint对象</strong></li>
+</ol>
+<h4 id="2-1-1-BitmapShader的使用："><a href="#2-1-1-BitmapShader的使用：" class="headerlink" title="2.1.1 BitmapShader的使用："></a>2.1.1 BitmapShader的使用：</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public BitmapShader(Bitmap bitmap,Shader.TileMode tileX,Shader.TileMode tileY)</span><br></pre></td></tr></table></figure>
+<p>调用这个方法来产生一个画有一个位图的渲染器（Shader）。</p>
+<p>参数：</p>
+<ul>
+<li>bitmap   在渲染器内使用的位图</li>
+<li>tileX      The tiling mode for x to draw the bitmap in.   在位图上X方向渲染器平铺模式</li>
+<li>tileY     The tiling mode for y to draw the bitmap in.    在位图上Y方向渲染器平铺模式</li>
+<li>TileMode：<ul>
+<li>CLAMP  ：如果渲染器超出原始边界范围，会复制范围内边缘染色。</li>
+<li>REPEAT ：横向和纵向的重复渲染器图片，平铺。</li>
+<li>MIRROR ：横向和纵向的重复渲染器图片，这个和REPEAT重复方式不一样，他是以镜像方式平铺。</li>
+</ul>
+</li>
+</ul>
+<p>实例代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">package com.tony.shader;  </span><br><span class="line"></span><br><span class="line">import android.content.Context;  </span><br><span class="line">import android.graphics.Bitmap;  </span><br><span class="line">import android.graphics.BitmapShader;  </span><br><span class="line">import android.graphics.Canvas;  </span><br><span class="line">import android.graphics.Paint;  </span><br><span class="line">import android.graphics.Shader;  </span><br><span class="line">import android.graphics.drawable.BitmapDrawable;  </span><br><span class="line">import android.graphics.drawable.ShapeDrawable;  </span><br><span class="line">import android.graphics.drawable.shapes.OvalShape;  </span><br><span class="line">import android.util.AttributeSet;  </span><br><span class="line">import android.view.View;  </span><br><span class="line"></span><br><span class="line">public class BitmapShaderView extends View &#123;  </span><br><span class="line"></span><br><span class="line">    private BitmapShader bitmapShader = null;  </span><br><span class="line">    private Bitmap bitmap = null;  </span><br><span class="line">    private Paint paint = null;  </span><br><span class="line">    private ShapeDrawable shapeDrawable = null;  </span><br><span class="line">    private int BitmapWidth = 0;  </span><br><span class="line">    private int BitmapHeight = 0;  </span><br><span class="line"></span><br><span class="line">    public BitmapShaderView(Context context) &#123;  </span><br><span class="line">        super(context);  </span><br><span class="line"></span><br><span class="line">        // 得到图像  </span><br><span class="line">        bitmap = ((BitmapDrawable) getResources().getDrawable(R.drawable.cat))  </span><br><span class="line">                .getBitmap();  </span><br><span class="line">        BitmapWidth = bitmap.getWidth();  </span><br><span class="line">        BitmapHeight = bitmap.getHeight();  </span><br><span class="line">        // 构造渲染器BitmapShader  </span><br><span class="line">        bitmapShader = new BitmapShader(bitmap, Shader.TileMode.MIRROR,Shader.TileMode.REPEAT);  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    public BitmapShaderView(Context context,AttributeSet set) &#123;  </span><br><span class="line">        super(context, set);  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    @Override  </span><br><span class="line">    protected void onDraw(Canvas canvas) &#123;  </span><br><span class="line">        // TODO Auto-generated method stub  </span><br><span class="line">    super.onDraw(canvas);  </span><br><span class="line">    //将图片裁剪为椭圆形      </span><br><span class="line">        //构建ShapeDrawable对象并定义形状为椭圆      </span><br><span class="line">        shapeDrawable = new ShapeDrawable(new OvalShape());    </span><br><span class="line">        //得到画笔并设置渲染器    </span><br><span class="line">        shapeDrawable.getPaint().setShader(bitmapShader);    </span><br><span class="line">        //设置显示区域    </span><br><span class="line">        shapeDrawable.setBounds(20, 20,BitmapWidth-140,BitmapHeight);    </span><br><span class="line">        //绘制shapeDrawable    </span><br><span class="line">        shapeDrawable.draw(canvas);    </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果图：<br><img src="http://img.blog.csdn.net/20150923223814986" alt="这里写图片描述"></p>
+<h4 id="2-1-2-LinearGradient的使用"><a href="#2-1-2-LinearGradient的使用" class="headerlink" title="2.1.2 LinearGradient的使用"></a>2.1.2 LinearGradient的使用</h4><p>相信很多人都看过歌词同步的效果, 一是竖直方向的滚动，另一方面是水平方面的歌词颜色渐变点亮效果,这种效果怎么做呢? 这就需要用到LinearGradient线性渲染,下面还是先看具体的使用:</p>
+<p>LinearGradient有两个构造函数;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public LinearGradient(float x0, float y0, float x1, float y1, int[] colors, float[] positions,Shader.TileMode tile)</span><br></pre></td></tr></table></figure>
+<p>参数:</p>
+<ul>
+<li>float x0: 渐变起始点x坐标</li>
+<li>float y0:渐变起始点y坐标</li>
+<li>float x1:渐变结束点x坐标</li>
+<li>float y1:渐变结束点y坐标</li>
+<li>int[] colors:颜色 的int 数组</li>
+<li>float[] positions: 相对位置的颜色数组,可为null,  若为null,颜色沿渐变线均匀分布</li>
+<li>Shader.TileMode tile: 渲染器平铺模式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public LinearGradient(float x0, float y0, float x1, float y1, int color0, int color1,Shader.TileMode tile)</span><br></pre></td></tr></table></figure>
+<p>参数：</p>
+<ul>
+<li>float x0: 渐变起始点x坐标</li>
+<li>float y0:渐变起始点y坐标</li>
+<li>float x1:渐变结束点x坐标</li>
+<li>float y1:渐变结束点y坐标</li>
+<li>int color0: 起始渐变色</li>
+<li>int color1: 结束渐变色</li>
+<li>Shader.TileMode tile: 渲染器平铺模式</li>
+</ul>
+<p>实例代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">package com.tony.shader;  </span><br><span class="line"></span><br><span class="line">import android.content.Context;  </span><br><span class="line">import android.graphics.Canvas;  </span><br><span class="line">import android.graphics.Color;  </span><br><span class="line">import android.graphics.LinearGradient;  </span><br><span class="line">import android.graphics.Paint;  </span><br><span class="line">import android.util.AttributeSet;  </span><br><span class="line">import android.graphics.Shader;  </span><br><span class="line">import android.view.View;  </span><br><span class="line"></span><br><span class="line">public class LinearGradientView extends View &#123;  </span><br><span class="line"></span><br><span class="line">    private LinearGradient linearGradient = null;    </span><br><span class="line">    private Paint paint = null;    </span><br><span class="line"></span><br><span class="line">    public LinearGradientView(Context context)    </span><br><span class="line">    &#123;    </span><br><span class="line">        super(context);    </span><br><span class="line">        linearGradient = new LinearGradient(0, 0, 100, 100, new int[] &#123;    </span><br><span class="line">                Color.YELLOW, Color.GREEN, Color.TRANSPARENT, Color.WHITE &#125;, null,    </span><br><span class="line">                Shader.TileMode.REPEAT);    </span><br><span class="line">        paint = new Paint();    </span><br><span class="line">    &#125;    </span><br><span class="line"></span><br><span class="line">    public LinearGradientView(Context context, AttributeSet attrs) &#123;  </span><br><span class="line">        super(context, attrs);  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    @Override  </span><br><span class="line">    protected void onDraw(Canvas canvas) &#123;  </span><br><span class="line">        // TODO Auto-generated method stub  </span><br><span class="line">        super.onDraw(canvas);  </span><br><span class="line">        //设置渲染器  </span><br><span class="line">        paint.setShader(linearGradient);    </span><br><span class="line">                //绘制圆环  </span><br><span class="line">        canvas.drawCircle(240, 360, 200, paint);   </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果图：<br><img src="http://img.blog.csdn.net/20150923224520475" alt="这里写图片描述"></p>
+<p>关于这个渲染对象，需要多解释一下，因为这个渲染器用的地方很多：<br>具体看一下他的构造方法中的参数含义：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Paint paint2 = new Paint();  </span><br><span class="line">paint2.setColor(Color.BLACK);  </span><br><span class="line">paint2.setStrokeWidth(5);  </span><br><span class="line">paint2.setStyle(Paint.Style.FILL);  </span><br><span class="line">Shader mShader = new LinearGradient(0,0,100,100,  </span><br><span class="line">        Color.RED,  </span><br><span class="line">        Color.BLUE, Shader.TileMode.CLAMP);  </span><br><span class="line">paint2.setShader(mShader);  </span><br><span class="line">Rect rect = new Rect();  </span><br><span class="line">rect.left = 0;  </span><br><span class="line">rect.right = 300;  </span><br><span class="line">rect.top = 0;  </span><br><span class="line">rect.bottom = 300;  </span><br><span class="line">canvas.drawRect(rect, paint2);</span><br></pre></td></tr></table></figure>
+<p>效果图：<br><img src="http://img.blog.csdn.net/20150923224656474" alt="这里写图片描述"></p>
+<p>把构造方法中的值改变一下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Shader mShader = new LinearGradient(0,0,300,300,  </span><br><span class="line">        Color.RED,  </span><br><span class="line">        Color.BLUE, Shader.TileMode.CLAMP);</span><br></pre></td></tr></table></figure>
+<p>再看一下效果：<br><img src="http://img.blog.csdn.net/20150923224749220" alt="这里写图片描述"><br>这里我们就看到了构造方法中的四个参数值的含义了：</p>
+<ul>
+<li>参数一：渲染开始点的x坐标</li>
+<li>参数二：渲染开始点的y坐标</li>
+<li>参数三：渲染结束点的x坐标</li>
+<li>参数四：渲染结束点的y坐标</li>
+</ul>
+<p>因为这里设置矩形的大小是高和宽都是300<br>所以，从第一个例子中可以看出：渲染结束点之后的颜色是最后一种颜色：蓝色</p>
+<p>再将代码改变一下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Shader mShader = new LinearGradient(0,0,300,0,  </span><br><span class="line">        Color.RED,  </span><br><span class="line">        Color.BLUE, Shader.TileMode.CLAMP);</span><br></pre></td></tr></table></figure>
+<p>效果：<br><img src="http://img.blog.csdn.net/20150923225105149" alt="这里写图片描述"></p>
+<p>结束点的坐标设置成：(300,0)就实现了横向渲染<br>当然也可以实现纵向渲染的，这里就不演示了。</p>
+<p>再修改一下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Shader mShader = new LinearGradient(0,0,100,100,  </span><br><span class="line">                Color.RED,  </span><br><span class="line">                Color.BLUE, Shader.TileMode.MIRROR);</span><br></pre></td></tr></table></figure>
+<p>效果：<br><img src="http://img.blog.csdn.net/20150923225302921" alt="这里写图片描述"><br>将渲染模式改成：Shader.TileMode.MIRROR 镜像模式了<br>看到效果，当渲染结束点是(100,100)的时候，后面还是会继续渲染的，而且是相反的(就像照镜子一样)，然后再渲染一下，每次渲染的效果都是和之前的相反。因为矩形的长度和宽度都是300，所以这里会渲染三次。</p>
+<p>再将代码修改一下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Shader mShader = new LinearGradient(0,0,100,100,  </span><br><span class="line">                Color.RED,  </span><br><span class="line">                Color.BLUE, Shader.TileMode.REPEAT);</span><br></pre></td></tr></table></figure>
+<p>效果图：</p>
+<p><img src="http://img.blog.csdn.net/20150924195611910" alt="这里写图片描述"></p>
+<p>将渲染模式改成：Shader.TileMode.REPEAT 重复模式了<br>这里看到也是会渲染三次的，但是和镜像模式不同的是，它们的渲染方向都是一致的。</p>
+<p>从上面的三种渲染模式可以看出来，之后渲染的结束点小于渲染图形的大小的时候才会有效果的，如果把大小改一下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Shader mShader = new LinearGradient(0,0,300,300,  </span><br><span class="line">                Color.RED,  </span><br><span class="line">                Color.BLUE, Shader.TileMode.REPEAT);</span><br></pre></td></tr></table></figure>
+<p>效果图：<br><img src="http://img.blog.csdn.net/20150924195712663" alt="这里写图片描述"><br>效果和Shader.TileMode.CLAMP一样的。<br>这种渲染器用的地方还是很多的，后面介绍长条渐变的SeekBar就要用到这种渲染器</p>
+<p>####<strong>2.1.3 RadialGradient的使用</strong></p>
+<p>圆形渲染器，这种渲染器很好理解，就是同心圆的渲染机制</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public RadialGradient(float x, float y, float radius, int[] colors, float[] positions,Shader.TileMode tile)</span><br></pre></td></tr></table></figure>
+<p>参数：</p>
+<ul>
+<li>float x:  圆心X坐标</li>
+<li>float y:  圆心Y坐标</li>
+<li>float radius: 半径</li>
+<li>int[] colors:  渲染颜色数组</li>
+<li>floate[] positions: 相对位置数组,可为null,  若为null,可为null,颜色沿渐变线均匀分布</li>
+<li>Shader.TileMode tile:渲染器平铺模式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public RadialGradient(float x, float y, float radius, int color0, int color1,Shader.TileMode tile)</span><br></pre></td></tr></table></figure>
+<p>参数：</p>
+<ul>
+<li>float x:  圆心X坐标</li>
+<li>float y:  圆心Y坐标</li>
+<li>float radius: 半径</li>
+<li>int color0: 圆心颜色</li>
+<li>int color1: 圆边缘颜色</li>
+<li>Shader.TileMode tile:渲染器平铺模式</li>
+</ul>
+<p>实例代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">package com.tony.shader;  </span><br><span class="line"></span><br><span class="line">import android.content.Context;  </span><br><span class="line">import android.graphics.Canvas;  </span><br><span class="line">import android.graphics.Color;  </span><br><span class="line">import android.graphics.Paint;  </span><br><span class="line">import android.graphics.RadialGradient;  </span><br><span class="line">import android.graphics.Shader;  </span><br><span class="line">import android.util.AttributeSet;  </span><br><span class="line">import android.view.View;  </span><br><span class="line"></span><br><span class="line">public class RadialGradientView extends View &#123;  </span><br><span class="line"></span><br><span class="line">    Paint mPaint = null;  </span><br><span class="line">    // 环形渐变渲染  </span><br><span class="line">    Shader mRadialGradient = null;  </span><br><span class="line">    public RadialGradientView(Context context) &#123;  </span><br><span class="line">        super(context);  </span><br><span class="line">        //1.圆心X坐标2.Y坐标3.半径 4.颜色数组 5.相对位置数组，可为null 6.渲染器平铺模式   </span><br><span class="line">        mRadialGradient = new RadialGradient(240, 240, 240, new int[] &#123;    </span><br><span class="line">                Color.YELLOW, Color.GREEN, Color.TRANSPARENT, Color.RED &#125;, null,    </span><br><span class="line">                Shader.TileMode.REPEAT);    </span><br><span class="line">        mPaint = new Paint();    </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public RadialGradientView(Context context, AttributeSet attrs) &#123;  </span><br><span class="line">        super(context, attrs);  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">     @Override    </span><br><span class="line">        protected void onDraw(Canvas canvas) &#123;    </span><br><span class="line">            // 绘制环形渐变    </span><br><span class="line">            mPaint.setShader(mRadialGradient);    </span><br><span class="line">            // 第一个,第二个参数表示圆心坐标    </span><br><span class="line">            // 第三个参数表示半径    </span><br><span class="line">            canvas.drawCircle(240, 360, 200, mPaint);    </span><br><span class="line">        &#125;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果：<br><img src="http://img.blog.csdn.net/20150924200023977" alt="这里写图片描述"></p>
+<p>关于这个圆形渲染器，可以实现水波纹的效果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line">package com.tony.testshader;  </span><br><span class="line"></span><br><span class="line">import android.content.Context;  </span><br><span class="line">import android.graphics.Bitmap;  </span><br><span class="line">import android.graphics.BitmapShader;  </span><br><span class="line">import android.graphics.Canvas;  </span><br><span class="line">import android.graphics.Color;  </span><br><span class="line">import android.graphics.Paint;  </span><br><span class="line">import android.graphics.RadialGradient;  </span><br><span class="line">import android.graphics.Shader;  </span><br><span class="line">import android.graphics.drawable.BitmapDrawable;  </span><br><span class="line">import android.graphics.drawable.ShapeDrawable;  </span><br><span class="line">import android.graphics.drawable.shapes.OvalShape;  </span><br><span class="line">import android.util.AttributeSet;  </span><br><span class="line">import android.util.DisplayMetrics;  </span><br><span class="line">import android.view.MotionEvent;  </span><br><span class="line">import android.view.View;  </span><br><span class="line">/**</span><br><span class="line"> * 水波纹效果</span><br><span class="line"> * @author tony</span><br><span class="line"> *</span><br><span class="line"> */  </span><br><span class="line"></span><br><span class="line"> public class WaterRipplesView extends View &#123;  </span><br><span class="line"></span><br><span class="line">    Shader mBitmapShader = null;  </span><br><span class="line">    Bitmap mBitmapPn = null;  </span><br><span class="line">    Paint mPaint = null;  </span><br><span class="line">    Shader mRadialGradient = null;  </span><br><span class="line">    Canvas mCanvas = null;  </span><br><span class="line">    ShapeDrawable mShapeDrawable = null;  </span><br><span class="line"></span><br><span class="line">    public WaterRipplesView(Context context) &#123;  </span><br><span class="line">        super(context);  </span><br><span class="line"></span><br><span class="line">        // 初始化工作  </span><br><span class="line">        Bitmap bitmapTemp = ((BitmapDrawable) getResources().getDrawable(  </span><br><span class="line">                R.drawable.leaf)).getBitmap();  </span><br><span class="line">        DisplayMetrics dm = getResources().getDisplayMetrics();  </span><br><span class="line">        // 创建与当前使用的设备窗口大小一致的图片  </span><br><span class="line">        mBitmapPn = Bitmap.createScaledBitmap(bitmapTemp, dm.widthPixels,  </span><br><span class="line">                dm.heightPixels, true);  </span><br><span class="line">        // 创建BitmapShader object  </span><br><span class="line">        mBitmapShader = new BitmapShader(mBitmapPn, Shader.TileMode.REPEAT,  </span><br><span class="line">                Shader.TileMode.MIRROR);  </span><br><span class="line">        mPaint = new Paint();  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    public WaterRipplesView(Context context, AttributeSet attrs) &#123;  </span><br><span class="line">        super(context, attrs);  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    @Override  </span><br><span class="line">    protected void onDraw(Canvas canvas) &#123;  </span><br><span class="line">        // TODO Auto-generated method stub  </span><br><span class="line">        super.onDraw(canvas);  </span><br><span class="line"></span><br><span class="line">        // 将图片裁剪为椭圆型  </span><br><span class="line">        // 创建ShapeDrawable object，并定义形状为椭圆  </span><br><span class="line">        mShapeDrawable = new ShapeDrawable(new OvalShape());// OvalShape:椭圆  </span><br><span class="line">        // 设置要绘制的椭圆形的东西为ShapeDrawable图片  </span><br><span class="line">        mShapeDrawable.getPaint().setShader(mBitmapShader);  </span><br><span class="line">        // 设置显示区域  </span><br><span class="line">        mShapeDrawable.setBounds(0, 0, mBitmapPn.getWidth(),  </span><br><span class="line">                mBitmapPn.getHeight());  </span><br><span class="line">        // 绘制ShapeDrawable  </span><br><span class="line">        mShapeDrawable.draw(canvas);  </span><br><span class="line">        if (mRadialGradient != null) &#123;  </span><br><span class="line">            mPaint.setShader(mRadialGradient);  </span><br><span class="line">            canvas.drawCircle(0, 0, 1000, mPaint);  </span><br><span class="line">        &#125;  </span><br><span class="line">    &#125;  </span><br><span class="line"></span><br><span class="line">    // @覆写触摸屏事件  </span><br><span class="line">    public boolean onTouchEvent(MotionEvent event) &#123;  </span><br><span class="line">        // @设置alpha通道（透明度）  </span><br><span class="line">        mPaint.setAlpha(400);  </span><br><span class="line">        mRadialGradient = new RadialGradient(event.getX(), event.getY(), 48,  </span><br><span class="line">                new int[] &#123; Color.WHITE, Color.TRANSPARENT &#125;,null, Shader.TileMode.REPEAT);  </span><br><span class="line">        // @重绘  </span><br><span class="line">        postInvalidate();  </span><br><span class="line">        return true;  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>重写触发方法，获取触发点坐标，设置渲染器的圆形坐标，即可<br>效果：<br><img src="http://img.blog.csdn.net/20150924200157139" alt="这里写图片描述"></p>
+<h4 id="2-1-4-SweepGradient的使用"><a href="#2-1-4-SweepGradient的使用" class="headerlink" title="2.1.4 SweepGradient的使用"></a>2.1.4 SweepGradient的使用</h4><p>梯度渲染器，或者是扇形选择器，和雷达扫描效果差不多</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public SweepGradient(float cx, float cy, int[] colors, float[] positions)</span><br></pre></td></tr></table></figure>
+<p>参数：</p>
+<ul>
+<li>cx：    渲染中心点x 坐标</li>
+<li>cy：    渲染中心y 点坐标</li>
+<li>colors：    围绕中心渲染的颜色数组，至少要有两种颜色值</li>
+<li>positions：    相对位置的颜色数组,可为null,  若为null,可为null,颜色沿渐变线均匀分布</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">public SweepGradient(float cx, float cy, int color0, int color1)</span><br></pre></td></tr></table></figure>
+<p>参数：</p>
+<ul>
+<li>cx：    渲染中心点x 坐标</li>
+<li>cy：    渲染中心点y 坐标</li>
+<li>color0：    起始渲染颜色</li>
+<li>color1：    结束渲染颜色</li>
+</ul>
+<p>实例代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">package com.tony.testshader;    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">import android.content.Context;    </span><br><span class="line">import android.graphics.Canvas;    </span><br><span class="line">import android.graphics.Color;    </span><br><span class="line">import android.graphics.Paint;    </span><br><span class="line">import android.graphics.Shader;    </span><br><span class="line">import android.graphics.SweepGradient;    </span><br><span class="line">import android.util.AttributeSet;    </span><br><span class="line">import android.view.View;    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public class SweepGradientView extends View &#123;    </span><br><span class="line"></span><br><span class="line">    Paint mPaint = null;      </span><br><span class="line">    // 梯度渲染      </span><br><span class="line">    Shader mSweepGradient = null;      </span><br><span class="line"></span><br><span class="line">    public SweepGradientView(Context context) &#123;    </span><br><span class="line">        super(context);    </span><br><span class="line"></span><br><span class="line">         // 创建SweepGradient对象      </span><br><span class="line">        // 第一个,第二个参数中心坐标      </span><br><span class="line">        // 后面的参数与线性渲染相同      </span><br><span class="line">        mSweepGradient = new SweepGradient(240, 360, new int[] &#123;Color.CYAN,Color.DKGRAY,Color.GRAY,Color.LTGRAY,Color.MAGENTA,      </span><br><span class="line">                Color.GREEN,Color.TRANSPARENT, Color.BLUE &#125;, null);      </span><br><span class="line">        mPaint = new Paint();      </span><br><span class="line">    &#125;    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public SweepGradientView(Context context, AttributeSet attrs) &#123;    </span><br><span class="line">        super(context, attrs);    </span><br><span class="line">    &#125;    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    @Override    </span><br><span class="line">    protected void onDraw(Canvas canvas) &#123;    </span><br><span class="line">        super.onDraw(canvas);    </span><br><span class="line"></span><br><span class="line">         // 绘制梯度渐变      </span><br><span class="line">        mPaint.setShader(mSweepGradient);      </span><br><span class="line"></span><br><span class="line">        canvas.drawCircle(240, 360, 200, mPaint);    </span><br><span class="line">    &#125;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果图：<br><img src="http://img.blog.csdn.net/20150924200434175" alt="这里写图片描述"></p>
+<p>这种渲染器用到的地方很多，下一篇文章中的自定义圆形渐变的SeekBar就会用到这种渲染器</p>
+<p>到此，自定义View需要使用的一些界面绘制相关类就介绍完，接下来将开始正式进入自定义View</p>
+<p><strong>注：</strong> <strong>考虑到篇幅和内容相关性，将原博分成两篇，再次感谢原作者！</strong> 原文链接：<a href="http://blog.csdn.net/jiangwei0910410003/article/details/42640665" target="_blank" rel="noopener">http://blog.csdn.net/jiangwei0910410003/article/details/42640665</a></p>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Android中的Paint和Canvas的概念和使用方法"><span class="toc-number">1.</span> <span class="toc-text">1. Android中的Paint和Canvas的概念和使用方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-Paint对象"><span class="toc-number">1.1.</span> <span class="toc-text">1.1 Paint对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-Canvas对象"><span class="toc-number">1.2.</span> <span class="toc-text">1.2 Canvas对象</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-1-画圆（drawCircle"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.2.1 画圆（drawCircle</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-2-画直线（drawLine）"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.2.2 画直线（drawLine）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-3-画矩形（drawRect）"><span class="toc-number">1.2.3.</span> <span class="toc-text">1.2.3 画矩形（drawRect）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-4-画圆角矩形（drawRoundRect"><span class="toc-number">1.2.4.</span> <span class="toc-text">1.2.4 画圆角矩形（drawRoundRect</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-5-画椭圆（drawOval"><span class="toc-number">1.2.5.</span> <span class="toc-text">1.2.5 画椭圆（drawOval</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-6-画弧线-扇形（drawArc）"><span class="toc-number">1.2.6.</span> <span class="toc-text">1.2.6 画弧线/扇形（drawArc）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-7-画三角形-多边形（drawPath）"><span class="toc-number">1.2.7.</span> <span class="toc-text">1.2.7 画三角形/多边形（drawPath）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-8-画点（drawPoint）"><span class="toc-number">1.2.8.</span> <span class="toc-text">1.2.8 画点（drawPoint）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-2-9-画贝塞尔曲线（drawPath）"><span class="toc-number">1.2.9.</span> <span class="toc-text">1.2.9 画贝塞尔曲线（drawPath）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-Android中重要的概念：渲染对象Shader"><span class="toc-number">2.</span> <span class="toc-text">2. Android中重要的概念：渲染对象Shader</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-Shader的使用"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 Shader的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-BitmapShader的使用："><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.1 BitmapShader的使用：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2-LinearGradient的使用"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.2 LinearGradient的使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-4-SweepGradient的使用"><span class="toc-number">2.1.3.</span> <span class="toc-text">2.1.4 SweepGradient的使用</span></a></li></ol></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/09/21/150921/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/09/21/150921/&text=Android 自定义 View(1) -- 基础"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/09/21/150921/&title=Android 自定义 View(1) -- 基础"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/09/21/150921/&is_video=false&description=Android 自定义 View(1) -- 基础"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Android 自定义 View(1) -- 基础&body=Check out this article: http://09ae9c.com/2015/09/21/150921/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/09/21/150921/&title=Android 自定义 View(1) -- 基础"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/09/21/150921/&title=Android 自定义 View(1) -- 基础"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/09/21/150921/&title=Android 自定义 View(1) -- 基础"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/09/21/150921/&title=Android 自定义 View(1) -- 基础"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/09/21/150921/&name=Android 自定义 View(1) -- 基础&description=&lt;p&gt;本文转自 &lt;a href=&#34;http://blog.csdn.net/jiangwei0910410003/article/details/42640665&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Android中自定义视图View之—前奏篇&lt;/a&gt;，稍有修改，感谢分享！&lt;/p&gt;
+&lt;p&gt;在实现自定义View之前，有必要掌握Android中画图的相关类的使用方法，这是自定义各种酷炫界面的基础。主要使用到以下两个类：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;画笔：Paint&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;画布：Canvas&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;"><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick="$("#toc-footer").toggle();return false;"><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick="$("#share-footer").toggle();return false;"><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick="$("#nav-footer").toggle();return false;"><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      <script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>

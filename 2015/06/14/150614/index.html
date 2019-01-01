@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="在继续学习 Java 相关知识前，很有必要学习下设计模式，其中几个比较重要的设计模式其实在之前的使用中已经出现过很多次，但是由于没有学过设计模式，也就知其然不知其所以然的拿来用了，所以接下来准备好好整理学习设计模式，博客整理的内容来自《Head First 设计模式》。下面开始整理第一个设计模式 – 策略模式">
+<meta name="keywords" content="设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="策略模式">
+<meta property="og:url" content="http://09ae9c.com/2015/06/14/150614/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="在继续学习 Java 相关知识前，很有必要学习下设计模式，其中几个比较重要的设计模式其实在之前的使用中已经出现过很多次，但是由于没有学过设计模式，也就知其然不知其所以然的拿来用了，所以接下来准备好好整理学习设计模式，博客整理的内容来自《Head First 设计模式》。下面开始整理第一个设计模式 – 策略模式">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://img.blog.csdn.net/20150611172824573">
+<meta property="og:image" content="http://img.blog.csdn.net/20150611181413419">
+<meta property="og:updated_time" content="2016-10-17T15:23:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="策略模式">
+<meta name="twitter:description" content="在继续学习 Java 相关知识前，很有必要学习下设计模式，其中几个比较重要的设计模式其实在之前的使用中已经出现过很多次，但是由于没有学过设计模式，也就知其然不知其所以然的拿来用了，所以接下来准备好好整理学习设计模式，博客整理的内容来自《Head First 设计模式》。下面开始整理第一个设计模式 – 策略模式">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20150611172824573">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>策略模式</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+    <link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    <script src="/lib/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">09AE9C&#39;s Blog</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2015/06/17/150617/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover="$("#i-prev").toggle();" onmouseout="$("#i-prev").toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2015/06/12/150612/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover="$("#i-next").toggle();" onmouseout="$("#i-next").toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover="$("#i-top").toggle();" onmouseout="$("#i-top").toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover="$("#i-share").toggle();" onmouseout="$("#i-share").toggle();" onclick="$("#share").toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/06/14/150614/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/06/14/150614/&text=策略模式"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/06/14/150614/&title=策略模式"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/06/14/150614/&is_video=false&description=策略模式"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=策略模式&body=Check out this article: http://09ae9c.com/2015/06/14/150614/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/06/14/150614/&title=策略模式"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/06/14/150614/&title=策略模式"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/06/14/150614/&title=策略模式"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/06/14/150614/&title=策略模式"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/06/14/150614/&name=策略模式&description=&lt;p&gt;在继续学习 Java 相关知识前，很有必要学习下设计模式，其中几个比较重要的设计模式其实在之前的使用中已经出现过很多次，但是由于没有学过设计模式，也就知其然不知其所以然的拿来用了，所以接下来准备好好整理学习设计模式，博客整理的内容来自《Head First 设计模式》。下面开始整理第一个设计模式 – 策略模式&lt;/p&gt;"><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-概念"><span class="toc-number">1.</span> <span class="toc-text">1.概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-设计原则"><span class="toc-number">2.</span> <span class="toc-text">2.设计原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-使用举例"><span class="toc-number">3.</span> <span class="toc-text">3.使用举例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-实例代码"><span class="toc-number">4.</span> <span class="toc-text">4. 实例代码</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        策略模式
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2015-06-14T14:13:45.000Z" itemprop="datePublished">2015-06-14</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/设计模式/">设计模式</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>在继续学习 Java 相关知识前，很有必要学习下设计模式，其中几个比较重要的设计模式其实在之前的使用中已经出现过很多次，但是由于没有学过设计模式，也就知其然不知其所以然的拿来用了，所以接下来准备好好整理学习设计模式，博客整理的内容来自《Head First 设计模式》。下面开始整理第一个设计模式 – 策略模式</p>
+<a id="more"></a>
+<h3 id="1-概念"><a href="#1-概念" class="headerlink" title="1.概念"></a>1.概念</h3><p><strong>策略模式：针对一组算法，将每一个算法分别封装起来，让它们之前可以互相替换，此模式让算法的变化独立于使用算法的客户。</strong></p>
+<h3 id="2-设计原则"><a href="#2-设计原则" class="headerlink" title="2.设计原则"></a>2.设计原则</h3><ul>
+<li><p><strong>找出应用中可能需要变化之处，把它们独立出来，不要和那些不需要变化的代码混在一起。即：封装变化</strong></p>
+<pre><code>把会变化的部分取出并“封装”起来，以便以后可以轻易地改动或扩充此部分，而不影响到不需要变化的其他部分，总结起来就是：*分开变化和不会变化的部分*。
+</code></pre></li>
+<li><p><strong>针对接口编程，而不是针对实现编程</strong><br> 将需要变化的行为放在分开的类中，此类专门提供某种行为接口的实现。</p>
+</li>
+<li><p><strong>多用组合，少用继承</strong><br> 区分“有一个”（组合）关系和“是一个”（继承）关系，使用 组合建立系统具有很大的弹性，不仅可以将算法族封装成类，更可以“在运行时动态的改变行为”。</p>
+</li>
+</ul>
+<h3 id="3-使用举例"><a href="#3-使用举例" class="headerlink" title="3.使用举例"></a>3.使用举例</h3><p>借用《Head First 设计模式》书上的实例：</p>
+<p><strong>3.1</strong>  假设鸭子类（Duck），有<strong>许多</strong>不同的子类：<br>绿头鸭（MallardDuck）<br>红头鸭(RedHeadDuck)<br>橡皮鸭(RubberDuck)<br>诱饵鸭(DecoyDuck)<br>模型鸭(ModelDuck)<br>子类继承父类的行为：呱呱叫（quack()）和游泳（swim()）<br>嗯，一切看起来都很正常，通过继承，子类得到父类的行为，这样子类也会呱呱叫和游泳；</p>
+<p><strong>3.2</strong>  现在想让某些鸭子具有新的行为：飞行（fly()）</p>
+<ul>
+<li><p>首先想到的是在需要具有飞行行为的子类中添加新的方法（fly()）不就解决了吗！嗯，这是在子类比较少的情况下可以使用的“笨办法”，一旦子类很多，而且也许好几个子类具有的飞行行为是一样的呢？这样不就<strong>产生了大量重复代码</strong>吗？这是我们需要避免的！</p>
+</li>
+<li><p>其次想到的是在父类（Duck）中添加行为（fly()），其子类通过继承就拥有飞行行为了。看似问题解决了，但是想想这样子<strong>所有的子类就都拥有了飞行的行为</strong>，包括橡皮鸭（不应该具有飞行的行为），所以这种方法行不通，因为通过继承，一旦改变父类中的某些行为，所有子类都将受影响，导致某些不应该变化的子类也发生了变化，这种改变将是牵一发而动全身的；<br>通过继承来提供Duck的行为的缺点：</p>
+<ul>
+<li>导致代码在多个子类中重复</li>
+<li>运行时的行为不容易改变</li>
+<li>很难知道所有鸭子的全部行为</li>
+</ul>
+</li>
+<li><p>接下来想到的方法是通过接口实现，通过将变化的行为（呱呱叫，游泳，飞行）封装到单独的接口中，某个子类想要拥有哪种行为，实现那种接口，重写其方法就行了，看似能解决暂时的问题，然而一旦行为增加（比如每隔一周增加一种新的行为）或者子类增加，这样将造成严重的混乱局面，所以，这种方法也不合适。<br>通过把会变的行为提取出来设计成一个接口的缺点：</p>
+<ul>
+<li>导致重复代码变多</li>
+<li>导致代码无法进行复用</li>
+</ul>
+</li>
+</ul>
+<p><strong>3.3</strong>  接下来就是策略模式展现魅力的时候了<br>通过以上思路，了解到添加新的行为并不是那么容易，这个过程是变化的，根据设计原则：<strong>封装变化</strong>，我们知道变化的部分是鸭子类的行为，而不变的是鸭子类的继承关系，把握住了变化与不变的内容，于是进行如下设计：建立对应行为的接口，比如创建飞行行为的接口（FlyBehavior），其中有个方法fly()，然后所有的飞行行为类都实现它，实现其中的fly()方法，结构如下：<br><img src="http://img.blog.csdn.net/20150611172824573" alt="这里写图片描述"></p>
+<p>其他行为以此类推，这里就不重复了。</p>
+<p>接下来整合鸭子的行为，做法是这样的：</p>
+<ul>
+<li><p>首先，在Duck类中定义对应行为接口的实例，例如上面的飞行行为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">protected FlyBehavior flyBehavior;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>然后，实现调用接口行为的方法，依然使用飞行行为举例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public void performFly() &#123;</span><br><span class="line">	flyBehavior.fly();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>接下来是在子类中指<strong>定其应具有的行为</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class MallardDuck extends Duck &#123;</span><br><span class="line"></span><br><span class="line">	public MallardDuck() &#123;</span><br><span class="line">		flyBehavior =new FlyNoWay();//这里指定的飞行行为是“不会飞”</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>嗯，以上，基本结构出来了，接下来进行测试，创建测试类：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">	Duck mallard = new MallardDuck();</span><br><span class="line">	mallard.performFly();//调用了MallardDuck类的飞行方法，看上面，MallardDuck类指定的飞行行为是“不会飞”</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>以上，简单总结了策略模式的使用，使用策略模式的优点如下：</p>
+<ul>
+<li>采用良好的oo软件设计原则</li>
+<li>分开变化和不会变化的部分</li>
+<li>针对接口编程</li>
+</ul>
+<h3 id="4-实例代码"><a href="#4-实例代码" class="headerlink" title="4. 实例代码"></a>4. 实例代码</h3><p>实例代码根据《Head First 设计模式》书上的代码进行编写测试，如下：</p>
+<p><strong>4.1  首先，封装变化，即封装行为类：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">package DuckInterface;</span><br><span class="line"></span><br><span class="line">public interface FlyBehavior &#123;</span><br><span class="line">	public void fly();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">package DuckFlyBehavior;</span><br><span class="line"></span><br><span class="line">import DuckInterface.FlyBehavior;</span><br><span class="line"></span><br><span class="line">public class FlyWithWings implements FlyBehavior &#123;</span><br><span class="line">	public void fly() &#123;</span><br><span class="line">		System.out.println(&quot;--&gt;I can fly!!!&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">package DuckFlyBehavior;</span><br><span class="line"></span><br><span class="line">import DuckInterface.FlyBehavior;</span><br><span class="line"></span><br><span class="line">public class FlyNoWay implements FlyBehavior &#123;</span><br><span class="line">	public void fly() &#123;</span><br><span class="line">		System.out.println(&quot;--&gt;I cannot fly...&quot;);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注：另外一个行为：呱呱叫（quack）结构与飞行行为结构类似，这里就不贴出代码了；</p>
+<p><strong>4.2  接下来是定义鸭子父类：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">package DuckAbstract;</span><br><span class="line"></span><br><span class="line">import DuckInterface.FlyBehavior;</span><br><span class="line">import DuckInterface.QuackBehavior;</span><br><span class="line"></span><br><span class="line">public abstract class Duck &#123;</span><br><span class="line"></span><br><span class="line">	protected FlyBehavior flyBehavior;</span><br><span class="line">	protected QuackBehavior quackBehavior;</span><br><span class="line"></span><br><span class="line">	public Duck() &#123;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void performFly() &#123;</span><br><span class="line">		flyBehavior.fly();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public void performQuack() &#123;</span><br><span class="line">		quackBehavior.quack();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	// 所有鸭子都具有游泳的行为，所以游泳放在父类中，所有子类都能继承这个方法</span><br><span class="line">	public void swim() &#123;</span><br><span class="line">		System.out.println(&quot;--&gt;all ducks can swim&quot;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	public abstract void display();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到，在鸭子父类中定义了封装好的行为，并调用接口的方法，具体调用哪个方法并不知道，需要根据具体的子类进行调用，下一步就是具体定义不同子类拥有的具体行为；</p>
+<p><strong>4.3  创建子类，继承父类，定义好不同子类拥有的具体行为，这里以绿头鸭（MallardDuck）示范：</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">package DuckInstence;</span><br><span class="line"></span><br><span class="line">import DuckAbstract.Duck;</span><br><span class="line">import DuckFlyBehavior.FlyNoWay;</span><br><span class="line">import DuckQuackBehavior.MuteQuack;</span><br><span class="line"></span><br><span class="line">public class MallardDuck extends Duck &#123;</span><br><span class="line"></span><br><span class="line">	public MallardDuck() &#123;</span><br><span class="line">		quackBehavior = new MuteQuack();// 绿头鸭具有MuteQuack的行为，就是“不会叫”</span><br><span class="line">		flyBehavior = new FlyNoWay();// 绿头鸭具有FlyNoQWay的行为，就是“不会飞”</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	@Override</span><br><span class="line">	public void display() &#123;</span><br><span class="line">		System.out.println(&quot;--&gt;this is MallardDuck&quot;);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>4.4 最后一步，进行测试：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">package DuckInstence;</span><br><span class="line"></span><br><span class="line">import DuckAbstract.Duck;</span><br><span class="line"></span><br><span class="line">public class TestDuck &#123;</span><br><span class="line"></span><br><span class="line">	public static void main(String[] args) &#123;</span><br><span class="line">		Duck mallard = new MallardDuck();</span><br><span class="line">		mallard.performFly();</span><br><span class="line">		mallard.performQuack();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在主方法中创建MallardDuck类的对象，调用其行为，结果显示如下：<br><img src="http://img.blog.csdn.net/20150611181413419" alt="这里写图片描述"></p>
+<p><strong>以上，通过使用策略模式，很好的解决了不同子类具有不同行为，但是又互不影响的问题，达到了良好的OO设计必须具备可复用、可扩充、可维护 的特性</strong></p>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-概念"><span class="toc-number">1.</span> <span class="toc-text">1.概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-设计原则"><span class="toc-number">2.</span> <span class="toc-text">2.设计原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-使用举例"><span class="toc-number">3.</span> <span class="toc-text">3.使用举例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-实例代码"><span class="toc-number">4.</span> <span class="toc-text">4. 实例代码</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/06/14/150614/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/06/14/150614/&text=策略模式"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/06/14/150614/&title=策略模式"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/06/14/150614/&is_video=false&description=策略模式"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=策略模式&body=Check out this article: http://09ae9c.com/2015/06/14/150614/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/06/14/150614/&title=策略模式"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/06/14/150614/&title=策略模式"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/06/14/150614/&title=策略模式"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/06/14/150614/&title=策略模式"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/06/14/150614/&name=策略模式&description=&lt;p&gt;在继续学习 Java 相关知识前，很有必要学习下设计模式，其中几个比较重要的设计模式其实在之前的使用中已经出现过很多次，但是由于没有学过设计模式，也就知其然不知其所以然的拿来用了，所以接下来准备好好整理学习设计模式，博客整理的内容来自《Head First 设计模式》。下面开始整理第一个设计模式 – 策略模式&lt;/p&gt;"><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick="$("#toc-footer").toggle();return false;"><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick="$("#share-footer").toggle();return false;"><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick="$("#nav-footer").toggle();return false;"><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      <script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>

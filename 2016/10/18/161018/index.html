@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="本文转载整理自 Java NIO 系列教程(二) Channel Java NIO 的通道(Channel)类似 标准 IO 中的流(Stream)，但又有些不同：  既可以从 Channel 中读取数据，又可以写数据到 Channel。但 Stream 的读写通常是单向的。 Channel 可以异步地读写。 Channel 中的数据总是要先读到一个 Buffer，或者总是要从一个 Buffer">
+<meta name="keywords" content="Java NIO">
+<meta property="og:type" content="article">
+<meta property="og:title" content="转 | Java NIO(2) Channel">
+<meta property="og:url" content="http://09ae9c.com/2016/10/18/161018/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="本文转载整理自 Java NIO 系列教程(二) Channel Java NIO 的通道(Channel)类似 标准 IO 中的流(Stream)，但又有些不同：  既可以从 Channel 中读取数据，又可以写数据到 Channel。但 Stream 的读写通常是单向的。 Channel 可以异步地读写。 Channel 中的数据总是要先读到一个 Buffer，或者总是要从一个 Buffer">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://tutorials.jenkov.com/images/java-nio/overview-channels-buffers.png">
+<meta property="og:updated_time" content="2016-10-28T03:13:41.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="转 | Java NIO(2) Channel">
+<meta name="twitter:description" content="本文转载整理自 Java NIO 系列教程(二) Channel Java NIO 的通道(Channel)类似 标准 IO 中的流(Stream)，但又有些不同：  既可以从 Channel 中读取数据，又可以写数据到 Channel。但 Stream 的读写通常是单向的。 Channel 可以异步地读写。 Channel 中的数据总是要先读到一个 Buffer，或者总是要从一个 Buffer">
+<meta name="twitter:image" content="http://tutorials.jenkov.com/images/java-nio/overview-channels-buffers.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>转 | Java NIO(2) Channel</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+    <link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    <script src="/lib/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">09AE9C&#39;s Blog</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2016/10/19/161019/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover="$("#i-prev").toggle();" onmouseout="$("#i-prev").toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2016/10/17/161017/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover="$("#i-next").toggle();" onmouseout="$("#i-next").toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover="$("#i-top").toggle();" onmouseout="$("#i-top").toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover="$("#i-share").toggle();" onmouseout="$("#i-share").toggle();" onclick="$("#share").toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2016/10/18/161018/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2016/10/18/161018/&text=转 | Java NIO(2) Channel"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2016/10/18/161018/&title=转 | Java NIO(2) Channel"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2016/10/18/161018/&is_video=false&description=转 | Java NIO(2) Channel"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=转 | Java NIO(2) Channel&body=Check out this article: http://09ae9c.com/2016/10/18/161018/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2016/10/18/161018/&title=转 | Java NIO(2) Channel"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2016/10/18/161018/&title=转 | Java NIO(2) Channel"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2016/10/18/161018/&title=转 | Java NIO(2) Channel"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2016/10/18/161018/&title=转 | Java NIO(2) Channel"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2016/10/18/161018/&name=转 | Java NIO(2) Channel&description=&lt;p&gt;本文转载整理自 &lt;a href=&#34;http://ifeve.com/channels/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Java NIO 系列教程(二) Channel&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Java NIO 的通道(Channel)类似 标准 IO 中的流(Stream)，但又有些不同：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;既可以从 Channel 中读取数据，又可以写数据到 Channel。但 Stream 的读写通常是单向的。&lt;/li&gt;
+&lt;li&gt;Channel 可以异步地读写。&lt;/li&gt;
+&lt;li&gt;Channel 中的数据总是要先读到一个 Buffer，或者总是要从一个 Buffer 中写入。&lt;/li&gt;
+&lt;/ul&gt;"><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Channel-的实现"><span class="toc-number">1.</span> <span class="toc-text">Channel 的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#基本的-Channel-示例"><span class="toc-number">1.1.</span> <span class="toc-text">基本的 Channel 示例</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        转 | Java NIO(2) Channel
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2016-10-18T04:11:42.000Z" itemprop="datePublished">2016-10-18</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Java-NIO/">Java NIO</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>本文转载整理自 <a href="http://ifeve.com/channels/" target="_blank" rel="noopener">Java NIO 系列教程(二) Channel</a></p>
+<p>Java NIO 的通道(Channel)类似 标准 IO 中的流(Stream)，但又有些不同：</p>
+<ul>
+<li>既可以从 Channel 中读取数据，又可以写数据到 Channel。但 Stream 的读写通常是单向的。</li>
+<li>Channel 可以异步地读写。</li>
+<li>Channel 中的数据总是要先读到一个 Buffer，或者总是要从一个 Buffer 中写入。</li>
+</ul>
+<a id="more"></a>
+<p>正如上面所说，从 Channel 读取据到缓冲区，从缓冲区写数据到 Channel。如下图所示：</p>
+<p><img src="http://tutorials.jenkov.com/images/java-nio/overview-channels-buffers.png" alt="从 Channel 读数据到缓冲区，从缓冲区写数据到 Channel"></p>
+<h1 id="Channel-的实现"><a href="#Channel-的实现" class="headerlink" title="Channel 的实现"></a>Channel 的实现</h1><p>这些是 Java NIO 中最重要的通道的实现</p>
+<ul>
+<li>FileChannel: 从文件中读写数据</li>
+<li>DatagramChannel: 通过UDP读写网络中的数据</li>
+<li>SocketChannel: 通过TCP读写网络中的数据</li>
+<li>ServerSocketChannel: 可以监听新进来的TCP连接，像Web服务器那样。对每一个新进来的连接都会创建一个SocketChannel</li>
+</ul>
+<h2 id="基本的-Channel-示例"><a href="#基本的-Channel-示例" class="headerlink" title="基本的 Channel 示例"></a>基本的 Channel 示例</h2><p>下面是一个使用 FileChannel 读数据到 Buffer 中的示例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">          RandomAccessFile file = <span class="keyword">new</span> RandomAccessFile(<span class="string">"file.txt"</span>, <span class="string">"rw"</span>);</span><br><span class="line">          FileChannel mChannel = file.getChannel();</span><br><span class="line"></span><br><span class="line">          ByteBuffer buf = ByteBuffer.allocate(<span class="number">48</span>);</span><br><span class="line">          <span class="keyword">int</span> bytesRead = mChannel.read(buf);</span><br><span class="line"></span><br><span class="line">          <span class="keyword">while</span> (bytesRead != -<span class="number">1</span>) &#123;</span><br><span class="line">              System.out.println(<span class="string">"Read "</span> + bytesRead);</span><br><span class="line">              buf.flip();</span><br><span class="line"></span><br><span class="line">              <span class="keyword">while</span> (buf.hasRemaining()) &#123;</span><br><span class="line">                  System.out.print((<span class="keyword">char</span>) buf.get());</span><br><span class="line">              &#125;</span><br><span class="line"></span><br><span class="line">              buf.clear();</span><br><span class="line">              bytesRead = mChannel.read(buf);</span><br><span class="line">          &#125;</span><br><span class="line">          mChannel.close();</span><br><span class="line">          file.close();</span><br><span class="line">      &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">          e.printStackTrace();</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>下面是一个从 Buffer 中写数据到 FileChannel 中的示例</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">          RandomAccessFile file = <span class="keyword">new</span> RandomAccessFile(<span class="string">"file.txt"</span>, <span class="string">"rw"</span>);</span><br><span class="line">          FileChannel mChannel = file.getChannel();</span><br><span class="line"></span><br><span class="line">          String data = <span class="string">" new String data to write"</span>;</span><br><span class="line">          ByteBuffer buf = ByteBuffer.allocate(<span class="number">48</span>);</span><br><span class="line"></span><br><span class="line">          buf.clear();</span><br><span class="line">          buf.put(data.getBytes());</span><br><span class="line">          buf.flip();</span><br><span class="line"></span><br><span class="line">          <span class="keyword">while</span> (buf.hasRemaining())&#123;</span><br><span class="line">              mChannel.write(buf);</span><br><span class="line">          &#125;</span><br><span class="line">          mChannel.close();</span><br><span class="line">          file.close();</span><br><span class="line">      &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">          e.printStackTrace();</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Channel-的实现"><span class="toc-number">1.</span> <span class="toc-text">Channel 的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#基本的-Channel-示例"><span class="toc-number">1.1.</span> <span class="toc-text">基本的 Channel 示例</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2016/10/18/161018/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2016/10/18/161018/&text=转 | Java NIO(2) Channel"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2016/10/18/161018/&title=转 | Java NIO(2) Channel"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2016/10/18/161018/&is_video=false&description=转 | Java NIO(2) Channel"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=转 | Java NIO(2) Channel&body=Check out this article: http://09ae9c.com/2016/10/18/161018/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2016/10/18/161018/&title=转 | Java NIO(2) Channel"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2016/10/18/161018/&title=转 | Java NIO(2) Channel"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2016/10/18/161018/&title=转 | Java NIO(2) Channel"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2016/10/18/161018/&title=转 | Java NIO(2) Channel"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2016/10/18/161018/&name=转 | Java NIO(2) Channel&description=&lt;p&gt;本文转载整理自 &lt;a href=&#34;http://ifeve.com/channels/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Java NIO 系列教程(二) Channel&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Java NIO 的通道(Channel)类似 标准 IO 中的流(Stream)，但又有些不同：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;既可以从 Channel 中读取数据，又可以写数据到 Channel。但 Stream 的读写通常是单向的。&lt;/li&gt;
+&lt;li&gt;Channel 可以异步地读写。&lt;/li&gt;
+&lt;li&gt;Channel 中的数据总是要先读到一个 Buffer，或者总是要从一个 Buffer 中写入。&lt;/li&gt;
+&lt;/ul&gt;"><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick="$("#toc-footer").toggle();return false;"><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick="$("#share-footer").toggle();return false;"><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick="$("#nav-footer").toggle();return false;"><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      <script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>

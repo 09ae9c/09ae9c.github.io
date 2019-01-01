@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="写代码和写别的东西很像。在写论文或文章时，你先想什么就写什么，然后再打磨它。初稿也许粗陋无序，你就斟酌推敲，直至达到你心目中的样子。我写函数时，一开始都冗长而复杂，有太多缩进和嵌套循环，有过长的参数列表。名称是随意取的，也会有重复的代码，不过我会配上一套单元测试，覆盖每行丑陋的代码。然后我打磨这些代码，分解函数，修改名称，消除重复，我缩短和重新安置方法。有时我还拆散类，同时保持测试通过。我并不">
+<meta name="keywords" content="读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《代码整洁之道》读书笔记">
+<meta property="og:url" content="http://09ae9c.com/2017/01/22/170122/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="写代码和写别的东西很像。在写论文或文章时，你先想什么就写什么，然后再打磨它。初稿也许粗陋无序，你就斟酌推敲，直至达到你心目中的样子。我写函数时，一开始都冗长而复杂，有太多缩进和嵌套循环，有过长的参数列表。名称是随意取的，也会有重复的代码，不过我会配上一套单元测试，覆盖每行丑陋的代码。然后我打磨这些代码，分解函数，修改名称，消除重复，我缩短和重新安置方法。有时我还拆散类，同时保持测试通过。我并不">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2017-03-01T14:44:44.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《代码整洁之道》读书笔记">
+<meta name="twitter:description" content="写代码和写别的东西很像。在写论文或文章时，你先想什么就写什么，然后再打磨它。初稿也许粗陋无序，你就斟酌推敲，直至达到你心目中的样子。我写函数时，一开始都冗长而复杂，有太多缩进和嵌套循环，有过长的参数列表。名称是随意取的，也会有重复的代码，不过我会配上一套单元测试，覆盖每行丑陋的代码。然后我打磨这些代码，分解函数，修改名称，消除重复，我缩短和重新安置方法。有时我还拆散类，同时保持测试通过。我并不">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>《代码整洁之道》读书笔记</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+    <link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    <script src="/lib/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">09AE9C&#39;s Blog</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2017/02/13/170213/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover="$("#i-prev").toggle();" onmouseout="$("#i-prev").toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2017/01/06/170106/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover="$("#i-next").toggle();" onmouseout="$("#i-next").toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover="$("#i-top").toggle();" onmouseout="$("#i-top").toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover="$("#i-share").toggle();" onmouseout="$("#i-share").toggle();" onclick="$("#share").toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2017/01/22/170122/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2017/01/22/170122/&text=《代码整洁之道》读书笔记"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2017/01/22/170122/&title=《代码整洁之道》读书笔记"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2017/01/22/170122/&is_video=false&description=《代码整洁之道》读书笔记"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=《代码整洁之道》读书笔记&body=Check out this article: http://09ae9c.com/2017/01/22/170122/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2017/01/22/170122/&title=《代码整洁之道》读书笔记"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2017/01/22/170122/&title=《代码整洁之道》读书笔记"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2017/01/22/170122/&title=《代码整洁之道》读书笔记"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2017/01/22/170122/&title=《代码整洁之道》读书笔记"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2017/01/22/170122/&name=《代码整洁之道》读书笔记&description=&lt;blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;写代码和写别的东西很像。在写论文或文章时，你先想什么就写什么，然后再打磨它。初稿也许粗陋无序，你就斟酌推敲，直至达到你心目中的样子。我写函数时，一开始都冗长而复杂，有太多缩进和嵌套循环，有过长的参数列表。名称是随意取的，也会有重复的代码，不过我会配上一套单元测试，覆盖每行丑陋的代码。然后我打磨这些代码，分解函数，修改名称，消除重复，我缩短和重新安置方法。有时我还拆散类，同时保持测试通过。我并不是一开始就按照规则写函数，我想没人做得到。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;"><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#命名"><span class="toc-number">1.</span> <span class="toc-text">命名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#函数"><span class="toc-number">2.</span> <span class="toc-text">函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#参数："><span class="toc-number">2.1.</span> <span class="toc-text">参数：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#返回："><span class="toc-number">2.2.</span> <span class="toc-text">返回：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#注释："><span class="toc-number">3.</span> <span class="toc-text">注释：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#格式："><span class="toc-number">4.</span> <span class="toc-text">格式：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#垂直方向格式"><span class="toc-number">4.1.</span> <span class="toc-text">垂直方向格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#水平方向的格式"><span class="toc-number">4.2.</span> <span class="toc-text">水平方向的格式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对象与数据结构"><span class="toc-number">5.</span> <span class="toc-text">对象与数据结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#异常处理"><span class="toc-number">6.</span> <span class="toc-text">异常处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#单元测试"><span class="toc-number">7.</span> <span class="toc-text">单元测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#保持测试的整洁"><span class="toc-number">7.1.</span> <span class="toc-text">保持测试的整洁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#整洁的测试"><span class="toc-number">7.2.</span> <span class="toc-text">整洁的测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#每个测试一个断言"><span class="toc-number">7.3.</span> <span class="toc-text">每个测试一个断言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#整洁的-5-条规则"><span class="toc-number">7.4.</span> <span class="toc-text">整洁的 5 条规则</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#类"><span class="toc-number">8.</span> <span class="toc-text">类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#单一权责原则-SRP"><span class="toc-number">8.1.</span> <span class="toc-text">单一权责原则(SRP)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内聚"><span class="toc-number">8.2.</span> <span class="toc-text">内聚</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#迭进"><span class="toc-number">9.</span> <span class="toc-text">迭进</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#并发编程"><span class="toc-number">10.</span> <span class="toc-text">并发编程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">11.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        《代码整洁之道》读书笔记
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2017-01-22T13:30:32.000Z" itemprop="datePublished">2017-01-22</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/读书笔记/">读书笔记</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <blockquote>
+<blockquote>
+<p>写代码和写别的东西很像。在写论文或文章时，你先想什么就写什么，然后再打磨它。初稿也许粗陋无序，你就斟酌推敲，直至达到你心目中的样子。我写函数时，一开始都冗长而复杂，有太多缩进和嵌套循环，有过长的参数列表。名称是随意取的，也会有重复的代码，不过我会配上一套单元测试，覆盖每行丑陋的代码。然后我打磨这些代码，分解函数，修改名称，消除重复，我缩短和重新安置方法。有时我还拆散类，同时保持测试通过。我并不是一开始就按照规则写函数，我想没人做得到。</p>
+</blockquote>
+</blockquote>
+<a id="more"></a>
+<p>对以上内容深表赞同，代码不是一次写成的，没有人能一次写成完美的代码。我们都需要经过重构优化的过程，于是有了前人总结的优化之道：</p>
+<p>1.不要过早的优化</p>
+<p>2.不要埋怨项目经理，有时可能是我们自己不太专业</p>
+<p>3.程序员遵从了不了解混乱风险的项目经理的意愿，是不专业的做法</p>
+<p>4.始终保持代码整洁</p>
+<p>5.减少重复代码，提高表达力，提早构建简单抽象，重复是一切邪恶的根源</p>
+<p>6.代码的读与写花费时间的比例超过10:1，写新代码时，我们一直在读旧代码</p>
+<h2 id="命名"><a href="#命名" class="headerlink" title="命名"></a>命名</h2><p>对变量，函数，参数，类，包等的命名始终是一件难事，要找到一个合适的名称不容易，根据书中的描述，整理出一下几点</p>
+<p>1.长名称胜于短名称(便于搜索)</p>
+<p>2.名称要读得出(不要随意缩写或造词)</p>
+<p>3.注意范围区分(区分意义相近的词)</p>
+<p>4.对于变量统一使用前缀，可以去掉，因为前缀都使用同样的，那就没有存在的必要</p>
+<p>5.避免将统一单词用于不同目的</p>
+<p>6.类名应该是名词或名词短语，不应该是动词</p>
+<p>7.方法名应该是动词或动词短语</p>
+<p>备注：函数命名时，可以使用 TO 描述函数内容再确定命名。例如有一个函数，用 TO 描述：TO delete all data，find all data and delete each one in loop(为了删除所有数据，先找到所有数据，然后在循环中删除每一个)，那么很容易确定合适的函数名：deleteAll，函数的内容就是后面描述部分。通过这样的方式，首先理解清楚需求，将需求转换为 TO 描述的内容，以确定函数名和函数的具体处理事务。</p>
+<p>长而具有描述性的名称，要比短而令人费解的名称好，长而具有描述性的名称，要比描述性的长注释好。使用某种命名约定，让函数名称中的多个单词容易阅读，然后使用这些单词给函数取个能说清其公用的名称，</p>
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>函数是在编程中最常用的，写好的函数很难，要考虑很多方面，当然并不一定一开始就要写出好的函数，可以先写出满足需求的函数，然后再进行重构优化，直到满意。以下总结了作者对好的函数的理解</p>
+<p><strong>函数的第一规则就是短小</strong></p>
+<p>要让函数变得短小，需要注意：</p>
+<ul>
+<li>代码长度以20行封顶为最佳</li>
+<li>if 语句，else 语句， while 语句中代码长度应该只有一行，用于调用其他函数</li>
+<li>函数的缩紧应该保持在一层到两层，尽量不要超过三层</li>
+<li>函数应该做一件事，做好一件事，只做一件事，判断函数是否做了不止一件事，看这个函数是否能再拆出一个函数</li>
+<li>要确保函数只做一件事情，函数中的语句都要在同一抽象层级上</li>
+</ul>
+<h3 id="参数："><a href="#参数：" class="headerlink" title="参数："></a>参数：</h3><p>参数数量尽量少，最好少于 3 个，0 个和 1 个最佳，3 个以上请使用结构体代替</p>
+<p>函数与参数应形成一种非常良好的“动词(名词)”形式，例如函数 <code>writeField(String name)</code></p>
+<h3 id="返回："><a href="#返回：" class="headerlink" title="返回："></a>返回：</h3><p>使用异常替代返回错误码，以减少函数内部的嵌套层次，因为如果直接使用错误码，在函数内部，可能出现错误的地方就需要一个判断，这样层层嵌套的判断是很容易出现的，因此使用异常机制，将所有的错误都放在 <code>catch</code> 中处理</p>
+<p>总的来说，不建议使用错误码，因为一般要使用错误码，势必会建立一个枚举类用于存放不同的错误码，许多类都需要导入它，这样不利于后期修改，一旦修改了枚举类型，其他地方就需要跟着重新编译部署，而使用异常机制时，要新增异常时，只需要从异常类派生一个新的异常类即可。</p>
+<h2 id="注释："><a href="#注释：" class="headerlink" title="注释："></a>注释：</h2><p>注释不能美化糟糕的代码</p>
+<p>带有少量注释的整洁而有表达力的代码，要比带有大量注释的零碎而复杂的代码像样的多，与其花时间写注释，不如花时间清理糟糕的代码</p>
+<p>好的注释</p>
+<ul>
+<li>法律信息，比如公司代码规范要求写的有关法律的注释，版权声明等</li>
+<li>提供信息的注释，更好的方法是使用函数名称传达信息</li>
+<li>对意图的解释：注释不仅提供了有关实现的有用信息，而且还提供了某个决定后面的意图</li>
+<li>阐释：把晦涩难懂的参数或者返回值翻译为可读形式的注释是有用的</li>
+<li>警示：用于警告其它程序员会出现某种后果的注释也是有用的</li>
+</ul>
+<p>坏的注释</p>
+<ul>
+<li>喃喃自语：只是觉得因为过程需要就增加的注释</li>
+<li>多余的注释：本身并不能比代码提供更多的信息，就是多余</li>
+<li>误导性注释：含义不精确或者容易引起误导的注释</li>
+<li>循规性注释：每个函数或者每个变量都要有注释的规矩是全然可笑的，只会搞乱代码</li>
+<li>日志式注释：在有源码控制系统的今天，这种冗长的记录只会让模块变得凌乱不堪，应该删除</li>
+<li>废话注释：对显然之事喋喋不休，毫无新意，因此用整理代码的决心替代废话的冲动，会使你成为更优秀的程序员</li>
+<li>可怕的废话：在知名开源库的Javadoc中，也可以看到复制黏贴错误，意思就是变量不一样，注释却一样</li>
+<li>位置标记：少用标记栏，只在特别有价值的时候用</li>
+<li>括号后面的注释：尽管对于多层嵌套有帮助，但对短小的函数，会带来混乱，因为短小的函数嵌套层次已经足够清晰</li>
+<li>注释掉的代码：直接把代码注释掉是讨厌的做法，别人可能认为一定有原因才留在这里不敢删除，最后注释掉的代码像渣滓一样堆在那里</li>
+<li>信息过多的注释：别在注释中增加历史性话题或者无关的细节描述</li>
+<li>不明显的联系：注释的作用是解释未能自我解释的代码，如果本身还需要解释就没有必要了</li>
+<li>函数头：短函数不需要太多注释，只需要写一个好名字就比注释强得多</li>
+</ul>
+<h2 id="格式："><a href="#格式：" class="headerlink" title="格式："></a>格式：</h2><p>代码格式很重要，不可忽略，必须严肃对待，代码格式关乎沟通，而沟通时专业开发者的头等大事。应该保持良好的代码格式，选用一套管理代码格式的简单规则，然后贯彻实施。如果在团队中工作，则团队应该一致同意采用一套简单的格式规则，所有成员都要遵从。使用能帮你应用这些格式规则的自动化工具会很有帮助</p>
+<h3 id="垂直方向格式"><a href="#垂直方向格式" class="headerlink" title="垂直方向格式"></a>垂直方向格式</h3><ul>
+<li>函数布局：函数名称应该足够告诉我们是否在正确的模块中，源文件顶部应该给出高层次的概念和算法，细节应该向下逐次展开，直至源文件中最低层的函数和细节。就像报纸一样，标题统领提纲概要，内容逐次展开细节。</li>
+<li>空行：在包声明、函数之间、代码块之间应该使用空行隔开，这条简单的规则极大的影响到代码的视觉外观。空白行作为一条线索，标示出独立的概念。</li>
+<li>靠近：如果说空白行隔开了概念，靠近的代码则暗示了他们之间的紧密联系。因此关系紧密的应该互相靠近.</li>
+<li>垂直距离：全局变量声明应该放到文件第一个函数声明前，局部变量声明放到函数顶部。相关函数应该放在一起，调用者放在被调用者上面，这样就能轻易找到被调用函数，极大增强模块的可读性</li>
+</ul>
+<h3 id="水平方向的格式"><a href="#水平方向的格式" class="headerlink" title="水平方向的格式"></a>水平方向的格式</h3><ul>
+<li>水平区隔与靠近：在运算符号两端(乘号除外，因其优先级较高，多数格式化工具都忽视优先级)、函数名和右括号之间之间，函数参数之间增加空格</li>
+<li>水平对齐：经验表明一组类声明中的变量名、或者赋值语句的右值对齐没有什么实际作用，因此左端对齐，使用同样的空格区分规则即可</li>
+<li>缩进：有缩进的代码结构，阅读时可以很容易查找新的声明、变量、类和函数块，否则就需要折腾一番才能明白，程序员应该依赖缩进模式</li>
+</ul>
+<h2 id="对象与数据结构"><a href="#对象与数据结构" class="headerlink" title="对象与数据结构"></a>对象与数据结构</h2><blockquote>
+<blockquote>
+<p>对象与数据结构之间存在一个二分原理：<br>  <strong>过程式代码(使用数据结构的代码)便于在不改动既有数据结构的前提下添加新函数，面向对象代码便于在不改动既有函数的前提下添加新类</strong><br>反过来讲也说得通：<br>  <strong>过程式代码难以添加新数据结构，因为必须修改所有函数，面向对象代码难以添加新函数，因为必须修改所有类</strong><br>所以，对于面向对象较难的事，对于过程式代码却比较容易，反之亦然</p>
+</blockquote>
+</blockquote>
+<p>方法不应调用由任何函数返回的对象的方法，避免出现“火车失事”事件</p>
+<h2 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h2><p>使用异常而非返回码。这点在之前的函数返回值处就有提到。使用返回码存在两个问题，一是对后期修改不友好，二是增加了嵌套层次</p>
+<p>给出异常发生的环境说明。应创建信息充分的错误信息，并和异常一起传递出去。在消息中，包括失败的操作和失败的类型。如果你的应用程序由日志系统，传递足够的信息给catch块，并记录下来。</p>
+<p>依调用者需要定义异常类。</p>
+<p>不要返回 null 值，返回 null 值，基本上是在给自己增加工作量，也是在给调用者添堵(因为只要有一处没检查 null 值，程序就存在失控的风险)，这点深表赞同，一旦有方法返回 null 值，不可避免的其后调用的方法需要检查 null 值，形成一种恶性循环</p>
+<h2 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h2><p>过去10年来，编程专业领域进步很大，特别是敏捷和 TDD (测试驱动开发)运动鼓舞了很多程序员编写单元测试。TDD 要我们在编写生产代码之前先编写测试，其还有三大定律：</p>
+<ul>
+<li>定律一：再编写不能测试通过的测试驱动前，不可编写生产代码</li>
+<li>定律二：只可编写刚好无法通过的单元测试，不能编译也不算通过</li>
+<li>定律三：只可编写刚好足以通过当前失败测试的生产代码</li>
+</ul>
+<p>这些定律要求测试与生产代码一起编写，测试代码先写，这样写程序，测试将覆盖所有生产代码</p>
+<h3 id="保持测试的整洁"><a href="#保持测试的整洁" class="headerlink" title="保持测试的整洁"></a>保持测试的整洁</h3><p>测试代码和生产代码一样，需要被思考、设计和照料，像生产代码一样整洁<br>正是单元测试让你的代码可扩展、可维护、可复用。如果没有测试，每次修改都可能带来缺陷，无论架构如何有扩展性，设计划分如何好，如果没有单元测试，你的改动都可能带来不可预知的缺陷</p>
+<h3 id="整洁的测试"><a href="#整洁的测试" class="headerlink" title="整洁的测试"></a>整洁的测试</h3><p>整洁的唯一要素的就是可读性，在单元测试中，可读性比生产代码还重要。如何做到可读性?就是要明确、简洁和具有足够的表达力。<br>测试要采用构造-操作-检验模式，每个测试均要可以清晰的拆分为三个环节，第一个环节构造测试数据，第二个环节操作测试数据，第三个环节检验操作是否得到期望的结果</p>
+<h3 id="每个测试一个断言"><a href="#每个测试一个断言" class="headerlink" title="每个测试一个断言"></a>每个测试一个断言</h3><p>单个测试函数有且仅有一个断言是个好准则<br>每个测试做测试一个概念，如果一个测试测量三件事情，可能会导致遗漏</p>
+<h3 id="整洁的-5-条规则"><a href="#整洁的-5-条规则" class="headerlink" title="整洁的 5 条规则"></a>整洁的 5 条规则</h3><ul>
+<li>快速(fast),测试应该快速运行，你才能想要频繁运行它，如果不频繁运行，就不能尽早发现问题</li>
+<li>独立(Independent)，测试应该互相独立，从而可以单独运行每个测试</li>
+<li>可重复(Repeatable)，测试应该在任何环境中重复通过，否则当前环境具备时，你也会无法运行测试</li>
+<li>自足验证(Self-Validating)，测试应该有布尔值输出去，无论如何不应该查看日志文件来确认测试是否通过</li>
+<li>及时(Timely),测试应该及时编写，如果在生产代码之后编写测试，你会发现代码难以测试</li>
+</ul>
+<h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><p>关于类的规则是：类应该短小，如同函数一样，短小使得代码简洁明了。对于函数，通过计算代码行数来衡量大小，而对于类，采取计算权责的方式来衡量大小。</p>
+<blockquote>
+<blockquote>
+<p>如果无法为某个类命以精确的名称，这个类大概太长了</p>
+</blockquote>
+</blockquote>
+<h3 id="单一权责原则-SRP"><a href="#单一权责原则-SRP" class="headerlink" title="单一权责原则(SRP)"></a>单一权责原则(SRP)</h3><p>类或模块应有且只有一条加以修改的理由，系统应该有许多短小的类而不是少量巨大的类组成。每个小类封装一个权责，只有一个修改的原因，并与少数其他类一起协同达成期望的系统行为。</p>
+<h3 id="内聚"><a href="#内聚" class="headerlink" title="内聚"></a>内聚</h3><p>如果一个类中的每个变量都被每个方法所使用，则该类具有最大的内聚性，保持内聚性就会得到许多短小的类</p>
+<h2 id="迭进"><a href="#迭进" class="headerlink" title="迭进"></a>迭进</h2><ul>
+<li>运行所有测试</li>
+<li>不可重复</li>
+<li>表达了程序员的意图</li>
+<li>尽可能减少类和方法的数量</li>
+</ul>
+<p>极其雷同的代码就是重复</p>
+<p>要想实现大规模复用，必须理解如何实现小规模复用</p>
+<p>模板方法模式是一种移除高层级重复的通用技巧</p>
+<h2 id="并发编程"><a href="#并发编程" class="headerlink" title="并发编程"></a>并发编程</h2><p>对象是过程的抽象，线程是调度的抽象</p>
+<p>并发是一种解耦策略，帮助我们把做什么（目的）和何时（时间）做分解开</p>
+<p>并发会在性能和编写额外代码上增加一些开销</p>
+<p>正确的并发是复杂的，即便对于简单的问题也是如此</p>
+<p>并发缺陷并非总能重现，所以常被看做偶发事件而忽略，未被当作真的缺陷对待</p>
+<p>并发常常需要对设计策略的根本性修改</p>
+<p>并发有时能改进性能，但只是在多个线程或处理器之间能分享大量等待时间的时候管用</p>
+<p>同样要遵循单一权责的原则，要在代码中保护共享对象的临界区，避免使用数据复本，线程要尽可能地独立</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>犹如编程的说明书，本书详细的描述了该如何写代码，如果写出优秀的代码，其中描述的很多问题是日常开发中遇到过的，深有体会。在看这本书之前，如果遇到问题，可能需要花上一段时间自己琢磨，甚至永远也想不到书中介绍的解决方案，相信在日后的开发中还会遇到很多书中描述的问题，而那时，可以借鉴书中的经验来解决问题，已提高开发效率。</p>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#命名"><span class="toc-number">1.</span> <span class="toc-text">命名</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#函数"><span class="toc-number">2.</span> <span class="toc-text">函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#参数："><span class="toc-number">2.1.</span> <span class="toc-text">参数：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#返回："><span class="toc-number">2.2.</span> <span class="toc-text">返回：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#注释："><span class="toc-number">3.</span> <span class="toc-text">注释：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#格式："><span class="toc-number">4.</span> <span class="toc-text">格式：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#垂直方向格式"><span class="toc-number">4.1.</span> <span class="toc-text">垂直方向格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#水平方向的格式"><span class="toc-number">4.2.</span> <span class="toc-text">水平方向的格式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#对象与数据结构"><span class="toc-number">5.</span> <span class="toc-text">对象与数据结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#异常处理"><span class="toc-number">6.</span> <span class="toc-text">异常处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#单元测试"><span class="toc-number">7.</span> <span class="toc-text">单元测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#保持测试的整洁"><span class="toc-number">7.1.</span> <span class="toc-text">保持测试的整洁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#整洁的测试"><span class="toc-number">7.2.</span> <span class="toc-text">整洁的测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#每个测试一个断言"><span class="toc-number">7.3.</span> <span class="toc-text">每个测试一个断言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#整洁的-5-条规则"><span class="toc-number">7.4.</span> <span class="toc-text">整洁的 5 条规则</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#类"><span class="toc-number">8.</span> <span class="toc-text">类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#单一权责原则-SRP"><span class="toc-number">8.1.</span> <span class="toc-text">单一权责原则(SRP)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#内聚"><span class="toc-number">8.2.</span> <span class="toc-text">内聚</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#迭进"><span class="toc-number">9.</span> <span class="toc-text">迭进</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#并发编程"><span class="toc-number">10.</span> <span class="toc-text">并发编程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-number">11.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2017/01/22/170122/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2017/01/22/170122/&text=《代码整洁之道》读书笔记"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2017/01/22/170122/&title=《代码整洁之道》读书笔记"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2017/01/22/170122/&is_video=false&description=《代码整洁之道》读书笔记"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=《代码整洁之道》读书笔记&body=Check out this article: http://09ae9c.com/2017/01/22/170122/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2017/01/22/170122/&title=《代码整洁之道》读书笔记"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2017/01/22/170122/&title=《代码整洁之道》读书笔记"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2017/01/22/170122/&title=《代码整洁之道》读书笔记"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2017/01/22/170122/&title=《代码整洁之道》读书笔记"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2017/01/22/170122/&name=《代码整洁之道》读书笔记&description=&lt;blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;写代码和写别的东西很像。在写论文或文章时，你先想什么就写什么，然后再打磨它。初稿也许粗陋无序，你就斟酌推敲，直至达到你心目中的样子。我写函数时，一开始都冗长而复杂，有太多缩进和嵌套循环，有过长的参数列表。名称是随意取的，也会有重复的代码，不过我会配上一套单元测试，覆盖每行丑陋的代码。然后我打磨这些代码，分解函数，修改名称，消除重复，我缩短和重新安置方法。有时我还拆散类，同时保持测试通过。我并不是一开始就按照规则写函数，我想没人做得到。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;/blockquote&gt;"><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick="$("#toc-footer").toggle();return false;"><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick="$("#share-footer").toggle();return false;"><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick="$("#nav-footer").toggle();return false;"><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      <script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>

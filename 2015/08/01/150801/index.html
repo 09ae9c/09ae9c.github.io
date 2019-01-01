@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="使用 Loader，是为了方便在 Activity 或者 Fragment 中异步加载数据及监听数据源的变化，Loader 的一些特征">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="API Guides(5) -- Loader">
+<meta property="og:url" content="http://09ae9c.com/2015/08/01/150801/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="使用 Loader，是为了方便在 Activity 或者 Fragment 中异步加载数据及监听数据源的变化，Loader 的一些特征">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2016-10-17T15:39:25.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="API Guides(5) -- Loader">
+<meta name="twitter:description" content="使用 Loader，是为了方便在 Activity 或者 Fragment 中异步加载数据及监听数据源的变化，Loader 的一些特征">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>API Guides(5) -- Loader</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+    <link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    <script src="/lib/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">09AE9C&#39;s Blog</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2015/08/04/150804/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover="$("#i-prev").toggle();" onmouseout="$("#i-prev").toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2015/07/11/150711/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover="$("#i-next").toggle();" onmouseout="$("#i-next").toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover="$("#i-top").toggle();" onmouseout="$("#i-top").toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover="$("#i-share").toggle();" onmouseout="$("#i-share").toggle();" onclick="$("#share").toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/08/01/150801/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/08/01/150801/&text=API Guides(5) -- Loader"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/08/01/150801/&title=API Guides(5) -- Loader"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/08/01/150801/&is_video=false&description=API Guides(5) -- Loader"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=API Guides(5) -- Loader&body=Check out this article: http://09ae9c.com/2015/08/01/150801/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/08/01/150801/&title=API Guides(5) -- Loader"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/08/01/150801/&title=API Guides(5) -- Loader"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/08/01/150801/&title=API Guides(5) -- Loader"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/08/01/150801/&title=API Guides(5) -- Loader"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/08/01/150801/&name=API Guides(5) -- Loader&description=&lt;p&gt;使用 Loader，是为了方便在 Activity 或者 Fragment 中异步加载数据及监听数据源的变化，Loader 的一些特征&lt;br&gt;"><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一个使用-Loader-的应用程序的组成："><span class="toc-number">1.</span> <span class="toc-text">一个使用 Loader 的应用程序的组成：</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        API Guides(5) -- Loader
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2015-08-01T06:23:21.000Z" itemprop="datePublished">2015-08-01</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Android/">Android</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>使用 Loader，是为了方便在 Activity 或者 Fragment 中异步加载数据及监听数据源的变化，Loader 的一些特征<br><a id="more"></a></p>
+<ul>
+<li><p>每一个 Activity 或者 Fragment 都能使用 Loader</p>
+</li>
+<li><p>Loader 提供异步加载数据的数据</p>
+</li>
+<li><p>Loader 可以监听数据资源，有数据内容改变时Loader可以提供新的数据</p>
+</li>
+<li><p>当配置改变导致 Activity 或者 Fragment 重新创建后，Loader 可以自动连接上次的游标（cursor），这样就不用重新执行查询操作了</p>
+</li>
+</ul>
+<p>在一个应用程序中使用 Loader 可能会用到的类文件（class）和接口（interface）如下：</p>
+<ul>
+<li><p><strong>LoaderManager</strong>：用来管理 Loader 的实例，通常和 CursorLoader 结合起来用，一个 Activity 或者Fragment中只能有一个 LoaderManager，但是一个 LoaderManager 可以有多个 Loaders</p>
+</li>
+<li><p><strong>LoaderManager.LoaderCallbacks</strong>：用来和 LoaderManager 进行交互的回调接口</p>
+</li>
+<li><p><strong>Loader</strong>：抽象类，用于执行异步加载数据，通常使用其子类 CursorLoader，但也可以自定义一个子类使用</p>
+</li>
+<li><p><strong>AsyncTaskLoader</strong>：Loader 的子类，提供一个异步任务（AsyncTask）进行相关处理</p>
+</li>
+<li><strong>CursorLoader</strong>：是 AsycnTaskLoader 的子类，用于查询 ContentResolver 并且返回一个 Cursor，常用于从 ContentProvider 中异步加载数据</li>
+</ul>
+<h2 id="一个使用-Loader-的应用程序的组成："><a href="#一个使用-Loader-的应用程序的组成：" class="headerlink" title="一个使用 Loader 的应用程序的组成："></a>一个使用 Loader 的应用程序的组成：</h2><ul>
+<li><p>在一个 Activity 或者 Fragment 中</p>
+</li>
+<li><p>定义 LoaderManager 的实例</p>
+</li>
+<li><p>定义一个 CursorLoader 的实例用以从 ContentProvider 中加载数据，或者自定义一个 Loader 或者 AsyncTaskLoader 的子类去执行这个操作</p>
+</li>
+<li><p>实现 LoaderManager.LoaderCallbacks 接口，后面暂时略过。。。</p>
+</li>
+<li><p>接下来就是展示加载到的数据了，可以使用 SimpleCursorAdapter 等</p>
+</li>
+<li>当然，最重要的是要有数据源，比如一个 ContentProvider 提供的数据源</li>
+</ul>
+<p>##启动一个 Loader</p>
+<ul>
+<li>使用 LoaderManager，在 Activity 的 <strong>onCreate()</strong> 或者在 Fragment 的 <strong>onActivityCreated()</strong> 方法中初始化 Loader：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">getLoaderManager.initLoader(0,null,this);</span><br></pre></td></tr></table></figure>
+<p>initLoader 中的参数如下：</p>
+<ul>
+<li><p>一个唯一识别 Loader 的 id</p>
+</li>
+<li><p>构造方法的可选参数</p>
+</li>
+<li>LoaderManager.LoaderCallbacks 的实现，用以报告 Loader 的事件（先写着，再改）</li>
+</ul>
+<p>initLoader 方法用来确保 Loader 初始化完成并且处于活动状态，调用此方法的结果如下：</p>
+<ul>
+<li><p>如果通过 id 标识的这个 Loader 已经存在了，上次创建的 Loader 将会被重用</p>
+</li>
+<li><p>如果指定 id 标识的 Loader 不存在，则通过 LoaderManager.LoaderCallbacks 的 <strong>onCreateLoader()</strong> 方法回调得到一个新的 Loader 实例</p>
+</li>
+</ul>
+<p>通常，Loader 的生命周期由 LoaderManager 管理，所以我们很少直接与 Loader 交互</p>
+<p>##重新启动一个 Loader<br>使用 initLoader() 方法，如果一个 Loader 已经存在了，则会重新使用这个存在的，所以当我不想使用这个存在的，就需要重新启动一个 Loader，这时就可以使用 <strong>restartLoader()</strong> 方法</p>
+<p>##使用 LoaderManager 的回调方法<br>   使用 LoaderManager.LoaderCallbacks 实现与 LoaderManager 的交互</p>
+<p>   Loader 特别是 CursorLoader，通常会在停止后仍然保留数据，这样就可以在 Activity 或者 Fragment 的 onStop() 和 onStart() 方法中保留应用程序的数据，这样，当用户返回到当前应用程序时，无需等待数据重新加载（对这句话不太理解）</p>
+<p><strong>LoaderManager.LoaderCallbacks</strong> 包含如下回调方法：</p>
+<ul>
+<li><p><strong>onCreateLoader()</strong>：通过 id 进行实例化并<strong>返回一个新的 Loader</strong>，通常在使用 initLoader() 时，如果指定 id 的 Loader 不存在，就会新建一个 Loader，就会用到这个回调方法（下面的实例中会说明其返回的 Cursor 的组成）</p>
+</li>
+<li><p><strong>onLoadFinished()</strong>：当之前创建的 Loader 加载完成时调用</p>
+</li>
+<li><strong>onLoaderReset()</strong>：当之前创建的 Loader 被重置时调用，这样，之前的 Loader 中的数据就不可用了</li>
+</ul>
+<p>下面是官方文档的实例，通过实例能更好的理解怎样使用 Loader：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public class CursorLoaderListFragment extends ListFragment</span><br><span class="line">        implements SearchView.OnQueryTextListener, LoaderManager.LoaderCallbacks&lt;Cursor&gt; &#123;</span><br><span class="line"></span><br><span class="line">    // 这是用于显示列表数据的Adapter</span><br><span class="line">    SimpleCursorAdapter mAdapter;</span><br><span class="line"></span><br><span class="line">    // 如果非null，这是当前的搜索过虑条件</span><br><span class="line">    String mCurFilter;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onActivityCreated(Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onActivityCreated(savedInstanceState);</span><br><span class="line"></span><br><span class="line">        // 如果列表中没有数据，就给控件一些文字去显示．在一个真正的应用</span><br><span class="line">        // 中这应用资源中取得．</span><br><span class="line">        setEmptyText(&quot;No phone numbers&quot;);</span><br><span class="line"></span><br><span class="line">        // 设置在顶部栏中有菜单项．也就是允许Fragment使用菜单，这在之前的Fragment中有笔记</span><br><span class="line">        setHasOptionsMenu(true);</span><br><span class="line"></span><br><span class="line">        // 创建一个空的adapter，将用它显示加载后的数据</span><br><span class="line">        mAdapter = new SimpleCursorAdapter(getActivity(),</span><br><span class="line">                android.R.layout.simple_list_item_2, null,</span><br><span class="line">                new String[]&#123;ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.Contacts.CONTACT_STATUS&#125;,</span><br><span class="line">                new int[]&#123;android.R.id.text1, android.R.id.text2&#125;, 0);</span><br><span class="line"></span><br><span class="line">        //填充ListView</span><br><span class="line">        setListAdapter(mAdapter);</span><br><span class="line"></span><br><span class="line">        // 准备loader.可能是重连到一个已存在的或开始一个新的</span><br><span class="line">        getLoaderManager().initLoader(0, null, this);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) &#123;</span><br><span class="line">        // 顶部栏的菜单项，用于点击出现搜索框</span><br><span class="line">        MenuItem item = menu.add(&quot;Search&quot;);</span><br><span class="line">        item.setIcon(android.R.drawable.ic_menu_search);</span><br><span class="line">        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);</span><br><span class="line">        SearchView sv = new SearchView(getActivity());</span><br><span class="line">        sv.setOnQueryTextListener(this);</span><br><span class="line">        item.setActionView(sv);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 当搜索输入框中的文字发生变化时的回调方法</span><br><span class="line">     */</span><br><span class="line">    public boolean onQueryTextChange(String newText) &#123;</span><br><span class="line"></span><br><span class="line">        //获取搜索过滤条件（也就是变化是如果输入了文字就获取到）</span><br><span class="line">        mCurFilter = !TextUtils.isEmpty(newText) ? newText : null;</span><br><span class="line"></span><br><span class="line">        //并重启loader来执行一个新的查询</span><br><span class="line">        getLoaderManager().restartLoader(0, null, this);</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean onQueryTextSubmit(String query) &#123;</span><br><span class="line">        // 我们不关心这个方法</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onListItemClick(ListView l, View v, int position, long id) &#123;</span><br><span class="line">        // ListView中的点击事件，写入你想写的代码</span><br><span class="line">        Log.i(&quot;FragmentComplexList&quot;, &quot;Item clicked: &quot; + id);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 这是想获取的联系人中一行的数据．</span><br><span class="line">    static final String[] CONTACTS_SUMMARY_PROJECTION = new String[]&#123;</span><br><span class="line">            ContactsContract.Contacts._ID,</span><br><span class="line">            ContactsContract.Contacts.DISPLAY_NAME,</span><br><span class="line">            ContactsContract.Contacts.CONTACT_STATUS,</span><br><span class="line">            ContactsContract.Contacts.CONTACT_PRESENCE,</span><br><span class="line">            ContactsContract.Contacts.PHOTO_ID,</span><br><span class="line">            ContactsContract.Contacts.LOOKUP_KEY,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 当一个新的loader需被创建时调用．本例仅有一个Loader,所以不需要ID．首先设置baseUri，URI指向的是联系人</span><br><span class="line">     */</span><br><span class="line">    public Loader&lt;Cursor&gt; onCreateLoader(int id, Bundle args) &#123;</span><br><span class="line"></span><br><span class="line">        Uri baseUri;</span><br><span class="line"></span><br><span class="line">        //如果有搜索条件，就过滤出条件匹配的数据，如果没有搜索条件，就直接获取所有的数据</span><br><span class="line">        if (mCurFilter != null) &#123;</span><br><span class="line">            baseUri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_FILTER_URI,</span><br><span class="line">                    Uri.encode(mCurFilter));</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            baseUri = ContactsContract.Contacts.CONTENT_URI;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        // 现在创建并返回一个CursorLoader，它将负责创建一个Cursor用于显示数据</span><br><span class="line">        String select = &quot;((&quot; + ContactsContract.Contacts.DISPLAY_NAME + &quot; NOTNULL) AND (&quot;</span><br><span class="line">                + ContactsContract.Contacts.HAS_PHONE_NUMBER + &quot;=1) AND (&quot;</span><br><span class="line">                + ContactsContract.Contacts.DISPLAY_NAME + &quot; != &apos;&apos; ))&quot;;</span><br><span class="line"></span><br><span class="line">        return new CursorLoader(getActivity(), baseUri,</span><br><span class="line">                CONTACTS_SUMMARY_PROJECTION, select, null,</span><br><span class="line">                ContactsContract.Contacts.DISPLAY_NAME + &quot; COLLATE LOCALIZED ASC&quot;);</span><br><span class="line">        //CursorLoader的参数解释：CursorLoader(Context ctx,Uri uri,String[] projection,String selection,String[] selectionArgs,String sortOrder)</span><br><span class="line">        // ctx：为上下文，不多说</span><br><span class="line">        // uri：需要搜索的内容的uri</span><br><span class="line">        // projection：指定需要返回的列的集合，如果要返回所有列，使用null，但这样效率比较低</span><br><span class="line">        // selection：过滤需要返回的行，就像是SQL中的where语句后面的条件，使用null返回所有行</span><br><span class="line">        // selectArgs：过滤的条件，可以在上面的selection中使用&quot;?&quot;隔开来设置条件，也可以在这里写下条件，效果是一样的</span><br><span class="line">        // sortOrder：对列进行排序，就像是SQL中的“order by”后面的内容</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 当之前创建的Loader加载完成时调用，将新的cursor换进来</span><br><span class="line">     */</span><br><span class="line">    public void onLoadFinished(Loader&lt;Cursor&gt; loader, Cursor data) &#123;</span><br><span class="line"></span><br><span class="line">        mAdapter.swapCursor(data);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 在最后一个Cursor准备进入上面的onLoadFinished()之前,Cursor要被关闭了，需要确保不再使用它</span><br><span class="line">     */</span><br><span class="line">    public void onLoaderReset(Loader&lt;Cursor&gt; loader) &#123;</span><br><span class="line"></span><br><span class="line">        mAdapter.swapCursor(null);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一个使用-Loader-的应用程序的组成："><span class="toc-number">1.</span> <span class="toc-text">一个使用 Loader 的应用程序的组成：</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/08/01/150801/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/08/01/150801/&text=API Guides(5) -- Loader"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/08/01/150801/&title=API Guides(5) -- Loader"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/08/01/150801/&is_video=false&description=API Guides(5) -- Loader"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=API Guides(5) -- Loader&body=Check out this article: http://09ae9c.com/2015/08/01/150801/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/08/01/150801/&title=API Guides(5) -- Loader"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/08/01/150801/&title=API Guides(5) -- Loader"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/08/01/150801/&title=API Guides(5) -- Loader"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/08/01/150801/&title=API Guides(5) -- Loader"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/08/01/150801/&name=API Guides(5) -- Loader&description=&lt;p&gt;使用 Loader，是为了方便在 Activity 或者 Fragment 中异步加载数据及监听数据源的变化，Loader 的一些特征&lt;br&gt;"><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick="$("#toc-footer").toggle();return false;"><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick="$("#share-footer").toggle();return false;"><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick="$("#nav-footer").toggle();return false;"><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      <script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>

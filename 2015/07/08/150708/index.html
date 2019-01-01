@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Intent 是一个可以从应用程序组件（Activity,Service,ContentProvider,BroadcastReceiver）请求动作（action）的消息对象，实现从一个组件跳转到另一个组件的功能，通过阅读文档，可以了解到以下内容">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="API Guides(3) -- Intent and Intent Filter">
+<meta property="og:url" content="http://09ae9c.com/2015/07/08/150708/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="Intent 是一个可以从应用程序组件（Activity,Service,ContentProvider,BroadcastReceiver）请求动作（action）的消息对象，实现从一个组件跳转到另一个组件的功能，通过阅读文档，可以了解到以下内容">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2016-10-17T15:39:17.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="API Guides(3) -- Intent and Intent Filter">
+<meta name="twitter:description" content="Intent 是一个可以从应用程序组件（Activity,Service,ContentProvider,BroadcastReceiver）请求动作（action）的消息对象，实现从一个组件跳转到另一个组件的功能，通过阅读文档，可以了解到以下内容">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>API Guides(3) -- Intent and Intent Filter</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/lib/meslo-LG/styles.css">
+    <link rel="stylesheet" href="/lib/justified-gallery/justifiedGallery.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- rss -->
+    
+    
+    <!-- jquery -->
+    <script src="/lib/jquery/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="banner">
+<div id="blogtitel" class="blogtitel">09AE9C&#39;s Blog</div>
+<ul id="wrapper" class="wrapper">
+  <div class="sun">
+    <div class="star"></div>
+  </div>
+  <div class="mercury">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="venus">
+    <div class="planet">
+      <div class="shadow"></div>
+    </div>
+  </div>
+  <div class="earth">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="mars">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+  <div class="jupiter">
+    <div class="planet"><div class="shadow"></div></div>
+  </div>
+</ul>
+</div>
+
+    <div class="background">
+      
+        <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fa fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fa fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2015/07/11/150711/"><i class="fa fa-chevron-left" aria-hidden="true" onmouseover="$("#i-prev").toggle();" onmouseout="$("#i-prev").toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2015/07/06/150706/"><i class="fa fa-chevron-right" aria-hidden="true" onmouseover="$("#i-next").toggle();" onmouseout="$("#i-next").toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up" aria-hidden="true" onmouseover="$("#i-top").toggle();" onmouseout="$("#i-top").toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fa fa-share-alt" aria-hidden="true" onmouseover="$("#i-share").toggle();" onmouseout="$("#i-share").toggle();" onclick="$("#share").toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/07/08/150708/"><i class="fa fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/07/08/150708/&text=API Guides(3) -- Intent and Intent Filter"><i class="fa fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/07/08/150708/&title=API Guides(3) -- Intent and Intent Filter"><i class="fa fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/07/08/150708/&is_video=false&description=API Guides(3) -- Intent and Intent Filter"><i class="fa fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=API Guides(3) -- Intent and Intent Filter&body=Check out this article: http://09ae9c.com/2015/07/08/150708/"><i class="fa fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/07/08/150708/&title=API Guides(3) -- Intent and Intent Filter"><i class="fa fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/07/08/150708/&title=API Guides(3) -- Intent and Intent Filter"><i class="fa fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/07/08/150708/&title=API Guides(3) -- Intent and Intent Filter"><i class="fa fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/07/08/150708/&title=API Guides(3) -- Intent and Intent Filter"><i class="fa fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/07/08/150708/&name=API Guides(3) -- Intent and Intent Filter&description=&lt;p&gt;Intent 是一个可以从应用程序组件（Activity,Service,ContentProvider,BroadcastReceiver）请求动作（action）的消息对象，实现从一个组件跳转到另一个组件的功能，通过阅读文档，可以了解到以下内容&lt;br&gt;"><i class="fa fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      
+    </div>
+  </span>
+</div>
+
+      
+      <div class="content index width mx-auto px2 my4">
+          
+          <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        API Guides(3) -- Intent and Intent Filter
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2015-07-08T14:47:12.000Z" itemprop="datePublished">2015-07-08</time>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fa fa-tag"></i>
+        <a class="tag-link" href="/tags/Android/">Android</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>Intent 是一个可以从应用程序组件（Activity,Service,ContentProvider,BroadcastReceiver）请求动作（action）的消息对象，实现从一个组件跳转到另一个组件的功能，通过阅读文档，可以了解到以下内容<br><a id="more"></a></p>
+<ul>
+<li><p><strong>Intent 的三种基本使用场景</strong>：</p>
+<ul>
+<li>启动一个 Activity</li>
+<li>启动一个 Service</li>
+<li>发送一个 Broadcast</li>
+</ul>
+</li>
+<li><p><strong>Intent 的种类</strong>：</p>
+<ul>
+<li><p><strong>显示 Intent</strong>，启动指定名字（组件的 class 类名）的组件</p>
+</li>
+<li><p><strong>隐式 Intent</strong>，（<strong>设备上的任何应用程序通过过滤匹配可以执行这个 Action</strong>）没有指定名字，通过申明动作（action）执行，组件接收到这个动作便会执行相关代码，允许其他应用程序中的组件处理这个 action，隐式的 Intent 通过 <strong>Intent Filter</strong> 进行过滤<br><strong>注意</strong>，如果设备上没有应用程序可以处理你指定的 Intent，调用时你的应用程序将会崩溃，为了防止这种事发生，最好在 startActivity() 之前调用 <strong>resolveActivity()</strong> 检测设备上是否有能执行此 Intent 的应用程序，返回结果<strong>不会空</strong>则说明有，否则没有能执行此 Intent 的应用程序，这时你就需要考虑使用其他方式处理你的 Intent 了</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>通常启动 Service 的 Intent 为显示的，这样才安全，因为从 Android 5.0 之后，通过隐式的 Intent 调用 bindService()，系统将会抛出异常</strong></p>
+<ul>
+<li><p><strong>发送一个 Intent 时的组成：</strong></p>
+<ul>
+<li><p>需要启动的组件名字（<strong>className</strong>，通过如下方法设置：setCompontent()，setClass()，setClassName()，或者在 Intent 的构造方法中定义）隐式的 Intent 不需要申明组件名</p>
+</li>
+<li><p>动作（<strong>Action</strong>，用于 Intent Filter 筛选的条件）通常系统有一些特定的 Action 可供调用，如 ACTION_VIEW(启动一个查看内容的应用程序)，ACTION_SEND(启动一个可以发送数据的应用程序)，创建自定义 Action 时，一定要记得加上包名，如：static final String ACTION_EXAMPLE=”com.example.action.EXAMPLE”</p>
+</li>
+<li><p>数据和类型（<strong>data,type</strong>）Data 是指定 Action 处理的对象，通常是以 Uri 形式存在，Type 用以指出 Data 的类型，例如一个 Action 为 ACTION_EDIT，则它的 Data 应该是某个可编辑的文本的 Uri，而它的 Type 应该指明这个文本的类型</p>
+</li>
+<li><p>分类（<strong>Category</strong>）：包含了需要处理 Intent 的组件的分类信息，（即，区分哪种类型的组件可以处理这个Intent）<font color="red"> 在一个测试隐式 Intent 的例子中，因为接收端应用程序的 Activity 中 Intent Filter 没有设置这个属性，导致始终不能跳转到接收端应用程序中的 Activity。 下面将会给出原因</font></p>
+</li>
+<li><p>附件（<strong>Extras</strong>）：用于传递键值对数据</p>
+</li>
+<li><p>标志位（<strong>Flags</strong>）：用来通知 Android System 如何运行一个 activity 和运行以后如何处理</p>
+</li>
+</ul>
+</li>
+<li><p><strong>接收一个Intent时的组成：</strong>（通过定义 Intent Filter 过滤得到想要的 Intent，通常在清单文件(AndroidManifest.xml)中使用&lt; intent-filter &gt;标签来过滤。）</p>
+<pre><code>- **&lt; action &gt;**：申明可接受的动作名，用于匹配筛选出相同名的动作，其值必须为字符串而不能是常量类型，一个组件可以过滤多个 Action
+
+- **&lt; data &gt;**：申明可以接收的数据类型，可以使用多组属性值进行多种数据类型匹配筛选
+
+- **&lt; category &gt;**：申明可以接收的 Intent 类型（**注意**，&lt;font color=&quot;red&quot;&gt;为了能接收到隐式的 Intent，必须在 Intent Filter 中添加默认类型，否则系统检测不到 Intent 匹配的 Activity
+</code></pre><p><code>&lt; category android:name=&quot;android.intent.category.DEFAULT&quot;/&gt;</code>）</p>
+<p>以上，一条基本的过滤器就申明完成</p>
+</li>
+</ul>
+<ul>
+<li><p><strong>Intent Filter 的过滤原则：</strong>（通常，在&lt; intent-filter &gt;节点下可以有多个&lt; action &gt;， &lt; category &gt;或 &lt; data &gt;节点用来对 Intent 进行匹配过滤筛选,其过滤筛选原则如下）</p>
+<ul>
+<li><p><strong>&lt; action &gt;</strong>：过滤器中可以列出多个动作，<strong>匹配时 Intent 中的 action 值只要有一个配对了</strong>，则通过</p>
+</li>
+<li><p><strong>&lt; category &gt;</strong>：过滤器中可以列出多个分类，<strong>匹配时 Intent 中的 category 必须每一个都对应才能通过</strong>，<font color="red">通过 startActivity() 启动的隐式 Intent 会有个默认的 category：CATEGORY_DEFAULT 常量，所以在 &lt; category &gt; 标签中必须要有个默认的值才能匹配到隐式 Intent，这也就解释了上文中的那个测试。</font></p>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>通过设置该 &lt; intent-filter&gt; 对应的组件中的 exported 属性为 false，可以让你的组件只接受当前应用内的 Intent 调用，也就是其他应用通过隐式 Intent 不能调用你的组件</strong></p>
+<ul>
+<li><p><strong>待执行意图（PendingIntent）</strong>意为即将发生的意图，是 Intent 的一种包装，首要目的是授予另一个程序权限，任由它像你的程序一样来执行相应的操作，其主要使用场景为：</p>
+<ol>
+<li><p>申明一个将要执行的 Intent，当用户<strong>点击通知</strong>时执行(因为不知道什么时候会有通知来)</p>
+</li>
+<li><p>申明一个将要执行的 Intent，当用户<strong>点击桌面小插件</strong>的时候执行</p>
+</li>
+<li>申明一个将要执行的 Intent，<strong>在指定的一个将来时间执行(也就是定时执行)</strong></li>
+</ol>
+</li>
+<li><p><strong>Intent 和 PendingIntent 的主要区别</strong>，当前 activity 并不能马上启动它所包含的 Intent,而是在外部执行 pendingintent 时，调用 Intent 的。正由于 pendingintent 中 保存有当前应用的 Context，使它赋予外部应用一种能力，使得外部应用可以如同当前应用一样的执行 pendingintent 里的 Intent， 就算在执行时当前应用已经不存在了，也能通过存在 pendingintent 里的 Context 照样执行 Intent，因此具有很大的灵活性</p>
+</li>
+<li><p><strong>Common Intent</strong><br>之前说过，Intent 既可以启动当前应用程序中的 Activity，也可以<strong>启动设备上任意符合过滤条件的 Activity</strong>，后者称为隐式 Intent（implicit Intent），通常，使用隐式 Intent 是为了启动一个公用的 Activity 来完成当前应用程序不具备的功能，比如拍照，打开相册，播放音乐或视频，设备上已经有了具备这些功能的应用，通过隐式 Intent 就可以直接使用，并将结果返回给当前应用程序，因此，可以称这类 Intent 为 Common Intent（公共 Intent），通过阅读这节内容将会了解到如何调用一些系统应用程序，具体使用与参数配置，可以参考官方文档：<a href="http://wear.techbrood.com/guide/components/intents-common.html" target="_blank" rel="noopener">Common Intents</a><br><strong>注意！在调用系统应用时，首先要确保申请了必须的权限</strong></p>
+</li>
+</ul>
+
+  </div>
+</article>
+
+
+
+      </div>
+      
+       <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/07/08/150708/"><i class="fa fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/07/08/150708/&text=API Guides(3) -- Intent and Intent Filter"><i class="fa fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/07/08/150708/&title=API Guides(3) -- Intent and Intent Filter"><i class="fa fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/07/08/150708/&is_video=false&description=API Guides(3) -- Intent and Intent Filter"><i class="fa fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=API Guides(3) -- Intent and Intent Filter&body=Check out this article: http://09ae9c.com/2015/07/08/150708/"><i class="fa fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/07/08/150708/&title=API Guides(3) -- Intent and Intent Filter"><i class="fa fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/07/08/150708/&title=API Guides(3) -- Intent and Intent Filter"><i class="fa fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/07/08/150708/&title=API Guides(3) -- Intent and Intent Filter"><i class="fa fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/07/08/150708/&title=API Guides(3) -- Intent and Intent Filter"><i class="fa fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/07/08/150708/&name=API Guides(3) -- Intent and Intent Filter&description=&lt;p&gt;Intent 是一个可以从应用程序组件（Activity,Service,ContentProvider,BroadcastReceiver）请求动作（action）的消息对象，实现从一个组件跳转到另一个组件的功能，通过阅读文档，可以了解到以下内容&lt;br&gt;"><i class="fa fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+      <ul>
+        <li id="toc"><a class="icon" href="#" onclick="$("#toc-footer").toggle();return false;"><i class="fa fa-list fa-lg" aria-hidden="true"></i> TOC</a></li>
+        <li id="share"><a class="icon" href="#" onclick="$("#share-footer").toggle();return false;"><i class="fa fa-share-alt fa-lg" aria-hidden="true"></i> Share</a></li>
+        <li id="top" style="display:none"><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fa fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a></li>
+        <li id="menu"><a class="icon" href="#" onclick="$("#nav-footer").toggle();return false;"><i class="fa fa-bars fa-lg" aria-hidden="true"></i> Menu</a></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+      
+      <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+      <script src="/lib/justified-gallery/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- Google Analytics -->
+
+<!-- Disqus Comments -->
+
+
+    </div>
+</body>
+</html>
