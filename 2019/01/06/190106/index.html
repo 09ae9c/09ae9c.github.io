@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="重要概念 一切皆为对象(numbers，functions，null)，每一个对象都是一个类的实例，所有对象都继承自 Object 类 Dart 是强类型语言，但类型声明是可选的，因为 Dart 有类型推断，能根据上下文推断出具体类型，如果不明确具体类型，可以用 dynamic 关键字修饰(类似 Kotlin 中的 Any) Dart 支持泛型 Dart 支持顶层方法，以及静态方法和类方法，方法内">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dart 基础">
+<meta property="og:url" content="http://09ae9c.com/2019/01/06/190106/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="重要概念 一切皆为对象(numbers，functions，null)，每一个对象都是一个类的实例，所有对象都继承自 Object 类 Dart 是强类型语言，但类型声明是可选的，因为 Dart 有类型推断，能根据上下文推断出具体类型，如果不明确具体类型，可以用 dynamic 关键字修饰(类似 Kotlin 中的 Any) Dart 支持泛型 Dart 支持顶层方法，以及静态方法和类方法，方法内">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-06T15:46:38.343Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Dart 基础">
+<meta name="twitter:description" content="重要概念 一切皆为对象(numbers，functions，null)，每一个对象都是一个类的实例，所有对象都继承自 Object 类 Dart 是强类型语言，但类型声明是可选的，因为 Dart 有类型推断，能根据上下文推断出具体类型，如果不明确具体类型，可以用 dynamic 关键字修饰(类似 Kotlin 中的 Any) Dart 支持泛型 Dart 支持顶层方法，以及静态方法和类方法，方法内">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Dart 基础</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        
+        <li><a class="icon" href="/2017/03/12/170312/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2019/01/06/190106/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2019/01/06/190106/&text=Dart 基础"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2019/01/06/190106/&title=Dart 基础"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2019/01/06/190106/&is_video=false&description=Dart 基础"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Dart 基础&body=Check out this article: http://09ae9c.com/2019/01/06/190106/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2019/01/06/190106/&title=Dart 基础"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2019/01/06/190106/&title=Dart 基础"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2019/01/06/190106/&title=Dart 基础"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2019/01/06/190106/&title=Dart 基础"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2019/01/06/190106/&name=Dart 基础&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#重要概念"><span class="toc-number">1.</span> <span class="toc-text">重要概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#变量"><span class="toc-number">2.</span> <span class="toc-text">变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#默认值"><span class="toc-number">2.1.</span> <span class="toc-text">默认值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Final-和-Const-关键字"><span class="toc-number">2.2.</span> <span class="toc-text">Final 和 Const 关键字</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#基本数据类型"><span class="toc-number">3.</span> <span class="toc-text">基本数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方法-Functions"><span class="toc-number">4.</span> <span class="toc-text">方法(Functions)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#指定参数名传参"><span class="toc-number">4.1.</span> <span class="toc-text">指定参数名传参</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#指定位置传参"><span class="toc-number">4.2.</span> <span class="toc-text">指定位置传参</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数默认值"><span class="toc-number">4.3.</span> <span class="toc-text">参数默认值</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#算数运算符"><span class="toc-number">5.</span> <span class="toc-text">算数运算符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#类型运算符"><span class="toc-number">6.</span> <span class="toc-text">类型运算符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#级联符号"><span class="toc-number">7.</span> <span class="toc-text">级联符号</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#异常处理"><span class="toc-number">8.</span> <span class="toc-text">异常处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#类"><span class="toc-number">9.</span> <span class="toc-text">类</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Dart 基础
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2019-01-06T15:45:22.000Z" itemprop="datePublished">2019-01-06</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Dart/">Dart</a>
+    </div>
+
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="重要概念"><a href="#重要概念" class="headerlink" title="重要概念"></a>重要概念</h2><ul>
+<li>一切皆为对象(numbers，functions，null)，每一个对象都是一个类的实例，所有对象都继承自 Object 类</li>
+<li>Dart 是强类型语言，但类型声明是可选的，因为 Dart 有类型推断，能根据上下文推断出具体类型，如果不明确具体类型，可以用 <code>dynamic</code> 关键字修饰(类似 Kotlin 中的 Any)</li>
+<li>Dart 支持泛型</li>
+<li>Dart 支持顶层方法，以及静态方法和类方法，方法内也可以创建方法(嵌套方法)</li>
+<li>Dart 支持顶层变量，以及静态变量和类变量</li>
+<li>Dart 没有访问权限控制关键字(public，protected，private)，如果方法名或变量名前缀是<code>_</code> 则表示是 library 级别私有</li>
+<li>Dart 有表达式和语句，表达式具有运行时类型，而语句没有类型</li>
+</ul>
+<h2 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h2><p>变量声明符有 <code>Object</code>，<code>dynamic</code>，<code>var</code> 以及具体类型，其中 <code>Object</code> 和 <code>dynamic</code> 都表示所有类型，关于他们的区别，参考这段话：</p>
+<blockquote>
+<p>Another perspective on <code>dynamic</code> is that it’s not really a type - it’s a way to turn off type checking and tell the static type system “trust me, I know what I’m doing”. Writing <code>dynamic o</code>; declares a variable that isn’t typed - it’s instead marked as “not type-checked”.<br>When you write <code>Object o = something</code>; you are telling the system that it can’t assume anything about <code>o</code> except that it’s an <code>Object</code>. You can call <code>toString</code> and <code>hashCode</code> because those methods are defined on <code>Object</code>, but if you try to do <code>o.foo()</code> you will get a warning - it can’t see that you can do that, and so it warns you that your code is probably wrong.<br>If you write <code>dynamic o = something</code> you are telling the system to not assume anything, and to not check anything. If you write <code>o.foo()</code> then it will not warn you. You’ve told it that “anything related to <code>o</code> is OK! Trust me, I know what I’m doing”, and so it thinks <code>o.foo()</code> is OK.<br>With great power comes great responsibility - if you disable type-checking for a variable, it falls back on you to make sure you don’t do anything wrong.</p>
+</blockquote>
+<p>而 <code>var</code> 关键字申明的变量，就是交给 Dart 的类型推断系统自动推断具体类型，申明的时候不确定类型，在赋值的时候推断出具体的类型</p>
+<h3 id="默认值"><a href="#默认值" class="headerlink" title="默认值"></a>默认值</h3><p>变量都有默认值，一个变量在申明后不赋值，则它的默认值是 <code>null</code>，就算是数字类型(numeric)，默认值也是 <code>null</code>，因为在 Dart 中一切皆是对象</p>
+<h3 id="Final-和-Const-关键字"><a href="#Final-和-Const-关键字" class="headerlink" title="Final 和 Const 关键字"></a>Final 和 Const 关键字</h3><p>加了 <code>final</code> 关键字修饰的变量，一旦赋值就不可再被修改，而加了 <code>const</code> 关键字修饰的变量是一个编译器常量(<code>const</code> 修饰的变量默认是 <code>final</code>)</p>
+<h2 id="基本数据类型"><a href="#基本数据类型" class="headerlink" title="基本数据类型"></a>基本数据类型</h2><ul>
+<li>numbers(<code>int</code>, <code>double</code>)</li>
+<li>strings(<code>String</code>)</li>
+<li>booleans(<code>bool</code>)</li>
+<li>lists(<code>List</code>) 注: 在 Dart 中，数组(arrays)也是 List 对象</li>
+<li>maps(<code>Map</code>)</li>
+<li>runes(the UTF-32 code points of a string)</li>
+<li>symbols(A Symbol object represents an operator or identifier declared)</li>
+</ul>
+<h2 id="方法-Functions"><a href="#方法-Functions" class="headerlink" title="方法(Functions)"></a>方法(Functions)</h2><p>在 Dart 中，方法也是一个对象，具有 <code>Function</code> 类型，也就是说一个方法可以作为参数传递给其他方法</p>
+<p>语法 <code>=&gt; expr</code> 是 <code>{ return expr;}</code> 的缩写，例如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bool isNoble(int atomicNumber) =&gt; _nobleGases[atomicNumber] != null;</span><br></pre></td></tr></table></figure>
+<p>等同于</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">bool isNoble(int atomicNumber)&#123;</span><br><span class="line">  return _nobleGases[atomicNumber] != null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>方法的参数可以有两种类型: 必须(required)和可选(optional)，必须参数在列表前面，接着是可选参数，可选参数可以通过指定位置或者指定参数名传入，二者选其一</p>
+<h3 id="指定参数名传参"><a href="#指定参数名传参" class="headerlink" title="指定参数名传参"></a>指定参数名传参</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">void enableFlags(&#123;bool bold, bool hidden&#125;) &#123;...&#125;</span><br></pre></td></tr></table></figure>
+<p>定义方法时用 <code>{type param1, type param2}</code> 的方式是指定用指定参数名的方式传参，也就是在调用时，传的参数必须指定名字</p>
+<p>调用时:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">enableFlag(bold: true, hidden: false)</span><br></pre></td></tr></table></figure>
+<p>可以看到，在调用时，需要指明第一个参数是 <code>bold</code>，其值为 <code>true</code>，第二个是 <code>hidden</code>，其值是 <code>false</code></p>
+<h3 id="指定位置传参"><a href="#指定位置传参" class="headerlink" title="指定位置传参"></a>指定位置传参</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String say(String from, String msg, [String device, String token]) &#123;...&#125;</span><br></pre></td></tr></table></figure>
+<p>用 <code>[]</code> 包裹的参数表示是指定位置可选的参数，也就是在调用时可以只传三个参数，也可以传四个参数，但是如果传三个参数，则最后一个一定是参数 <code>device</code>，例如:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">say(&apos;Bob&apos;, &apos;Howdy&apos;, &apos;smoke signal&apos;)</span><br><span class="line">// or</span><br><span class="line">say(&apos;Bob&apos;, &apos;Howdy&apos;, &apos;smoke signal&apos;, &apos;Alice&apos;)</span><br></pre></td></tr></table></figure>
+<h3 id="参数默认值"><a href="#参数默认值" class="headerlink" title="参数默认值"></a>参数默认值</h3><p>在定义方法时，可以指定参数的默认值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">void enableFlags(&#123;bool bold = false, bool hidden = false&#125;) &#123;...&#125;</span><br></pre></td></tr></table></figure>
+<p>调用时:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">enableFlags(bold: true);</span><br></pre></td></tr></table></figure></p>
+<p>只传了一个参数 <code>bold</code>，而 <code>hidden</code> 的值是 <code>false</code></p>
+<h2 id="算数运算符"><a href="#算数运算符" class="headerlink" title="算数运算符"></a>算数运算符</h2><p><code>~/</code> 除号，结果是 int，相对于 <code>/</code> 来说，省去了一次手动转换<br><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">assert</span>(<span class="number">5</span> / <span class="number">2</span> == <span class="number">2.5</span>); <span class="comment">// Result is a double</span></span><br><span class="line"><span class="keyword">assert</span>(<span class="number">5</span> ~/ <span class="number">2</span> == <span class="number">2</span>); <span class="comment">// Result is an int</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="类型运算符"><a href="#类型运算符" class="headerlink" title="类型运算符"></a>类型运算符</h2><p><code>obj as Type</code> 把 obj 的类型强转为 Type</p>
+<p><code>obj is Type</code> 如果 obj 的类型是 Type，返回 true</p>
+<p><code>obj is! Type</code> 如果 obj 的类型不是 Type，返回 true</p>
+<h2 id="级联符号"><a href="#级联符号" class="headerlink" title="级联符号"></a>级联符号</h2><p><code>..</code> 可以线性操作一个对象，类似 Builder 模式的实现</p>
+<figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">querySelector</span>(<span class="string">'#confirm'</span>) <span class="comment">// Get an object.</span></span><br><span class="line">  ..text = <span class="string">'Confirm'</span> <span class="comment">// Use its members.</span></span><br><span class="line">  ..classes.add(<span class="string">'important'</span>)</span><br><span class="line">  ..onClick.listen((e) =&gt; <span class="built_in">window</span>.alert(<span class="string">'Confirmed!'</span>));</span><br></pre></td></tr></table></figure>
+<h2 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h2><figure class="highlight dart"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  breedMoreLlamas();</span><br><span class="line">&#125; on OutOfLlamasException &#123;</span><br><span class="line">  <span class="comment">// A specific exception</span></span><br><span class="line">  buyMoreLlamas();</span><br><span class="line">&#125; on Exception <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">  <span class="comment">// Anything else that is an exception</span></span><br><span class="line">  <span class="built_in">print</span>(<span class="string">'Unknown exception: <span class="subst">$e<span class="string">');</span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="string">&#125; catch (e) &#123;</span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="string">  // No specified type, handles all</span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="string">  print('</span></span>Something really unknown: <span class="subst">$e<span class="string">');</span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="string">&#125; finally &#123;</span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="string">  // Always clean up, even if an exception is thrown.</span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="string">  cleanLlamaStalls();</span></span></span></span><br><span class="line"><span class="string"><span class="subst"><span class="string">&#125;</span></span></span></span><br></pre></td></tr></table></figure>
+<h2 id="类"><a href="#类" class="headerlink" title="类"></a>类</h2><p>Dart 是一门混合继承的面向对象语言，每一个对象都是一个类的实例，所有类都继承自 Object，混合继承指可以单继承也可以多继承。</p>
+<p>访问类成员的方式与 Kotlin 类似，有 <code>.</code> 号 和 <code>?.</code> 号</p>
+<p>类的初始化顺序</p>
+<ul>
+<li>initializer list</li>
+<li>superclass’s no-arg constructor</li>
+<li>main class’s no-arg constructor</li>
+</ul>
+<p>混合继承，用 with 关键字</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">class Musician extends Performer with Musical &#123;</span><br><span class="line">  // ···</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#重要概念"><span class="toc-number">1.</span> <span class="toc-text">重要概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#变量"><span class="toc-number">2.</span> <span class="toc-text">变量</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#默认值"><span class="toc-number">2.1.</span> <span class="toc-text">默认值</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Final-和-Const-关键字"><span class="toc-number">2.2.</span> <span class="toc-text">Final 和 Const 关键字</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#基本数据类型"><span class="toc-number">3.</span> <span class="toc-text">基本数据类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方法-Functions"><span class="toc-number">4.</span> <span class="toc-text">方法(Functions)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#指定参数名传参"><span class="toc-number">4.1.</span> <span class="toc-text">指定参数名传参</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#指定位置传参"><span class="toc-number">4.2.</span> <span class="toc-text">指定位置传参</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数默认值"><span class="toc-number">4.3.</span> <span class="toc-text">参数默认值</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#算数运算符"><span class="toc-number">5.</span> <span class="toc-text">算数运算符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#类型运算符"><span class="toc-number">6.</span> <span class="toc-text">类型运算符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#级联符号"><span class="toc-number">7.</span> <span class="toc-text">级联符号</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#异常处理"><span class="toc-number">8.</span> <span class="toc-text">异常处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#类"><span class="toc-number">9.</span> <span class="toc-text">类</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2019/01/06/190106/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2019/01/06/190106/&text=Dart 基础"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2019/01/06/190106/&title=Dart 基础"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2019/01/06/190106/&is_video=false&description=Dart 基础"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Dart 基础&body=Check out this article: http://09ae9c.com/2019/01/06/190106/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2019/01/06/190106/&title=Dart 基础"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2019/01/06/190106/&title=Dart 基础"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2019/01/06/190106/&title=Dart 基础"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2019/01/06/190106/&title=Dart 基础"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2019/01/06/190106/&name=Dart 基础&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
