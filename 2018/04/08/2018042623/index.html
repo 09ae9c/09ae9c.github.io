@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="09AE9C&#39;s Blog">
 <meta property="og:description" content="使用 RxJava 实现应用内的事件分发，无需借助第三方库，少量的代码便能实现所需的功能 结构整体结构很简单，分为  EventType: 定义事件类型类型 Event: 具体事件模型 EventBus: 事件总线  最初的版本对事件定义采用了 接口 + 枚举类的方式实现，每一个事件类型就是一个枚举类型，后来发现这种方式不太方便对一类事件的注册与监听，必须手动添加所有事件，于是改成了用 Int 类">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-01-10T03:31:51.983Z">
+<meta property="og:updated_time" content="2019-01-10T03:33:02.938Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RxJava 实现事件通知机制">
 <meta name="twitter:description" content="使用 RxJava 实现应用内的事件分发，无需借助第三方库，少量的代码便能实现所需的功能 结构整体结构很简单，分为  EventType: 定义事件类型类型 Event: 具体事件模型 EventBus: 事件总线  最初的版本对事件定义采用了 接口 + 枚举类的方式实现，每一个事件类型就是一个枚举类型，后来发现这种方式不太方便对一类事件的注册与监听，必须手动添加所有事件，于是改成了用 Int 类">
@@ -74,8 +74,6 @@
         
         <li><a class="icon" href="/2019/01/06/2019010518/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
-        
-        <li><a class="icon" href="/2017/03/12/170312/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
