@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="使用 RxJava 实现应用内的事件分发，无需借助第三方库，少量的代码便能实现所需的功能 结构整体结构很简单，分为  EventType: 定义事件类型类型 Event: 具体事件模型 EventBus: 事件总线  最初的版本对事件定义采用了 接口 + 枚举类的方式实现，每一个事件类型就是一个枚举类型，后来发现这种方式不太方便对一类事件的注册与监听，必须手动添加所有事件，于是改成了用 Int 类">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RxJava 实现事件通知机制">
+<meta property="og:url" content="http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="使用 RxJava 实现应用内的事件分发，无需借助第三方库，少量的代码便能实现所需的功能 结构整体结构很简单，分为  EventType: 定义事件类型类型 Event: 具体事件模型 EventBus: 事件总线  最初的版本对事件定义采用了 接口 + 枚举类的方式实现，每一个事件类型就是一个枚举类型，后来发现这种方式不太方便对一类事件的注册与监听，必须手动添加所有事件，于是改成了用 Int 类">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-10T02:30:16.481Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RxJava 实现事件通知机制">
+<meta name="twitter:description" content="使用 RxJava 实现应用内的事件分发，无需借助第三方库，少量的代码便能实现所需的功能 结构整体结构很简单，分为  EventType: 定义事件类型类型 Event: 具体事件模型 EventBus: 事件总线  最初的版本对事件定义采用了 接口 + 枚举类的方式实现，每一个事件类型就是一个枚举类型，后来发现这种方式不太方便对一类事件的注册与监听，必须手动添加所有事件，于是改成了用 Int 类">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>RxJava 实现事件通知机制</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2019/01/06/2019010518-Dart 基础/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2017/03/12/170312/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&text=RxJava 实现事件通知机制"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&is_video=false&description=RxJava 实现事件通知机制"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=RxJava 实现事件通知机制&body=Check out this article: http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&name=RxJava 实现事件通知机制&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#结构"><span class="toc-number">1.</span> <span class="toc-text">结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现代码"><span class="toc-number">2.</span> <span class="toc-text">实现代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用"><span class="toc-number">3.</span> <span class="toc-text">使用</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        RxJava 实现事件通知机制
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-04-08T12:45:22.000Z" itemprop="datePublished">2018-04-08</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Kotlin/">Kotlin</a>
+    </div>
+
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>使用 RxJava 实现应用内的事件分发，无需借助第三方库，少量的代码便能实现所需的功能</p>
+<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><p>整体结构很简单，分为</p>
+<ul>
+<li>EventType: 定义事件类型类型</li>
+<li>Event: 具体事件模型</li>
+<li>EventBus: 事件总线</li>
+</ul>
+<p>最初的版本对事件定义采用了 接口 + 枚举类的方式实现，每一个事件类型就是一个枚举类型，后来发现这种方式不太方便对一类事件的注册与监听，必须手动添加所有事件，于是改成了用 Int 类型定义事件类型，这样如果需要注册某一类事件，只需整理对应的事件到对应 Int 类型集合里即可实现，下面是具体实现过程</p>
+<h2 id="实现代码"><a href="#实现代码" class="headerlink" title="实现代码"></a>实现代码</h2><p>定义事件类型，根据具体开发需求定义</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">object</span> AEventType &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">range</span><span class="params">()</span></span> = <span class="number">10000</span> to <span class="number">19999</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">val</span> EVENT_A_1 = <span class="number">10000</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">val</span> EVENT_A_2 = <span class="number">10001</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">object</span> BEventType &#123;</span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">range</span><span class="params">()</span></span> = <span class="number">20000</span> to <span class="number">29999</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">val</span> EVENT_B_1 = <span class="number">20000</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">val</span> EVENT_B_2 = <span class="number">20001</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Event 是具体事件模型类，一般需要两个参数，第一个是事件类型 type，第二个是具体事件内容 data</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">data</span> <span class="class"><span class="keyword">class</span> <span class="title">Event</span></span>(<span class="keyword">val</span> type: EventType, <span class="keyword">val</span> <span class="keyword">data</span>: Map&lt;String, Any&gt;?)</span><br></pre></td></tr></table></figure>
+<p>EventBus 用于管理事件注册与分发</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">object</span> EventBus &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">val</span> mBus = PublishSubject.create&lt;Event&gt;().toSerialized()</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">post</span><span class="params">(type: <span class="type">EventType</span>, <span class="keyword">data</span>: <span class="type">Map</span>&lt;<span class="type">String</span>, Any&gt;?=<span class="literal">null</span>)</span></span> &#123;</span><br><span class="line">        post(Event(type, <span class="keyword">data</span>))</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">register</span><span class="params">(type: <span class="type">Int</span>)</span></span>: Observable&lt;Event&lt;Map&lt;String, Any&gt;&gt;&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> mBus.filter &#123;</span><br><span class="line">            it.type == type</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">registerRange</span><span class="params">(range: <span class="type">Pair</span>&lt;<span class="type">Int</span>, <span class="built_in">Int</span>&gt;)</span></span>: Observable&lt;Event&lt;Map&lt;String, Any&gt;&gt;&gt; &#123;</span><br><span class="line">        <span class="keyword">return</span> mBus.filter &#123;</span><br><span class="line">            range.first &lt;= it.type &amp;&amp; it.type &lt;= range.second</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">onRangeEventInMainThread</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        range: <span class="type">Pair</span>&lt;<span class="type">Int</span>, <span class="built_in">Int</span>&gt;,</span></span></span><br><span class="line"><span class="function"><span class="params">        handleOnEvent: (<span class="type">event</span>: <span class="type">Event</span>&lt;<span class="type">Map</span>&lt;<span class="type">String</span>, Any&gt;&gt;)</span></span> -&gt; <span class="built_in">Unit</span></span><br><span class="line">    ): Disposable &#123;</span><br><span class="line">        <span class="keyword">return</span> registerRange(range)</span><br><span class="line">            .observeOn(AndroidSchedulers.mainThread())</span><br><span class="line">            .subscribe(&#123; handleOnEvent.invoke(it) &#125;, &#123; DefaultLogger.e(it) &#125;)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">fun</span> <span class="title">unregister</span><span class="params">(disposable: <span class="type">Disposable</span>?)</span></span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (disposable != <span class="literal">null</span> &amp;&amp; !disposable.isDisposed) &#123;</span><br><span class="line">            disposable.dispose()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>在需要发送事件的地方调用 <code>post()</code> 方法即可</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 发送单个 AEventType.EVENT_A_1 事件</span></span><br><span class="line">EventBus.post(AEventType.EVENT_A_1)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发送三个 AEventType.EVENT_A_2，并携带 data</span></span><br><span class="line">EventBus.post(AEventType.EVENT)A_2, hashMapOf(<span class="string">"state"</span> to <span class="string">"1"</span>))</span><br></pre></td></tr></table></figure>
+<p>然后在需要接收事件的地方注册监听</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 监听单个 AEventType 事件</span></span><br><span class="line"><span class="keyword">val</span> eventBus = EventBus.register(AEventType.EVENT_A_1)</span><br><span class="line">                .observeOn(AndroidSchedulers.mainThread())</span><br><span class="line">                .subscribe(&#123; event -&gt;</span><br><span class="line">                    Log.i(<span class="string">"TAG"</span>,<span class="string">"receive event: <span class="subst">$&#123;event.type&#125;</span> : <span class="subst">$&#123;event.data&#125;</span>"</span>)</span><br><span class="line">                &#125;)</span><br><span class="line">                </span><br><span class="line"><span class="comment">// 监听所有 AEventType 范围内的事件                </span></span><br><span class="line"><span class="keyword">val</span> eventBus = EventBus.onRangeEventInMainThread(AEventType.range()) &#123; event -&gt;</span><br><span class="line">            handleEvent(event)</span><br><span class="line">          &#125;</span><br></pre></td></tr></table></figure>
+<p>最后在必要的时候取消注册</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EventBus.unregister(eventBus)</span><br></pre></td></tr></table></figure>
+<p>以上就实现了一套简易但完整的事件通知机制</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#结构"><span class="toc-number">1.</span> <span class="toc-text">结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实现代码"><span class="toc-number">2.</span> <span class="toc-text">实现代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用"><span class="toc-number">3.</span> <span class="toc-text">使用</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&text=RxJava 实现事件通知机制"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&is_video=false&description=RxJava 实现事件通知机制"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=RxJava 实现事件通知机制&body=Check out this article: http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&name=RxJava 实现事件通知机制&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
