@@ -9,11 +9,11 @@
     <meta name="description" content="使用 RxJava 实现应用内的事件分发，无需借助第三方库，少量的代码便能实现所需的功能 结构整体结构很简单，分为  EventType: 定义事件类型类型 Event: 具体事件模型 EventBus: 事件总线  最初的版本对事件定义采用了 接口 + 枚举类的方式实现，每一个事件类型就是一个枚举类型，后来发现这种方式不太方便对一类事件的注册与监听，必须手动添加所有事件，于是改成了用 Int 类">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RxJava 实现事件通知机制">
-<meta property="og:url" content="http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/index.html">
+<meta property="og:url" content="http://09ae9c.com/2018/04/08/2018042623/index.html">
 <meta property="og:site_name" content="09AE9C&#39;s Blog">
 <meta property="og:description" content="使用 RxJava 实现应用内的事件分发，无需借助第三方库，少量的代码便能实现所需的功能 结构整体结构很简单，分为  EventType: 定义事件类型类型 Event: 具体事件模型 EventBus: 事件总线  最初的版本对事件定义采用了 接口 + 枚举类的方式实现，每一个事件类型就是一个枚举类型，后来发现这种方式不太方便对一类事件的注册与监听，必须手动添加所有事件，于是改成了用 Int 类">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-01-10T02:30:16.481Z">
+<meta property="og:updated_time" content="2019-01-10T02:34:28.523Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RxJava 实现事件通知机制">
 <meta name="twitter:description" content="使用 RxJava 实现应用内的事件分发，无需借助第三方库，少量的代码便能实现所需的功能 结构整体结构很简单，分为  EventType: 定义事件类型类型 Event: 具体事件模型 EventBus: 事件总线  最初的版本对事件定义采用了 接口 + 枚举类的方式实现，每一个事件类型就是一个枚举类型，后来发现这种方式不太方便对一类事件的注册与监听，必须手动添加所有事件，于是改成了用 Int 类">
@@ -72,10 +72,10 @@
     <span id="actions">
       <ul>
         
-        <li><a class="icon" href="/2018/04/08/2018042623/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        <li><a class="icon" href="/2019/01/06/2019010518-Dart 基础/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
         
         
-        <li><a class="icon" href="/2017/03/12/170312/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        <li><a class="icon" href="/2018/04/08/2018042623-RxJava 实现事件通知机制/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
         
         <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
         <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
@@ -88,16 +88,16 @@
     <br>
     <div id="share" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&text=RxJava 实现事件通知机制"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&is_video=false&description=RxJava 实现事件通知机制"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=RxJava 实现事件通知机制&body=Check out this article: http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&name=RxJava 实现事件通知机制&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2018/04/08/2018042623/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2018/04/08/2018042623/&text=RxJava 实现事件通知机制"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2018/04/08/2018042623/&title=RxJava 实现事件通知机制"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2018/04/08/2018042623/&is_video=false&description=RxJava 实现事件通知机制"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=RxJava 实现事件通知机制&body=Check out this article: http://09ae9c.com/2018/04/08/2018042623/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2018/04/08/2018042623/&title=RxJava 实现事件通知机制"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2018/04/08/2018042623/&title=RxJava 实现事件通知机制"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2018/04/08/2018042623/&title=RxJava 实现事件通知机制"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2018/04/08/2018042623/&title=RxJava 实现事件通知机制"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2018/04/08/2018042623/&name=RxJava 实现事件通知机制&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
@@ -194,16 +194,16 @@
 
     <div id="share-footer" style="display: none">
       <ul>
-  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&text=RxJava 实现事件通知机制"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&is_video=false&description=RxJava 实现事件通知机制"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="mailto:?subject=RxJava 实现事件通知机制&body=Check out this article: http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&title=RxJava 实现事件通知机制"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
-  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2018/04/08/2018042623-RxJava 实现事件通知机制/&name=RxJava 实现事件通知机制&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2018/04/08/2018042623/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2018/04/08/2018042623/&text=RxJava 实现事件通知机制"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2018/04/08/2018042623/&title=RxJava 实现事件通知机制"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2018/04/08/2018042623/&is_video=false&description=RxJava 实现事件通知机制"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=RxJava 实现事件通知机制&body=Check out this article: http://09ae9c.com/2018/04/08/2018042623/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2018/04/08/2018042623/&title=RxJava 实现事件通知机制"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2018/04/08/2018042623/&title=RxJava 实现事件通知机制"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2018/04/08/2018042623/&title=RxJava 实现事件通知机制"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2018/04/08/2018042623/&title=RxJava 实现事件通知机制"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2018/04/08/2018042623/&name=RxJava 实现事件通知机制&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
 </ul>
 
     </div>
