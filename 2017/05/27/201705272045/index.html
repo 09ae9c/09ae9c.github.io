@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="什么是依赖注入依赖注入是一种设计模式，帮助开发者编写低耦合的代码，所谓耦合，指两个组件之间的依赖关系，比如 Car 类 中需要 Engine 类，则说 Car 类 依赖 Engine 类，这两个类之间是耦合的，在软件开发中，应该尽量减少组件间的耦合程度，下面通过一个例子来理解依赖注入 不使用依赖注入123456789public class Car &amp;#123;       private Eng">
+<meta property="og:type" content="article">
+<meta property="og:title" content="依赖注入">
+<meta property="og:url" content="http://09ae9c.com/2017/05/27/201705272045/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="什么是依赖注入依赖注入是一种设计模式，帮助开发者编写低耦合的代码，所谓耦合，指两个组件之间的依赖关系，比如 Car 类 中需要 Engine 类，则说 Car 类 依赖 Engine 类，这两个类之间是耦合的，在软件开发中，应该尽量减少组件间的耦合程度，下面通过一个例子来理解依赖注入 不使用依赖注入123456789public class Car &amp;#123;       private Eng">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-19T15:16:04.477Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="依赖注入">
+<meta name="twitter:description" content="什么是依赖注入依赖注入是一种设计模式，帮助开发者编写低耦合的代码，所谓耦合，指两个组件之间的依赖关系，比如 Car 类 中需要 Engine 类，则说 Car 类 依赖 Engine 类，这两个类之间是耦合的，在软件开发中，应该尽量减少组件间的耦合程度，下面通过一个例子来理解依赖注入 不使用依赖注入123456789public class Car &amp;#123;       private Eng">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>依赖注入</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2017/10/15/201710152346/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2017/03/12/201703122346/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2017/05/27/201705272045/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2017/05/27/201705272045/&text=依赖注入"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2017/05/27/201705272045/&title=依赖注入"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2017/05/27/201705272045/&is_video=false&description=依赖注入"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=依赖注入&body=Check out this article: http://09ae9c.com/2017/05/27/201705272045/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2017/05/27/201705272045/&title=依赖注入"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2017/05/27/201705272045/&title=依赖注入"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2017/05/27/201705272045/&title=依赖注入"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2017/05/27/201705272045/&title=依赖注入"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2017/05/27/201705272045/&name=依赖注入&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是依赖注入"><span class="toc-number">1.</span> <span class="toc-text">什么是依赖注入</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#不使用依赖注入"><span class="toc-number">1.1.</span> <span class="toc-text">不使用依赖注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用依赖注入"><span class="toc-number">1.2.</span> <span class="toc-text">使用依赖注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#构造注入"><span class="toc-number">1.2.1.</span> <span class="toc-text">构造注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#接口注入"><span class="toc-number">1.2.2.</span> <span class="toc-text">接口注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#注解注入"><span class="toc-number">1.2.3.</span> <span class="toc-text">注解注入</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#依赖注入在-Android-中的应用"><span class="toc-number">2.</span> <span class="toc-text">依赖注入在 Android 中的应用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Dagger2"><span class="toc-number">2.1.</span> <span class="toc-text">Dagger2</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#示例一"><span class="toc-number">2.1.1.</span> <span class="toc-text">示例一</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例二"><span class="toc-number">2.1.2.</span> <span class="toc-text">示例二</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例三"><span class="toc-number">2.1.3.</span> <span class="toc-text">示例三</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ButterKnife"><span class="toc-number">2.2.</span> <span class="toc-text">ButterKnife</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#添加依赖"><span class="toc-number">2.2.1.</span> <span class="toc-text">添加依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基础使用"><span class="toc-number">2.2.2.</span> <span class="toc-text">基础使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#更多方法"><span class="toc-number">2.2.3.</span> <span class="toc-text">更多方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#绑定多个控件"><span class="toc-number">2.2.3.1.</span> <span class="toc-text">绑定多个控件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#绑定字符串"><span class="toc-number">2.2.3.2.</span> <span class="toc-text">绑定字符串</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#绑定字符串数组"><span class="toc-number">2.2.3.3.</span> <span class="toc-text">绑定字符串数组</span></a></li></ol></li></ol></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        依赖注入
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2017-05-27T12:45:22.000Z" itemprop="datePublished">2017-05-27</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/设计模式/">设计模式</a>
+    </div>
+
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="什么是依赖注入"><a href="#什么是依赖注入" class="headerlink" title="什么是依赖注入"></a>什么是依赖注入</h1><p>依赖注入是一种设计模式，帮助开发者编写低耦合的代码，所谓耦合，指两个组件之间的依赖关系，比如 Car 类 中需要 Engine 类，则说 Car 类 依赖 Engine 类，这两个类之间是耦合的，在软件开发中，应该尽量减少组件间的耦合程度，下面通过一个例子来理解依赖注入</p>
+<h2 id="不使用依赖注入"><a href="#不使用依赖注入" class="headerlink" title="不使用依赖注入"></a>不使用依赖注入</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Car</span> </span>&#123;  </span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> Engine engine;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Car</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 在 Car 的构造方法中创建一个新的引擎</span></span><br><span class="line">        engine = <span class="keyword">new</span> CarEngine();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这是一个正常的类，Engine 的创建过程在 Car 的构造方法中，这个 Engine 的控制权在 Car 中，如果后期想要修改 Engine，则必须修改 Car 的代码，这使得 Car 和 Engine 的耦合度非常高，不利于以后的修改维护</p>
+<h2 id="使用依赖注入"><a href="#使用依赖注入" class="headerlink" title="使用依赖注入"></a>使用依赖注入</h2><p>依赖注入有三种常见的实现方式：构造注入，接口注入和注解注入</p>
+<h3 id="构造注入"><a href="#构造注入" class="headerlink" title="构造注入"></a>构造注入</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Car</span> </span>&#123;  </span><br><span class="line"> </span><br><span class="line">    <span class="keyword">private</span> Engine engine;</span><br><span class="line"> </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Car</span><span class="params">(Engine engine)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.engine = engine;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="接口注入"><a href="#接口注入" class="headerlink" title="接口注入"></a>接口注入</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Injection</span>&lt;<span class="title">T</span>&gt;</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(T t)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Car</span> <span class="keyword">implements</span> <span class="title">Injection</span>&lt;<span class="title">Engine</span>&gt;</span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Engine engine;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Car</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">inject</span><span class="params">(Engine engine)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.engine = engine;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="注解注入"><a href="#注解注入" class="headerlink" title="注解注入"></a>注解注入</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Car</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Inject</span></span><br><span class="line">    Engine engine;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Car</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>修改后的 Car 类，从外部引入一个 Engine，Engine 的构造过程不在 Car 类中，Car 类中不关心 Engine 的创建过程，这样减少了 Car 和 Engine 之间的耦合度，后期对 Engine 修改维护时，不需要改动 Car 类</p>
+<p>以上代码演示了依赖注入的概念，依赖注入在软件开发中的应用非常广泛，无论是桌面应用还是移动端应用，都有很多优秀的依赖注入框架，下面开始了解依赖注入在 Android 开发中的应用</p>
+<h1 id="依赖注入在-Android-中的应用"><a href="#依赖注入在-Android-中的应用" class="headerlink" title="依赖注入在 Android 中的应用"></a>依赖注入在 Android 中的应用</h1><p>Android 中常用的依赖注入框架有 Dagger，Dagger2，RoboGuice，ButterKinfe 等</p>
+<ul>
+<li>Dagger: Square 公司开发，使用注解实现依赖注入[已弃用]</li>
+<li>Dagger2: Google 在 Dagger 基础上改造的版本</li>
+<li>RoboGuice: Google Guice 的 Android 版本[已弃用]</li>
+<li>ButterKinfe: JakeWharton 开发</li>
+</ul>
+<p>由于 Dogger 和 RoboGuice 已弃用，后续内容主要分析 Dagger2 和 ButterKnife 这两个框架在 Android 中的应用</p>
+<h2 id="Dagger2"><a href="#Dagger2" class="headerlink" title="Dagger2"></a>Dagger2</h2><p>在 module 的 build.gradle 文件中添加：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">  compile &apos;com.google.dagger:dagger:2.0&apos;</span><br><span class="line">  annotationProcessor &apos;com.google.dagger:dagger-compiler:2.0&apos;</span><br><span class="line">  provided &apos;javax.annotation:jsr250-api:1.0&apos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Dagger2 和 Dagger 一样，通过注解实现依赖注入，在 Dagger 中常用的注解有</p>
+<ul>
+<li><p><strong>@Inject</strong>：有两个作用，一是用来标记需要依赖的变量，以此告诉 Dagger2 为它提供依赖；二是用来标记构造函数，Dagger2 通过 @Inject 注解可以在需要这个类实例的时候来找到这个构造函数并把相关实例构造出来，以此来为被 @Inject 标记了的变量提供依赖</p>
+</li>
+<li><p><strong>@Module</strong>：用于标注提供依赖的类，你可能会有点困惑，上面不是提到用 @Inject 标记构造函数就可以提供依赖了么，为什么还需要 @Module？很多时候需要提供依赖的构造函数是第三方库的，没法给它加上 @Inject 注解，又比如说提供依赖的构造函数是带参数的，如果使用 @Inject 标记它，那么他的参数又怎么来呢？@Module 正是解决这些问题的</p>
+</li>
+<li><p><strong>@Provides</strong>：用于标注 Module 所标注的类中的方法，该方法在需要提供依赖时被调用，从而把预先提供好的对象当做依赖给标注了 @Inject 的变量赋值</p>
+</li>
+<li><p><strong>@Component</strong>：用于标注接口，是依赖需求方和依赖提供方之间的桥梁。被 Component 标注的接口在编译时会生成该接口的实现类（如果 @Component 标注的接口为 CarComponent，则编译期生成的实现类为 DaggerCarComponent）,通过调用这个实现类的方法完成注入；</p>
+</li>
+<li><p><strong>@Qulifier</strong>：用于自定义注解，也就是说 @Qulifier 就如同 Java 提供的几种基本元注解一样用来标记注解类。在使用 @Module 来标注提供依赖的方法时，方法名是可以随便定义的（虽然定义方法名一般以 provide 开头，但这并不是强制的，只是为了增加可读性而已）。那么 Dagger2 怎么知道这个方法是为谁提供依赖呢？答案就是返回值的类型，Dagger2 根据返回值的类型来决定为哪个被 @Inject 标记了的变量赋值。但是问题来了，一旦有多个一样的返回类型 Dagger2 就懵逼了。@Qulifier 的存在正式为了解决这个问题，使用 @Qulifier 来定义自己的注解，然后通过自定义的注解去标注提供依赖的方法和依赖需求方（也就是被 @Inject 标注的变量），这样 Dagger2 就知道为谁提供依赖了。—-一个更为精简的定义：当类型不足以鉴别一个依赖的时候，就可以使用这个注解标示；</p>
+</li>
+<li><p><strong>@Scope</strong>：用于自定义注解，我能可以通过 @Scope 自定义的注解来限定注解作用域，实现局部的单例；</p>
+</li>
+<li><p><strong>@Singleton</strong>：是一个通过 @Scope 定义的注解，一般通过它来实现全局单例。但实际上它并不能提前全局单例，是否能提供全局单例还要取决于对应的 Component 是否为一个全局对象</p>
+</li>
+</ul>
+<h3 id="示例一"><a href="#示例一" class="headerlink" title="示例一"></a>示例一</h3><p>Car 类是需求依赖方，依赖了 Engine 类，因此需要在变量 Engine 上添加 @Inject 来告诉 Dagger2 来为自己提供依赖<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Car</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Inject</span></span><br><span class="line">    Engine engine;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Car</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// rebuild 后自动生成的类</span></span><br><span class="line">        DaggerCarComponent.builder().build().inject(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Engine <span class="title">getEngine</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.engine;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Engine 类是依赖提供方，因此我们需要在它的构造函数上添加 @Inject<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Engine</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"Engine"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Inject</span></span><br><span class="line">    Engine()&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Log.i(TAG,<span class="string">"engine running..."</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接下来需要创建一个用 @Component 标注的接口 CarComponent，这个 CarComponent 其实就是一个注入器，这里用来将 Engine 注入到 Car 中<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">CarComponent</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(Car car)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>完成这些之后需要 reBuild 项目，让 Dagger2 帮我们生成相关的 Java 类。接着就可以在 Car 的构造函数中调用 Dagger2 生成的 DaggerCarComponent 来实现注入（在前面 Car 类的代码中已经有了体现）<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">Car</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="comment">// rebuild 后自动生成的类</span></span><br><span class="line">       DaggerCarComponent.builder().build().inject(<span class="keyword">this</span>);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="示例二"><a href="#示例二" class="headerlink" title="示例二"></a>示例二</h3><p>如果创建 Engine 的构造函数是带参数的呢？比如说制造一台引擎需要名字。或者 Engine 类是无法修改的呢？这时候就需要 @Module 和 @Provide 上场了<br>同样需要在 Car 类的成员变量 Engine 上加 @Inject 表示需要 Dagger2 为自己提供依赖；Engine 类的构造函数上的 @Inject 也需要去掉，因为现在不需要通过构造函数上的 @Inject 来提供依赖了</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Car</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Inject</span></span><br><span class="line">    Engine engine;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Car</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        DaggerCarComponent.builder().markCarModule(<span class="keyword">new</span> MarkCarModule()).build().inject(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Engine <span class="title">getEngine</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.engine;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接着需要一个 Module 类来生成依赖对象，前面的 @Module 就是用来标准这个类的，而 @Provide 则是用来标注具体提供依赖对象的方法（这里有个不成文的规定，被 @Provide 标注的方法命名我们一般以 provide 开头，这并不是强制的但有益于提升代码的可读性<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Module</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MarkCarModule</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MarkCarModule</span><span class="params">()</span></span>&#123; &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Provides</span></span><br><span class="line">    <span class="function">Engine <span class="title">provideEngine</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Engine(<span class="string">"faster"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接下来还需要对 CarComponent 进行一点点修改，之前的 @Component 注解是不带参数的，现在需要加上 <code>modules = {MarkCarModule.class}</code>，用来告诉 Dagger2 提供依赖的是 MarkCarModule 这个类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span>(modules = &#123;MarkCarModule.class&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">CarComponent</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">inject</span><span class="params">(Car car)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Car 类的构造函数也需要修改，相比之前多了个 <code>markCarModule(new MarkCarModule())</code> 方法，这就相当于告诉了注入器 DaggerCarComponent 把 MarkCarModule 提供的依赖注入到了 Car 类中<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Car</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Inject</span></span><br><span class="line">    Engine engine;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Car</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        DaggerCarComponent.builder().markCarModule(<span class="keyword">new</span> MarkCarModule()).build().inject(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Engine <span class="title">getEngine</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.engine;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>测试运行</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">simple2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       Car mCar = <span class="keyword">new</span> Car();</span><br><span class="line">       mCar.getEngine().run();</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="示例三"><a href="#示例三" class="headerlink" title="示例三"></a>示例三</h3><p>那么如果一台汽车有两个引擎（也就是说 Car 类中有两个 Engine 变量）怎么办呢？没关系，还有 @Qulifier，首先需要使用 Qulifier 定义两个注解：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Qualifier</span></span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> QualifierA &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Qualifier</span></span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> QualifierB &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同时，需要对依赖提供方作出修改<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Module</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MarkCarModule</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MarkCarModule</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@QualifierA</span></span><br><span class="line">    <span class="meta">@Provides</span></span><br><span class="line">    <span class="function">Engine <span class="title">provideEngineA</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Engine(<span class="string">"engineA"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@QualifierB</span></span><br><span class="line">    <span class="meta">@Provides</span></span><br><span class="line">    <span class="function">Engine <span class="title">provideEngineB</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Engine(<span class="string">"engineB"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接下来依赖需求方Car类同样需要修改</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Car</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@QualifierA</span> <span class="meta">@Inject</span> Engine mEngineA;</span><br><span class="line">    <span class="meta">@QualifierB</span> <span class="meta">@Inject</span> Engine mEngineB;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Car</span><span class="params">()</span></span>&#123;</span><br><span class="line">        DaggerCarComponent.builder().markCarModule(<span class="keyword">new</span> MarkCarModule()).build().inject(<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Engine <span class="title">getEngineA</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.mEngineA;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Engine <span class="title">getEngineB</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.mEngineB;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后再对 Engine 作一些调整</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Engine</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"Engine"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Engine</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">printEngineName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Log.i(TAG, <span class="string">"engine name is:"</span> + name);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">simple3</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Car mCar = <span class="keyword">new</span> Car();</span><br><span class="line">    mCar.getEngineA().printEngineName();</span><br><span class="line">    mCar.getEngineB().printEngineName();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>以上是通过对 知乎专栏文章 <a href="https://zhuanlan.zhihu.com/p/24454466" target="_blank" rel="noopener">神兵利器 Dagger2</a> 学习后总结得一些 Dagger2 的使用方法。下面开始记录 ButterKnife 的使用</p>
+<h2 id="ButterKnife"><a href="#ButterKnife" class="headerlink" title="ButterKnife"></a>ButterKnife</h2><p>关于 ButterKnife，很早以前就有所耳闻，但是一直没有真正使用过它，因为我认为在日常开发中能不用第三方库的时候尽量不用。在参考知乎 <a href="https://www.zhihu.com/question/38742543" target="_blank" rel="noopener">依赖注入框架AndroidAnnotations和ButterKnife真的方便了开发者？</a> 这个问答后，还是决定尝试下 ButterKnife。下面开始 ButterKnife 的使用。</p>
+<p>ButterKnife 的主要作用是绑定视图，帮助开发者从重复的 <code>findViewById</code> 中解放出来，实现编译期自动绑定。</p>
+<h3 id="添加依赖"><a href="#添加依赖" class="headerlink" title="添加依赖"></a>添加依赖</h3><p>在 module 的 build.gradle 文件中添加</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">  compile &apos;com.jakewharton:butterknife:8.4.0&apos;</span><br><span class="line">  annotationProcessor &apos;com.jakewharton:butterknife-compiler:8.4.0&apos;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="基础使用"><a href="#基础使用" class="headerlink" title="基础使用"></a>基础使用</h3><p>首先创建一个带有 TextView 和 Button 的界面</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">LinearLayout</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">              <span class="attr">android:orientation</span>=<span class="string">"vertical"</span></span></span><br><span class="line"><span class="tag">              <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">              <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">TextView</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/tv_title"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">Button</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:id</span>=<span class="string">"@+id/bt_show"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">        <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">LinearLayout</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>然后在 ButterKnifeActivity 中，使用 ButterKnife 的注解来绑定视图</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@BindView</span>(R.id.tv_title)</span><br><span class="line">TextView tvTitle;</span><br><span class="line"></span><br><span class="line"><span class="meta">@BindView</span>(R.id.bt_show)</span><br><span class="line">Button btShow;</span><br></pre></td></tr></table></figure>
+<p><strong>注意，变量的访问权限不能是 private，这里使用的是默认访问权限</strong></p>
+<p>当然也可以为 Button 绑定点击事件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@OnClick</span>(R.id.bt_show)</span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">show</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      Toast.makeText(ButterKnifeActivity.<span class="keyword">this</span>, <span class="string">"Hello ButterKnife"</span>, Toast.LENGTH_SHORT).show();</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>最后，一定要记得在 <code>onCreate()</code> 方法中，在 <code>setContentView()</code> 后调用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ButterKnife.bind(this);</span><br></pre></td></tr></table></figure>
+<p><strong>注意，不能在 setContentView() 前调用哦</strong></p>
+<p>这样就解决了繁琐的手动绑定视图和点击事件的代码，提高了工作效率。</p>
+<h3 id="更多方法"><a href="#更多方法" class="headerlink" title="更多方法"></a>更多方法</h3><p>ButteKnife 还有更多贴心的方法用来减轻开发者的工作</p>
+<h4 id="绑定多个控件"><a href="#绑定多个控件" class="headerlink" title="绑定多个控件"></a>绑定多个控件</h4><p>如果有多个相同类型的控件，可以用将它们放在一起进行绑定，比如</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@BindViews</span>(&#123;R.id.bt_1, R.id.bt_2, R.id.bt_3&#125;)</span><br><span class="line">List&lt;Button&gt; btList;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(@Nullable Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">    setContentView(R.layout.activity_butterknife);</span><br><span class="line">    ButterKnife.bind(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">    btList.get(<span class="number">0</span>).setText(<span class="string">"Hello 1"</span>);</span><br><span class="line">    btList.get(<span class="number">0</span>).setText(<span class="string">"Hello 2"</span>);</span><br><span class="line">    btList.get(<span class="number">0</span>).setText(<span class="string">"Hello 3"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="绑定字符串"><a href="#绑定字符串" class="headerlink" title="绑定字符串"></a>绑定字符串</h4><p>对于 String 类型的数据，也可以用 ButterKnife 将其和 values/strings 中的某个字符串资源绑定</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@BindString</span>(R.string.msg)</span><br><span class="line">String msg;</span><br></pre></td></tr></table></figure>
+<p>在使用的时候，msg 已经被赋值为 R.string.msg 的值了，直接使用即可</p>
+<h4 id="绑定字符串数组"><a href="#绑定字符串数组" class="headerlink" title="绑定字符串数组"></a>绑定字符串数组</h4><p>对于 Stirng 类型的数组，比如在 values/strings 中的某些数组资源</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">string-array</span> <span class="attr">name</span>=<span class="string">"city"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">item</span>&gt;</span>北京<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">item</span>&gt;</span>上海<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">item</span>&gt;</span>广州<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">item</span>&gt;</span>深圳<span class="tag">&lt;/<span class="name">item</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">string-array</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>使用时，通过 ButterKnife 绑定</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@BindArray</span>(R.array.city)</span><br><span class="line">String[] city;</span><br></pre></td></tr></table></figure>
+<p>这样将它们绑定在一起了</p>
+<p>类似的，Bitmap，Color 这类有 id 的资源都可以用 ButterKnife 绑定到指定的变量上。</p>
+<p>以上就是对 ButterKnife 的使用，关于 它 的源码分析，可以参看网上的一些文章，比如 知乎专栏文章<a href="https://zhuanlan.zhihu.com/p/20201755" target="_blank" rel="noopener">ButterKnife 源码分析</a> 和 <a href="https://zhuanlan.zhihu.com/p/21628698" target="_blank" rel="noopener">深入理解 ButterKnife</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#什么是依赖注入"><span class="toc-number">1.</span> <span class="toc-text">什么是依赖注入</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#不使用依赖注入"><span class="toc-number">1.1.</span> <span class="toc-text">不使用依赖注入</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用依赖注入"><span class="toc-number">1.2.</span> <span class="toc-text">使用依赖注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#构造注入"><span class="toc-number">1.2.1.</span> <span class="toc-text">构造注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#接口注入"><span class="toc-number">1.2.2.</span> <span class="toc-text">接口注入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#注解注入"><span class="toc-number">1.2.3.</span> <span class="toc-text">注解注入</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#依赖注入在-Android-中的应用"><span class="toc-number">2.</span> <span class="toc-text">依赖注入在 Android 中的应用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Dagger2"><span class="toc-number">2.1.</span> <span class="toc-text">Dagger2</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#示例一"><span class="toc-number">2.1.1.</span> <span class="toc-text">示例一</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例二"><span class="toc-number">2.1.2.</span> <span class="toc-text">示例二</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例三"><span class="toc-number">2.1.3.</span> <span class="toc-text">示例三</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ButterKnife"><span class="toc-number">2.2.</span> <span class="toc-text">ButterKnife</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#添加依赖"><span class="toc-number">2.2.1.</span> <span class="toc-text">添加依赖</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#基础使用"><span class="toc-number">2.2.2.</span> <span class="toc-text">基础使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#更多方法"><span class="toc-number">2.2.3.</span> <span class="toc-text">更多方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#绑定多个控件"><span class="toc-number">2.2.3.1.</span> <span class="toc-text">绑定多个控件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#绑定字符串"><span class="toc-number">2.2.3.2.</span> <span class="toc-text">绑定字符串</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#绑定字符串数组"><span class="toc-number">2.2.3.3.</span> <span class="toc-text">绑定字符串数组</span></a></li></ol></li></ol></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2017/05/27/201705272045/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2017/05/27/201705272045/&text=依赖注入"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2017/05/27/201705272045/&title=依赖注入"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2017/05/27/201705272045/&is_video=false&description=依赖注入"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=依赖注入&body=Check out this article: http://09ae9c.com/2017/05/27/201705272045/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2017/05/27/201705272045/&title=依赖注入"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2017/05/27/201705272045/&title=依赖注入"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2017/05/27/201705272045/&title=依赖注入"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2017/05/27/201705272045/&title=依赖注入"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2017/05/27/201705272045/&name=依赖注入&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

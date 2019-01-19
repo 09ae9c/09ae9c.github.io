@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="装饰者模式可以在不改变一个对象本身功能的基础上给对象增加额外的新行为。装饰者模式是一种用于替代继承的技术，它通过一种无须定义子类的方式来给对象动态增加职责，用对象之间的关联关系取代类之间的继承关系。在装饰者模式中引入了装饰器，在装饰器中既可以调用待装饰的原有类的方法，还可以增加新的方法，以扩充原有类的功能。">
+<meta name="keywords" content="设计模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="装饰者模式">
+<meta property="og:url" content="http://09ae9c.com/2015/06/20/201506202347/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="装饰者模式可以在不改变一个对象本身功能的基础上给对象增加额外的新行为。装饰者模式是一种用于替代继承的技术，它通过一种无须定义子类的方式来给对象动态增加职责，用对象之间的关联关系取代类之间的继承关系。在装饰者模式中引入了装饰器，在装饰器中既可以调用待装饰的原有类的方法，还可以增加新的方法，以扩充原有类的功能。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://img.blog.csdn.net/20160105233124451">
+<meta property="og:image" content="http://img.blog.csdn.net/20160105234014864">
+<meta property="og:updated_time" content="2019-01-19T15:16:04.477Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="装饰者模式">
+<meta name="twitter:description" content="装饰者模式可以在不改变一个对象本身功能的基础上给对象增加额外的新行为。装饰者模式是一种用于替代继承的技术，它通过一种无须定义子类的方式来给对象动态增加职责，用对象之间的关联关系取代类之间的继承关系。在装饰者模式中引入了装饰器，在装饰器中既可以调用待装饰的原有类的方法，还可以增加新的方法，以扩充原有类的功能。">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20160105233124451">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>装饰者模式</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2015/09/27/201509271240/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2015/06/17/201506171347/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/06/20/201506202347/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/06/20/201506202347/&text=装饰者模式"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/06/20/201506202347/&title=装饰者模式"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/06/20/201506202347/&is_video=false&description=装饰者模式"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=装饰者模式&body=Check out this article: http://09ae9c.com/2015/06/20/201506202347/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/06/20/201506202347/&title=装饰者模式"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/06/20/201506202347/&title=装饰者模式"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/06/20/201506202347/&title=装饰者模式"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/06/20/201506202347/&title=装饰者模式"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/06/20/201506202347/&name=装饰者模式&description=&lt;p&gt;装饰者模式可以在不改变一个对象本身功能的基础上给对象增加额外的新行为。装饰者模式是一种用于替代继承的技术，它通过一种无须定义子类的方式来给对象动态增加职责，用对象之间的关联关系取代类之间的继承关系。在装饰者模式中引入了装饰器，在装饰器中既可以调用待装饰的原有类的方法，还可以增加新的方法，以扩充原有类的功能。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#概念"><span class="toc-number">1.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设计原则"><span class="toc-number">2.</span> <span class="toc-text">设计原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#理解"><span class="toc-number">3.</span> <span class="toc-text">理解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实例"><span class="toc-number">4.</span> <span class="toc-text">实例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#抽象基类"><span class="toc-number">4.1.</span> <span class="toc-text">抽象基类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Android-手机"><span class="toc-number">4.2.</span> <span class="toc-text">Android 手机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iOS-手机"><span class="toc-number">4.3.</span> <span class="toc-text">iOS 手机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#装饰器基类"><span class="toc-number">4.4.</span> <span class="toc-text">装饰器基类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#手机壳装饰器"><span class="toc-number">4.5.</span> <span class="toc-text">手机壳装饰器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#手机膜装饰器"><span class="toc-number">4.6.</span> <span class="toc-text">手机膜装饰器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#手写笔装饰器"><span class="toc-number">4.7.</span> <span class="toc-text">手写笔装饰器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试"><span class="toc-number">4.8.</span> <span class="toc-text">测试</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        装饰者模式
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2015-06-20T15:47:32.000Z" itemprop="datePublished">2015-06-20</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/设计模式/">设计模式</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/设计模式/">设计模式</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>装饰者模式可以在不改变一个对象本身功能的基础上给对象增加额外的新行为。装饰者模式是一种用于替代继承的技术，它通过一种无须定义子类的方式来给对象动态增加职责，用对象之间的关联关系取代类之间的继承关系。在装饰者模式中引入了装饰器，在装饰器中既可以调用待装饰的原有类的方法，还可以增加新的方法，以扩充原有类的功能。</p>
+<a id="more"></a>
+<h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p><strong>动态地将行为附加到对象上。提供了比继承更具有弹性的替代方案</strong></p>
+<p>所谓”动态”，是指在运行时根据具体的需求添加行为，相对的，”静态”则是在编译时就确定了具体的行为，两者的区别很明显，动态添加行为具有很好的可扩展性，不需要修改已有的代码，这对于维护更新是很有利的。</p>
+<h2 id="设计原则"><a href="#设计原则" class="headerlink" title="设计原则"></a>设计原则</h2><ul>
+<li><p><strong>类应该对扩展开放，对修改关闭</strong><br>对原有代码修改的代价是很大的，很可能引入未知的 bug 和意外的副作用，所以要对修改关闭，而使用扩展来应对改变的需求，在不修改原有代码的情况下就能添加新行为。</p>
+</li>
+<li><p><strong>多用组合，少用继承</strong><br>如同策略模式，使用继承设计子类的行为，是在编译时静态决定的，而且所有的子类都会继承到相同的行为，而如果使用组合来扩展对象的行为，就可以在运行时动态的添加行为。</p>
+</li>
+</ul>
+<h2 id="理解"><a href="#理解" class="headerlink" title="理解"></a>理解</h2><p>在装饰者模式中，存在两个角色：组件(Component) 和 装饰器(Decorator)，并且两者要实现相同的接口或抽象类(实现接口或继承抽象类都行)，这样就可以使用装饰器来装饰组件了。现实生活中有很多这样的例子，比如购买手机时，一个裸机就算是一个组件，如果想要装饰下手机，加个手机套，贴个膜，送支手写笔等，这些就是装饰器。通过装饰，在原有对象的基础上得到了一个新的具有更多属性和行为的对象，比如加了手机套的手机比裸机耐摔，这便是装饰后得到的新属性；有了手写笔的手机可以有新的输入方式，这便是装饰后得到的新行为。</p>
+<h2 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h2><p>现实生活中有很多事物可以描述装饰者模式，就拿上面提到的手机配件的例子来写一个模拟代码</p>
+<p>在这个例子中，有一个抽象类 Phones，作为组件和装饰器的共同基类；有两个组件，AndroidPhone 和 iOSPhone，装饰器数量不确定，因此有个装饰器基类 PhoneAccessory，然后派生出一些可选的装饰器，比如 手机壳：PhoneCover，手机膜：PhoneMembrane，手写笔：PhonePen。他们之间的关系可以用如下类图描述</p>
+<p><img src="http://img.blog.csdn.net/20160105233124451" alt="这里写图片描述"></p>
+<p>通过类图可以很清楚的看到装饰者模式的思路，下面是具体代码：</p>
+<h3 id="抽象基类"><a href="#抽象基类" class="headerlink" title="抽象基类"></a>抽象基类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Phones</span> </span>&#123;</span><br><span class="line">    String description=<span class="string">"nothing"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getDescription</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> description;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Android-手机"><a href="#Android-手机" class="headerlink" title="Android 手机"></a>Android 手机</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AndroidPhone</span> <span class="keyword">extends</span> <span class="title">Phones</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AndroidPhone</span><span class="params">()</span></span>&#123;</span><br><span class="line">        description=<span class="string">"Android 手机"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="iOS-手机"><a href="#iOS-手机" class="headerlink" title="iOS 手机"></a>iOS 手机</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">public class iOSPhone extends Phones &#123;</span><br><span class="line"></span><br><span class="line">    public iOSPhone()&#123;</span><br><span class="line">        description=&quot;iOS 手机&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="装饰器基类"><a href="#装饰器基类" class="headerlink" title="装饰器基类"></a>装饰器基类</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public abstract class PhoneAccessory extends Phones &#123;</span><br><span class="line"></span><br><span class="line">    public abstract String getDescription();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="手机壳装饰器"><a href="#手机壳装饰器" class="headerlink" title="手机壳装饰器"></a>手机壳装饰器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class PhoneCover extends PhoneAccessory&#123;</span><br><span class="line">    private Phones phone;</span><br><span class="line"></span><br><span class="line">    public PhoneCover(Phones p)&#123;</span><br><span class="line">        this.phone=p;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String getDescription() &#123;</span><br><span class="line">        return this.phone.getDescription()+&quot; 加了个保护套&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="手机膜装饰器"><a href="#手机膜装饰器" class="headerlink" title="手机膜装饰器"></a>手机膜装饰器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">public class PhoneMembrane extends PhoneAccessory &#123;</span><br><span class="line">    private Phones phones;</span><br><span class="line"></span><br><span class="line">    public PhoneMembrane(Phones p)&#123;</span><br><span class="line">        this.phones=p;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String getDescription() &#123;</span><br><span class="line">        return this.phones.getDescription()+&quot; 贴了个膜&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="手写笔装饰器"><a href="#手写笔装饰器" class="headerlink" title="手写笔装饰器"></a>手写笔装饰器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public class PhonePen extends PhoneAccessory&#123;</span><br><span class="line">    private Phones phone;</span><br><span class="line"></span><br><span class="line">    public PhonePen(Phones p)&#123;</span><br><span class="line">        this.phone=p;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public String getDescription() &#123;</span><br><span class="line">        return this.phone.getDescription()+&quot; 送了支手写笔&quot;;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public class MainTest &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        Phones phone = new AndroidPhone();</span><br><span class="line">        System.out.println(phone.getDescription());</span><br><span class="line"></span><br><span class="line">        PhoneCover coverPhone = new PhoneCover(phone);</span><br><span class="line">        System.out.println(coverPhone.getDescription());</span><br><span class="line"></span><br><span class="line">        PhoneMembrane membranePhone = new PhoneMembrane(coverPhone);</span><br><span class="line">        System.out.println(membranePhone.getDescription());</span><br><span class="line"></span><br><span class="line">        PhonePen penPhone = new PhonePen(membranePhone);</span><br><span class="line">        System.out.println(penPhone.getDescription());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行结果：</p>
+<p><img src="http://img.blog.csdn.net/20160105234014864" alt="运行结果"></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#概念"><span class="toc-number">1.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设计原则"><span class="toc-number">2.</span> <span class="toc-text">设计原则</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#理解"><span class="toc-number">3.</span> <span class="toc-text">理解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实例"><span class="toc-number">4.</span> <span class="toc-text">实例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#抽象基类"><span class="toc-number">4.1.</span> <span class="toc-text">抽象基类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Android-手机"><span class="toc-number">4.2.</span> <span class="toc-text">Android 手机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#iOS-手机"><span class="toc-number">4.3.</span> <span class="toc-text">iOS 手机</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#装饰器基类"><span class="toc-number">4.4.</span> <span class="toc-text">装饰器基类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#手机壳装饰器"><span class="toc-number">4.5.</span> <span class="toc-text">手机壳装饰器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#手机膜装饰器"><span class="toc-number">4.6.</span> <span class="toc-text">手机膜装饰器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#手写笔装饰器"><span class="toc-number">4.7.</span> <span class="toc-text">手写笔装饰器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#测试"><span class="toc-number">4.8.</span> <span class="toc-text">测试</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/06/20/201506202347/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/06/20/201506202347/&text=装饰者模式"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/06/20/201506202347/&title=装饰者模式"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/06/20/201506202347/&is_video=false&description=装饰者模式"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=装饰者模式&body=Check out this article: http://09ae9c.com/2015/06/20/201506202347/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/06/20/201506202347/&title=装饰者模式"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/06/20/201506202347/&title=装饰者模式"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/06/20/201506202347/&title=装饰者模式"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/06/20/201506202347/&title=装饰者模式"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/06/20/201506202347/&name=装饰者模式&description=&lt;p&gt;装饰者模式可以在不改变一个对象本身功能的基础上给对象增加额外的新行为。装饰者模式是一种用于替代继承的技术，它通过一种无须定义子类的方式来给对象动态增加职责，用对象之间的关联关系取代类之间的继承关系。在装饰者模式中引入了装饰器，在装饰器中既可以调用待装饰的原有类的方法，还可以增加新的方法，以扩充原有类的功能。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

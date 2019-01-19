@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="本文记录 Java 中一些基础的概念与相关语法 访问权限 私有访问权限(private)：同一类中可访问  默认访问权限(无修饰符)：同一类中，同一包中可访问  受保护的访问权限(protected)：同一类中，同一包中，子类中可访问  公开访问权限(public)：同一类中，同一包中，子类中，其他包中可访问   构造器 默认的，一个类是提供了无参构造器，但是一旦编写了自定义的构造器，系统就不会提">
+<meta name="keywords" content="Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 基础">
+<meta property="og:url" content="http://09ae9c.com/2017/03/08/201703082346/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="本文记录 Java 中一些基础的概念与相关语法 访问权限 私有访问权限(private)：同一类中可访问  默认访问权限(无修饰符)：同一类中，同一包中可访问  受保护的访问权限(protected)：同一类中，同一包中，子类中可访问  公开访问权限(public)：同一类中，同一包中，子类中，其他包中可访问   构造器 默认的，一个类是提供了无参构造器，但是一旦编写了自定义的构造器，系统就不会提">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-19T15:16:04.468Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java 基础">
+<meta name="twitter:description" content="本文记录 Java 中一些基础的概念与相关语法 访问权限 私有访问权限(private)：同一类中可访问  默认访问权限(无修饰符)：同一类中，同一包中可访问  受保护的访问权限(protected)：同一类中，同一包中，子类中可访问  公开访问权限(public)：同一类中，同一包中，子类中，其他包中可访问   构造器 默认的，一个类是提供了无参构造器，但是一旦编写了自定义的构造器，系统就不会提">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Java 基础</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2017/03/10/201703102346/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2017/03/05/201703052346/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2017/03/08/201703082346/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2017/03/08/201703082346/&text=Java 基础"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2017/03/08/201703082346/&title=Java 基础"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2017/03/08/201703082346/&is_video=false&description=Java 基础"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Java 基础&body=Check out this article: http://09ae9c.com/2017/03/08/201703082346/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2017/03/08/201703082346/&title=Java 基础"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2017/03/08/201703082346/&title=Java 基础"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2017/03/08/201703082346/&title=Java 基础"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2017/03/08/201703082346/&title=Java 基础"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2017/03/08/201703082346/&name=Java 基础&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#访问权限"><span class="toc-number">1.</span> <span class="toc-text">访问权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#构造器"><span class="toc-number">2.</span> <span class="toc-text">构造器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#继承"><span class="toc-number">3.</span> <span class="toc-text">继承</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#变量"><span class="toc-number">4.</span> <span class="toc-text">变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编译类型和运行时类型"><span class="toc-number">5.</span> <span class="toc-text">编译类型和运行时类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建对象的过程"><span class="toc-number">6.</span> <span class="toc-text">创建对象的过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自动装箱"><span class="toc-number">7.</span> <span class="toc-text">自动装箱</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#static-修饰符"><span class="toc-number">8.</span> <span class="toc-text">static 修饰符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#final-修饰符"><span class="toc-number">9.</span> <span class="toc-text">final 修饰符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#常量池"><span class="toc-number">10.</span> <span class="toc-text">常量池</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Lambda表达式"><span class="toc-number">11.</span> <span class="toc-text">Lambda表达式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Runtime"><span class="toc-number">12.</span> <span class="toc-text">Runtime</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#String，StringBuffer-和-StringBuilder"><span class="toc-number">13.</span> <span class="toc-text">String，StringBuffer 和 StringBuilder</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ThreadLocalRandom"><span class="toc-number">14.</span> <span class="toc-text">ThreadLocalRandom</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Calendar"><span class="toc-number">15.</span> <span class="toc-text">Calendar</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#集合类"><span class="toc-number">16.</span> <span class="toc-text">集合类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#泛型"><span class="toc-number">17.</span> <span class="toc-text">泛型</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#Volatile"><span class="toc-number"></span> <span class="toc-text">Volatile</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程"><span class="toc-number"></span> <span class="toc-text">线程</span></a>
+    </li></div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Java 基础
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2017-03-08T15:46:22.000Z" itemprop="datePublished">2017-03-08</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Java/">Java</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Java/">Java</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>本文记录 Java 中一些基础的概念与相关语法</p>
+<h3 id="访问权限"><a href="#访问权限" class="headerlink" title="访问权限"></a>访问权限</h3><ul>
+<li><p>私有访问权限(private)：同一类中可访问</p>
+</li>
+<li><p>默认访问权限(无修饰符)：同一类中，同一包中可访问</p>
+</li>
+<li><p>受保护的访问权限(protected)：同一类中，同一包中，子类中可访问</p>
+</li>
+<li><p>公开访问权限(public)：同一类中，同一包中，子类中，其他包中可访问</p>
+</li>
+</ul>
+<h3 id="构造器"><a href="#构造器" class="headerlink" title="构造器"></a>构造器</h3><ul>
+<li><p>默认的，一个类是提供了无参构造器，但是一旦编写了自定义的构造器，系统就不会提供默认的构造器</p>
+</li>
+<li><p>不论是否显性的使用 super 调用父类构造器，子类构造器总会调用父类构造器一次，也就是说，当调用子类构造器来初始化子类对象时，父类构造器总会在子类构造器之前调用</p>
+</li>
+<li><p>如果将父类的所有构造器都修饰为private，则表示他不能被继承，没有类能够继承它</p>
+</li>
+<li><p>初始化块总是在构造器之前执行，不能接受参数，不能被调用</p>
+</li>
+</ul>
+<h3 id="继承"><a href="#继承" class="headerlink" title="继承"></a>继承</h3><ul>
+<li><p>如果父类某方法的访问权限是 private，则子类不能重写这个方法，即使写了一个同名的方法，那也是子类自己的方法，并不是重写父类的方法</p>
+</li>
+<li><p>创建子类对象时，系统不仅会为子类对象中的变量分配内存，也会为其父类中的变量分配内存</p>
+</li>
+</ul>
+<h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><p>Java 中提供的变量类型与它们之间的关系</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">所有变量</span><br><span class="line">      |-成员变量</span><br><span class="line">      |       |-实例变量(不以static修饰)</span><br><span class="line">      |       |</span><br><span class="line">      |       |-类变量(以static修饰)</span><br><span class="line">      |</span><br><span class="line">      |-局部变量</span><br><span class="line">              |-形参(方法签名中定义的变量)</span><br><span class="line">              |</span><br><span class="line">              |-方法局部变量(在方法内定义的变量)</span><br><span class="line">              |</span><br><span class="line">              |-代码块局部变量(在代码块定义的变量)</span><br></pre></td></tr></table></figure>
+<h3 id="编译类型和运行时类型"><a href="#编译类型和运行时类型" class="headerlink" title="编译类型和运行时类型"></a>编译类型和运行时类型</h3><ul>
+<li>例如<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">BaseClass test = <span class="keyword">new</span> SubClass();<span class="comment">//假设 SubClass 是 BaseClass 的子类</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>则对于实例 test 来说，它的编译类型是 <code>BaseClass</code>，而运行时类型是 <code>SubClass</code>，这样会出现一个问题，test 不能调用 <code>SubClass</code> 中有而 <code>BaseClass</code> 中没有的方法，因为 test 的编译时类型为 <code>BaseClass</code>，而 <code>BaseClass</code> 中没有这个方法，所以就不能调用（虽然它运行时类型为 <code>SubClass</code>，其中有这个方法）</p>
+<ul>
+<li>引用变量在编译阶段只能调用其编译时类型所具有的方法，但运行时则执行它运行是类型所具有的方法，因此，编写 java 代码时，引用变量只能调用声明该变量时所用类里包含的方法，例如，通过 <code>Object obj = new Person();</code> 定义一个变量 obj，则 obj 只能调用 Object 类的方法，而不能调用 Person 类里定义的方法。通过引用变量来访问其包含的实例变量时，系统总是试图访问它编译时类型所定义的成员变量，而不是它运行时类型所定义的成员变量</li>
+</ul>
+<h3 id="创建对象的过程"><a href="#创建对象的过程" class="headerlink" title="创建对象的过程"></a>创建对象的过程</h3><p>系统首先加载类（加载类的过程是先执行初始化块，再执行构造器，如果有静态初始化块，则先从顶层到底层逐步执行静态初始化块，随后才开始从顶层到底层的执行初始化块和构造器），上朔到 Object 类，先加载 Object 类，然后以次向下加载类，最后才加载该类，加载完类后就可以使用这个类创建该类的对象，为该对象的所有实例变量分配内存空间，接着开始对这些实例变量执行初始化，顺序是：先执行初始化块或声明实例变量时指定的初始值，然后再执行构造器里指定的值</p>
+<h3 id="自动装箱"><a href="#自动装箱" class="headerlink" title="自动装箱"></a>自动装箱</h3><p>存在如下关系：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Integer a1=<span class="number">2</span>;</span><br><span class="line">Integer a2=<span class="number">2</span>;</span><br><span class="line">System.out.println(a1==a2);<span class="comment">//结果为true</span></span><br><span class="line"></span><br><span class="line">Integer b1=<span class="number">128</span>;</span><br><span class="line">Integer b2=<span class="number">128</span>;</span><br><span class="line">System.out.println(b1==b2);<span class="comment">//结果为false</span></span><br></pre></td></tr></table></figure></p>
+<p>因为缓存的关系，其实现在 <code>a1 != a2</code>，因为 a1 和 a2 都是 Integer 类的对象，对象之前的关系不能使用 == 进行判断，但是出现 <code>a1 == a2</code> 结果为true，是因为 Integer 的缓存设计，如果对象的值在 -128~127 之间，则会将其放入一个缓存数组中，那么这时 a1 和 a2 都指向了缓存数组中 2 的地址，于是 a1 和 a2 相等，而 128 不在这个缓存数组中，系统会重新创建一个 Integer 实例，也就是说 b1 和 b2 是指向两个不同的 Integer 实例，所以不相同</p>
+<h3 id="static-修饰符"><a href="#static-修饰符" class="headerlink" title="static 修饰符"></a>static 修饰符</h3><ul>
+<li><p>static 变量：静态变量在内存中只有一份，JVM 只为静态分配一次内存，在加载类的过程中完成静态变量的内存分配，用类名直接访问，也可以通过对象来访问，而没有用 static 修饰的变量叫做实例变量，每创建一个类的实例，就会为实例变量分配一次内存，实例变量可以在内存中有多个(每个实例持有一个)，互不影响</p>
+</li>
+<li><p>static 方法：静态方法可以直接通过类名调用，静态方法中不能用 this 和 super 关键字，不能直接访问所属类的实例变量和实例方法，只能访问所属类的静态成员变量和成员方法。因为实例成员与特定的对象关联。</p>
+</li>
+<li><p>static 代码块：静态代码块，是在类中独立于类成员的 static 语句块，可以有多个，位置可以随便放，它不在任何的方法体内，JVM 加载类时会执行这些静态的代码块，如果 static 代码块有多个，JVM 将按照它们在类中出现的先后顺序依次执行它们，每个代码块只会被执行一次。</p>
+</li>
+<li><p>static 类：通常一个普通类不允许声明为静态的，只有一个内部类才可以。这时这个声明为静态的内部类可以直接作为一个普通类来使用，而不需先实例化它的外部类</p>
+</li>
+</ul>
+<h3 id="final-修饰符"><a href="#final-修饰符" class="headerlink" title="final 修饰符"></a>final 修饰符</h3><ul>
+<li><p>final 修饰的成员变量，要么在定义时赋初始值，要么在初始化块或构造器两者中的一个中赋初始值</p>
+</li>
+<li><p>final 修饰的局部变量，可以在定义时赋初始值，也可以在使用时赋初始值，但是只能有一次赋值的过程</p>
+</li>
+<li><p>final 修饰的方法不可以被重写，final 修饰的类不可以有子类</p>
+</li>
+<li><p>final 修饰基本数据类型和引用数据类型的区别：final修饰的基本数据类型不能被重新赋值，因此基本数据类型是不能被改变的，但是引用数据类型，它保存的仅仅是一个地址，虽然地址同样也不能变，但是地址所指向的数据是可能会变的</p>
+</li>
+</ul>
+<h3 id="常量池"><a href="#常量池" class="headerlink" title="常量池"></a>常量池</h3><p>java 中使用常量池来管理曾经用过的字符串直接量，起到缓存的作用，例如执行 <code>String a=&quot;java&quot;;</code> 则常量池中就会缓存一个字符串 “java”，后续再执行 <code>String b=&quot;java&quot;;</code> 时就会让 b 指向常量池中的 “java”，于是 <code>a == b</code> 为 true，因为它们指向的同一个地址</p>
+<h3 id="Lambda表达式"><a href="#Lambda表达式" class="headerlink" title="Lambda表达式"></a>Lambda表达式</h3><p>主要作用是代替匿名内部类的繁琐语法。由三部分组成：1.形参列表 ()，2.箭头 -&gt; ，3.代码块 {}</p>
+<h3 id="Runtime"><a href="#Runtime" class="headerlink" title="Runtime"></a>Runtime</h3><p>Runtime 类代表 java 运行时环境，可以访问 JVM 的相关信息，每个 java 程序都有一个与之对应的 Runtime 实例<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Runtime.getRuntime().exec(<span class="string">"notepad.exe"</span>);<span class="comment">//单独启动一个进程来操作系统的命令</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="String，StringBuffer-和-StringBuilder"><a href="#String，StringBuffer-和-StringBuilder" class="headerlink" title="String，StringBuffer 和 StringBuilder"></a>String，StringBuffer 和 StringBuilder</h3><ul>
+<li><p>String 类是不可变的，一旦创建一个 String 类的对象，则不可修改其中的字符序列</p>
+</li>
+<li><p>StringBuffer 类的对象中的字符串是可以修改的，通过 <code>append()</code>,<code>inster()</code>,<code>reverse()</code> 等方法可以实现字符串的修改，通过 <code>toSting()</code> 方法可以将其转换成 String 对象</p>
+</li>
+<li><p>StringBuilder 类和 StringBuffer 基本相同，其对象中的字符串也是可以修改的，但是 StringBuffer 是线程安全的，而 StringBuilder 不是线程安全的，因此性能略高</p>
+</li>
+</ul>
+<p><strong>因此，在通常情况下，要创建一个内容可变的字符串对象，优先考虑使用 StringBuilder 类</strong></p>
+<h3 id="ThreadLocalRandom"><a href="#ThreadLocalRandom" class="headerlink" title="ThreadLocalRandom"></a>ThreadLocalRandom</h3><p>是 Random 的升级版，用于生成一个伪随机数，在并发环境下使用可以减少多线程资源竞争，保证系统具有线程安全<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ThreadLocalRandom rand=ThreadLocalRandom.current();</span><br><span class="line">rand.nextInt(<span class="number">5</span>,<span class="number">20</span>);<span class="comment">//生成一个5~20之间的伪随机整数</span></span><br><span class="line">rand.nextDouble(<span class="number">5.0</span>,<span class="number">20.0</span>)<span class="comment">//生成一个5.0~20.0之间的伪随机浮点数</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="Calendar"><a href="#Calendar" class="headerlink" title="Calendar"></a>Calendar</h3><ul>
+<li><code>add()</code>方法与 <code>roll()</code> 方法的区别：当修改的内容超出允许范围，会发生进位，上一级字段会增大，而使用roll()进位时，上一级不会增大</li>
+</ul>
+<p>延迟修改：如果调用了 <code>set()</code> 方法修改一个字段之后，并没有立即计算出修改后的值，而是在调用 <code>getTime()</code> 之前计算，所以，如果在调用 <code>getTime()</code> 之前有多次 <code>set()</code>，则会将每次的设置放在一起计算，所以这样会造成一个问题，比如当前 <code>set(2015,7,31)</code>，通过 <code>set()</code> 方法设置月 <code>set(Calendar.MONTH,8)</code> 此时如果调用 <code>getTime()</code> 得到的日期为”2015.10.01”，因为9月31号自动进位到10月1号，而如果此时不调 <code>getTime()</code> 就直接继续设置：<code>set(Calendar.DATE,5)</code> 现在将月设置为9，日设置为5，则 <code>getTime()</code> 得到的结果为”2015.09.05”，因为这里在 <code>getTime()</code> 之前有两次设置，但是都是在 <code>getTime()</code> 之前一起计算的，于是月设置为9，日设置为5，得到的结果不需要进位。</p>
+<h3 id="集合类"><a href="#集合类" class="headerlink" title="集合类"></a>集合类</h3><ul>
+<li><p>set：无序，不可重复</p>
+</li>
+<li><p>List：有序，可重复</p>
+</li>
+<li><p>Map：键值对映射关系,HashMap,线程不安全，key,Value允许为空；HashTable,线程安全，key,Value不允许为空</p>
+</li>
+<li><p>Queue：队列的集合</p>
+</li>
+</ul>
+<h3 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h3><ul>
+<li><p>不管泛型类型的实际类型参数是什么，它们运行时总有同样的类，也就是说不管为泛型的形参传入哪一种类型参数，他们依然被当作同一个类处理：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; l1 = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">List&lt;String&gt; l2 = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">System.out.println(l1.getClass() == l2.getClass());<span class="comment">//打印结果为 true，因为它们是同一种类(ArraryList)</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>假设 Foo 是 Bar 的子类，则，Foo[] 依然是 Bar[] 的子类，但是 List<foo> 不是 List<bar> 的子类</bar></foo></p>
+</li>
+</ul>
+<h2 id="Volatile"><a href="#Volatile" class="headerlink" title="Volatile"></a>Volatile</h2><p>Volatile 修饰符解决的问题是 JVM 在-server模式下(注意普通运行模式下没有此问题),线程优先取用自己的线程私有 stack 中的变量值, 而不是公共堆中的值,造成变量值老旧的问题.</p>
+<p>换句话说, Volatile 强制要求了所有线程在使用变量的时候要去公共内存堆中获取值, 不可以偷懒使用自己的.<br>Volatile 绝对不保证原子性, 原子性只能用 Synchronized 同步修饰符实现.</p>
+<h2 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h2><ul>
+<li><p><strong>Thread 类中的 start() 和 run() 方法有什么区别？</strong><br><code>start()</code> 方法被用来启动新创建的线程，而且 <code>start()</code>内部调用了 <code>run()</code> 方法，这和直接调用 <code>run()</code> 方法的效果不一样。直接调用 <code>run()</code> 方法的时候，只会是在原来的线程中调用，没有新的线程启动，start()` 方法才会启动新线程。</p>
+</li>
+<li><p><strong>Java 中 Runnable 和 Callable 有什么不同？</strong><br>Runnable 和 Callable 都代表那些要在不同的线程中执行的任务，它们的主要区别是 Callable 的 <code>call()</code> 方法可以返回值和抛出异常，而 Runnable 的 <code>run()</code> 方法没有这些功能。Callable 可以返回装载有计算结果的 Future 对象</p>
+</li>
+</ul>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#访问权限"><span class="toc-number">1.</span> <span class="toc-text">访问权限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#构造器"><span class="toc-number">2.</span> <span class="toc-text">构造器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#继承"><span class="toc-number">3.</span> <span class="toc-text">继承</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#变量"><span class="toc-number">4.</span> <span class="toc-text">变量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#编译类型和运行时类型"><span class="toc-number">5.</span> <span class="toc-text">编译类型和运行时类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建对象的过程"><span class="toc-number">6.</span> <span class="toc-text">创建对象的过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自动装箱"><span class="toc-number">7.</span> <span class="toc-text">自动装箱</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#static-修饰符"><span class="toc-number">8.</span> <span class="toc-text">static 修饰符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#final-修饰符"><span class="toc-number">9.</span> <span class="toc-text">final 修饰符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#常量池"><span class="toc-number">10.</span> <span class="toc-text">常量池</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Lambda表达式"><span class="toc-number">11.</span> <span class="toc-text">Lambda表达式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Runtime"><span class="toc-number">12.</span> <span class="toc-text">Runtime</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#String，StringBuffer-和-StringBuilder"><span class="toc-number">13.</span> <span class="toc-text">String，StringBuffer 和 StringBuilder</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ThreadLocalRandom"><span class="toc-number">14.</span> <span class="toc-text">ThreadLocalRandom</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Calendar"><span class="toc-number">15.</span> <span class="toc-text">Calendar</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#集合类"><span class="toc-number">16.</span> <span class="toc-text">集合类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#泛型"><span class="toc-number">17.</span> <span class="toc-text">泛型</span></a></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#Volatile"><span class="toc-number"></span> <span class="toc-text">Volatile</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#线程"><span class="toc-number"></span> <span class="toc-text">线程</span></a>
+    </li></div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2017/03/08/201703082346/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2017/03/08/201703082346/&text=Java 基础"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2017/03/08/201703082346/&title=Java 基础"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2017/03/08/201703082346/&is_video=false&description=Java 基础"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Java 基础&body=Check out this article: http://09ae9c.com/2017/03/08/201703082346/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2017/03/08/201703082346/&title=Java 基础"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2017/03/08/201703082346/&title=Java 基础"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2017/03/08/201703082346/&title=Java 基础"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2017/03/08/201703082346/&title=Java 基础"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2017/03/08/201703082346/&name=Java 基础&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

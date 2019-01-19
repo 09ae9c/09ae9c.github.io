@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="简单来讲，应用启动分为两种情况 冷启动：最近任务列表中没有该应用（系统中没有该应用程序的进程），用户点击图标时开始创建应用进程 热启动：最近任务列表中有该应用，该应用最近被打开过，它的进程还在内存中，用户点击图标时只创建要显示的 Activity 一般所说的应用启动慢主要体现在冷启动时，点击图标后需要等待一段时间的白屏才能看到主界面；而热启动一般不存在这种情况，点击图标后能立即出现主界面。 通过查">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 应用启动性能优化实践">
+<meta property="og:url" content="http://09ae9c.com/2017/02/28/201702282333/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="简单来讲，应用启动分为两种情况 冷启动：最近任务列表中没有该应用（系统中没有该应用程序的进程），用户点击图标时开始创建应用进程 热启动：最近任务列表中有该应用，该应用最近被打开过，它的进程还在内存中，用户点击图标时只创建要显示的 Activity 一般所说的应用启动慢主要体现在冷启动时，点击图标后需要等待一段时间的白屏才能看到主界面；而热启动一般不存在这种情况，点击图标后能立即出现主界面。 通过查">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-19T15:16:04.458Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 应用启动性能优化实践">
+<meta name="twitter:description" content="简单来讲，应用启动分为两种情况 冷启动：最近任务列表中没有该应用（系统中没有该应用程序的进程），用户点击图标时开始创建应用进程 热启动：最近任务列表中有该应用，该应用最近被打开过，它的进程还在内存中，用户点击图标时只创建要显示的 Activity 一般所说的应用启动慢主要体现在冷启动时，点击图标后需要等待一段时间的白屏才能看到主界面；而热启动一般不存在这种情况，点击图标后能立即出现主界面。 通过查">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Android 应用启动性能优化实践</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2017/03/05/201703052346/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2017/02/13/201702132210/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2017/02/28/201702282333/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2017/02/28/201702282333/&text=Android 应用启动性能优化实践"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2017/02/28/201702282333/&title=Android 应用启动性能优化实践"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2017/02/28/201702282333/&is_video=false&description=Android 应用启动性能优化实践"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Android 应用启动性能优化实践&body=Check out this article: http://09ae9c.com/2017/02/28/201702282333/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2017/02/28/201702282333/&title=Android 应用启动性能优化实践"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2017/02/28/201702282333/&title=Android 应用启动性能优化实践"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2017/02/28/201702282333/&title=Android 应用启动性能优化实践"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2017/02/28/201702282333/&title=Android 应用启动性能优化实践"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2017/02/28/201702282333/&name=Android 应用启动性能优化实践&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#查看应用启动时间"><span class="toc-number">1.</span> <span class="toc-text">查看应用启动时间</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#查看应用启动时执行的过程"><span class="toc-number">2.</span> <span class="toc-text">查看应用启动时执行的过程</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Android 应用启动性能优化实践
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2017-02-28T15:33:22.000Z" itemprop="datePublished">2017-02-28</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Android/">Android</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Android/">Android</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>简单来讲，应用启动分为两种情况</p>
+<p>冷启动：最近任务列表中没有该应用（系统中没有该应用程序的进程），用户点击图标时开始创建应用进程</p>
+<p>热启动：最近任务列表中有该应用，该应用最近被打开过，它的进程还在内存中，用户点击图标时只创建要显示的 Activity</p>
+<p>一般所说的应用启动慢主要体现在冷启动时，点击图标后需要等待一段时间的白屏才能看到主界面；而热启动一般不存在这种情况，点击图标后能立即出现主界面。</p>
+<p>通过查阅资料，找到几个可能的原因</p>
+<ul>
+<li><p>Android Studio 中的 Instant Run 导致启动慢：这种情况一般出现在开发阶段，释放版不会出现这个问题</p>
+</li>
+<li><p>Application 中初始化工作太多：Application 的初始化一般只在冷启动时发生，一般在这里会做网络库初始化，图片加载库初始化等耗时的初始化工作</p>
+</li>
+<li><p>Activity 中初始化工作太多：包括界面渲染，组件初始化等操作，甚至可能在这里读取数据并渲染到界面（本地获取或网络获取）</p>
+</li>
+<li><p>View 界面太复杂：包括控件之间层级嵌套太深，布局凌乱，过度绘制等使得界面渲染时需要耗费大量时间</p>
+</li>
+</ul>
+<p>接下来定位问题，方法很简单粗暴，就是排除法，根据上面列出的原因，逐个测试，例如我想测试是不是因为 Instant Run 导致应用启动慢，那就编译一个释放版的应用，查看它的启动时间和测试版的启动时间有没有太大的差别，如果有，则说明是这个原因导致了启动慢，如果释放版的启动时间仍然不够理想，就接着从后面几点入手排查</p>
+<h2 id="查看应用启动时间"><a href="#查看应用启动时间" class="headerlink" title="查看应用启动时间"></a>查看应用启动时间</h2><p>在 adb 中执行命令 <code>adb shell am start -W [package name]/[package name + activity name]</code> 就能查看指定应用的启动时间，这里的启动时间是指从点击应用图标，到应用的第一帧画面出现在界面中的时间，如果要查看冷启动方式，需要确保设备上已经在最近任务中清除了该应用</p>
+<p>例如一个测试程序的启动时加载的是 LauncherActivity，那么要查看从点击图标到 LauncherActivity 加载完成所花费的时间，执行命令 <code>adb shell am start -W com.test/com.test.LauncherAcitivity</code></p>
+<p>这种方式还可以查看冷启动和热启动消耗时间的对比</p>
+<h2 id="查看应用启动时执行的过程"><a href="#查看应用启动时执行的过程" class="headerlink" title="查看应用启动时执行的过程"></a>查看应用启动时执行的过程</h2><p>使用 Android 自带的 traceview 可以对一段代码进行方法统计，得到这段代码的执行过程以及耗时情况</p>
+<p>但是 traceview 本身运行要占用一定时间，在测试的时候要记得排除他运行的时间消耗</p>
+<p>通过在代码中添加 <code>Debug.startMethodTracing(filename)</code> 就开始记录方法调用，结束时调用 <code>Debug.stopMethodTracing()</code> 即可，运行结果将保存在 SD 卡根目录下的 filename.trace 文件中(注：filename 是自定义的文件名)，然后将 trace 文件从设备拷贝到电脑上，通过 Android Studio 中的 Android Device Monitor 工具（Tools -> Android -> Android Device Monitor）打开 trace 文件，就能查看从记录开始到结束这段时间内方法的调用情况</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#查看应用启动时间"><span class="toc-number">1.</span> <span class="toc-text">查看应用启动时间</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#查看应用启动时执行的过程"><span class="toc-number">2.</span> <span class="toc-text">查看应用启动时执行的过程</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2017/02/28/201702282333/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2017/02/28/201702282333/&text=Android 应用启动性能优化实践"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2017/02/28/201702282333/&title=Android 应用启动性能优化实践"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2017/02/28/201702282333/&is_video=false&description=Android 应用启动性能优化实践"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Android 应用启动性能优化实践&body=Check out this article: http://09ae9c.com/2017/02/28/201702282333/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2017/02/28/201702282333/&title=Android 应用启动性能优化实践"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2017/02/28/201702282333/&title=Android 应用启动性能优化实践"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2017/02/28/201702282333/&title=Android 应用启动性能优化实践"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2017/02/28/201702282333/&title=Android 应用启动性能优化实践"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2017/02/28/201702282333/&name=Android 应用启动性能优化实践&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

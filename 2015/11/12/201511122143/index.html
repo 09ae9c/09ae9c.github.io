@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="摸索了两天，大概了解了在 AndroidStudio 中代码混淆和打包发布的过程，在此记录下。">
+<meta name="keywords" content="Android Studio,代码混淆">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 代码混淆与打包">
+<meta property="og:url" content="http://09ae9c.com/2015/11/12/201511122143/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="摸索了两天，大概了解了在 AndroidStudio 中代码混淆和打包发布的过程，在此记录下。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://img.blog.csdn.net/20150815201554586">
+<meta property="og:image" content="http://img.blog.csdn.net/20150815202810384">
+<meta property="og:image" content="http://img.blog.csdn.net/20150815221916826">
+<meta property="og:image" content="http://img.blog.csdn.net/20150815222121968">
+<meta property="og:image" content="http://img.blog.csdn.net/20150815223112389">
+<meta property="og:updated_time" content="2019-01-19T15:16:04.454Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 代码混淆与打包">
+<meta name="twitter:description" content="摸索了两天，大概了解了在 AndroidStudio 中代码混淆和打包发布的过程，在此记录下。">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20150815201554586">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Android 代码混淆与打包</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2015/12/01/201512012123/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2015/11/10/201511102053/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/11/12/201511122143/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/11/12/201511122143/&text=Android 代码混淆与打包"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/11/12/201511122143/&title=Android 代码混淆与打包"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/11/12/201511122143/&is_video=false&description=Android 代码混淆与打包"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Android 代码混淆与打包&body=Check out this article: http://09ae9c.com/2015/11/12/201511122143/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/11/12/201511122143/&title=Android 代码混淆与打包"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/11/12/201511122143/&title=Android 代码混淆与打包"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/11/12/201511122143/&title=Android 代码混淆与打包"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/11/12/201511122143/&title=Android 代码混淆与打包"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/11/12/201511122143/&name=Android 代码混淆与打包&description=&lt;p&gt;摸索了两天，大概了解了在 AndroidStudio 中代码混淆和打包发布的过程，在此记录下。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#代码混淆："><span class="toc-number">1.</span> <span class="toc-text">代码混淆：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#打包发布"><span class="toc-number">2.</span> <span class="toc-text">打包发布</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Android 代码混淆与打包
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2015-11-12T13:43:12.000Z" itemprop="datePublished">2015-11-12</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Android/">Android</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Android-Studio/">Android Studio</a>, <a class="tag-link" href="/tags/代码混淆/">代码混淆</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>摸索了两天，大概了解了在 AndroidStudio 中代码混淆和打包发布的过程，在此记录下。</p>
+<a id="more"></a>
+<h2 id="代码混淆："><a href="#代码混淆：" class="headerlink" title="代码混淆："></a>代码混淆：</h2><p>关于代码混淆的作用，就不多解释了，整个过程大致如下：</p>
+<ul>
+<li><p>在app下的build.gradle文件中添加如下代码（minifyEnabled 表示是否混淆，默认是false，这里要记得设置成true）：<br><img src="http://img.blog.csdn.net/20150815201554586" alt="这里写图片描述"><br>其中proguard-android.txt文件是本地sdk/tools/proguard文件夹下的默认文件；prguard-rules.pro文件就是用来编写混淆代码的；</p>
+</li>
+<li><p>接下来就是在prguard-rules.pro文件中编写混淆代码：</p>
+</li>
+</ul>
+<pre><code>关于其中代码的理解，可以参考这篇文章：[代码混淆详解](http://blog.csdn.net/z157794218/article/details/40039785)
+</code></pre><p>编写完混淆代码，混淆也就算完成了，接下来就是打包了，但是，混淆的时候可能会遇到各种问题，主要是混淆代码，因为涉及到有的类不需要混淆，混淆了就会报错运行不了，所以在编写混淆代码的时候一定要小心，其实一般注意这几点就好了：</p>
+<ul>
+<li><p><strong>不需要导入第三方类库的代码</strong>，如上图注释的部分：<strong>-libraryjars libs/BaiduLBS_Android.jar等</strong>，按照网上说的，需要在混淆文件中导入第三方类库，防止混淆时读取包内容出错，<strong>但是如果那样做的话，会报如下错误：</strong><br><img src="http://img.blog.csdn.net/20150815202810384" alt="这里写图片描述"><br>是的，他说这个包被指定了两次</p>
+<p>原因是，在build.gradle文件中已经指定了第三方类库，这里再次指定，就会重复，所以，<strong>在此应该不需要导第三方包的代码</strong></p>
+</li>
+<li><p><strong>过滤掉第三方包</strong>，也就是不需要混淆第三方包，比如常见的 android-support-v4.jar：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-ignorewarnings</span><br><span class="line">-dontwarn android.support.v4.**    </span><br><span class="line">-keep class android.support.v4.** &#123; *; &#125;  </span><br><span class="line">-keep interface android.support.v4.app.** &#123; *; &#125;  </span><br><span class="line">-keep public class * extends android.support.v4.**  </span><br><span class="line">-keep public class * extends android.app.Fragment</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>下面是一个项目中我过滤掉的第三方包：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-keep class org.apache.**&#123;*;&#125;//过滤commons-httpclient-3.1.jar</span><br><span class="line">-keep class com.fasterxml.jackson.**&#123;*;&#125;//过滤jackson-core-2.1.4.jar等</span><br><span class="line">-keep class com.lidroid.xutils.**&#123;*;&#125;//过滤xUtils-2.6.14.jar</span><br><span class="line">--keep class com.baidu.** &#123;*;&#125;//过滤BaiduLBS_Android.jar</span><br></pre></td></tr></table></figure></p>
+<p> 通常关于第三方包的混淆代码，一般在其github主页上或者simple中会有提示，比如 xUtils的混淆就建议不要混淆<strong>Annotation</strong>，即：`-keep class <em> extends java.lang.annotation.Annotation{</em>;}<br> 还有百度地图，在其官方文档中有说明，需要如下混淆代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-dontwarn com.baidu.**</span><br><span class="line">-keep class com.baidu.**&#123;*;&#125;  </span><br><span class="line">-keep class vi.com.**&#123;*;&#125;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>接下来需要注意的就是一些固定格式的代码了，比如常见的Activity等不要混淆，Bean不要混淆等，看代码：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">-keep public class * extends android.app.Activity</span><br><span class="line">-keep public class * extends android.app.Application</span><br><span class="line">-keep public class * extends android.app.Fragment</span><br><span class="line">-keep public class * extends android.app.Service</span><br><span class="line">-keep public class * extends android.content.BroadcastReceiver</span><br><span class="line">-keep public class * extends android.content.ContentProvider</span><br><span class="line">-keep public class * extends android.app.backup.BackupAgentHelper</span><br><span class="line">-keep public class * extends android.preference.Preference</span><br><span class="line">-keep public class com.android.vending.licensing.ILicensingService</span><br></pre></td></tr></table></figure>
+<p>这里的内容大致就是对一些Android组件保持原样，不进行混淆</p>
+<p><strong>总结一下混淆</strong></p>
+<p>在<strong>prguard-rules.pro</strong>文件中写的，其实就是混淆规则，规定哪些东西不需要混淆。自己编写的代码中大致就是一些重要的类需要混淆，<strong>而混淆的本质就是精简类名，用简单的a,b,c等单词来代替之前写的如DataUtil等易懂的类名</strong>。</p>
+<p>所以，理解了这点，也就好理解这个混淆文件该怎么写了，大致思路就是：不混淆第三方库，不混淆系统组件，一般也可以不混淆Bean等模型类，因为这些对别人都是没用的，毕竟都是开源的。。。</p>
+<p>下面是整个混淆文件的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"># Add project specific ProGuard rules here.</span><br><span class="line"># By default, the flags in this file are appended to flags specified</span><br><span class="line"># in C:\Users\sdt1\AppData\Local\Android\sdk/tools/proguard/proguard-android.txt</span><br><span class="line"># You can edit the include path and order by changing the proguardFiles</span><br><span class="line"># directive in build.gradle.</span><br><span class="line">#</span><br><span class="line"># For more details, see</span><br><span class="line">#   http://developer.android.com/guide/developing/tools/proguard.html</span><br><span class="line"></span><br><span class="line"># Add any project specific keep options here:</span><br><span class="line"></span><br><span class="line"># If your project uses WebView with JS, uncomment the following</span><br><span class="line"># and specify the fully qualified class name to the JavaScript interface</span><br><span class="line"># class:</span><br><span class="line">#-keepclassmembers class fqcn.of.javascript.interface.for.webview &#123;</span><br><span class="line">#   public *;</span><br><span class="line">#&#125;</span><br><span class="line"></span><br><span class="line">#-----------------混淆配置设定------------------------------------------------------------------------</span><br><span class="line">-optimizationpasses 5                                                       #指定代码压缩级别</span><br><span class="line">-dontusemixedcaseclassnames                                                 #混淆时不会产生形形色色的类名</span><br><span class="line">-dontskipnonpubliclibraryclasses                                            #指定不忽略非公共类库</span><br><span class="line">-dontpreverify                                                              #不预校验，如果需要预校验，是-dontoptimize</span><br><span class="line">-ignorewarnings                                                             #屏蔽警告</span><br><span class="line">-verbose                                                                    #混淆时记录日志</span><br><span class="line">-optimizations !code/simplification/arithmetic,!field/*,!class/merging/*    #优化</span><br><span class="line"></span><br><span class="line">#-----------------导入第三方包,但是在当前版本中使用会报 input jar file is specified twice 错误，所以注释掉</span><br><span class="line">#-libraryjars libs/android.support.v4.jar</span><br><span class="line">#-libraryjars libs/BaiduLBS_Android.jar</span><br><span class="line">#-libraryjars libs/commons-httpclient-3.1.jar</span><br><span class="line">#-libraryjars libs/jackson-annotations-2.1.4.jar</span><br><span class="line">#-libraryjars libs/jackson-core-2.1.4.jar</span><br><span class="line">#-libraryjars libs/jackson-databind-2.1.4.jar</span><br><span class="line">#-libraryjars libs/xUtils-2.6.14.jar</span><br><span class="line"></span><br><span class="line">#-----------------不需要混淆第三方类库------------------------------------------------------------------</span><br><span class="line">-dontwarn android.support.v4.**                                             #去掉警告</span><br><span class="line">-keep class android.support.v4.** &#123; *; &#125;                                    #过滤android.support.v4</span><br><span class="line">-keep interface android.support.v4.app.** &#123; *; &#125;</span><br><span class="line">-keep public class * extends android.support.v4.**</span><br><span class="line">-keep public class * extends android.app.Fragment</span><br><span class="line"></span><br><span class="line">-keep class org.apache.**&#123;*;&#125;                                               #过滤commons-httpclient-3.1.jar</span><br><span class="line"></span><br><span class="line">-keep class com.fasterxml.jackson.**&#123;*;&#125;                                    #过滤jackson-core-2.1.4.jar等</span><br><span class="line"></span><br><span class="line">-dontwarn com.lidroid.xutils.**                                             #去掉警告</span><br><span class="line">-keep class com.lidroid.xutils.**&#123;*;&#125;                                       #过滤xUtils-2.6.14.jar</span><br><span class="line">-keep class * extends java.lang.annotation.Annotation&#123;*;&#125;                   #这是xUtils文档中提到的过滤掉注解</span><br><span class="line"></span><br><span class="line">-dontwarn com.baidu.**                                                      #去掉警告</span><br><span class="line">-dontwarn com.baidu.mapapi.**</span><br><span class="line">-keep class com.baidu.** &#123;*;&#125;                                               #过滤BaiduLBS_Android.jar</span><br><span class="line">-keep class vi.com.gdi.bgl.android.**&#123;*;&#125;</span><br><span class="line">-keep class com.baidu.platform.**&#123;*;&#125;</span><br><span class="line">-keep class com.baidu.location.**&#123;*;&#125;</span><br><span class="line">-keep class com.baidu.vi.**&#123;*;&#125;</span><br><span class="line"></span><br><span class="line">#-----------------不需要混淆系统组件等-------------------------------------------------------------------</span><br><span class="line">-keep public class * extends android.app.Activity</span><br><span class="line">-keep public class * extends android.app.Application</span><br><span class="line">-keep public class * extends android.app.Service</span><br><span class="line">-keep public class * extends android.content.BroadcastReceiver</span><br><span class="line">-keep public class * extends android.content.ContentProvider</span><br><span class="line">-keep public class * extends android.preference.Preference</span><br><span class="line">-keep public class com.android.vending.licensing.ILicensingService</span><br><span class="line"></span><br><span class="line">-keep class com.classtc.test.entity.**&#123;*;&#125;                                   #过滤掉自己编写的实体类</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#----------------保护指定的类和类的成员，但条件是所有指定的类和类成员是要存在------------------------------------</span><br><span class="line">-keepclasseswithmembernames class * &#123;</span><br><span class="line">    public &lt;init&gt;(android.content.Context, android.util.AttributeSet);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">-keepclasseswithmembernames class * &#123;</span><br><span class="line">    public &lt;init&gt;(android.content.Context, android.util.AttributeSet, int);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="打包发布"><a href="#打包发布" class="headerlink" title="打包发布"></a>打包发布</h2><p>混淆代码编写完成，就是打包发布了，打包的时候需要注意，如果混淆代码编写有疏漏，编译打包可能会出错，如上面的那个报错一样，就是在混淆的时候重复指定了第三方包，导致编译打包出错。<br>下面是打包的具体过程：</p>
+<ul>
+<li><p>如图，在AndroidStudio中找到Build–&gt;Generate Signed APK…<br><img src="http://img.blog.csdn.net/20150815221916826" alt="这里写图片描述"></p>
+</li>
+<li><p>在出现的窗口中选择Create new (如果之前创建过，可以直接选择，然后在下面输入密码即可)：<br><img src="http://img.blog.csdn.net/20150815222121968" alt="这里写图片描述"></p>
+</li>
+</ul>
+<ul>
+<li><p>接下来编写密钥信息窗口：<br><img src="http://img.blog.csdn.net/20150815223112389" alt="这里写图片描述"></p>
+</li>
+<li><p>填写完密钥信息后回到之前的窗户，点击Next，然后点击Finish就完成了，然后等待编译完成，在文件夹下会多一个app-release.apk文件，这个就是正式版的安装包</p>
+</li>
+</ul>
+<p>到此，打包完成，当然，如果需要发布到各大软件市场，可能还需要渠道打包，这个就等以后做过了再回来总结</p>
+<p>推荐文章：<a href="http://www.flysnow.org/2015/03/30/manage-your-android-project-with-gradle.html" target="_blank" rel="noopener">使用Gradle管理你的AndroidStudio工程</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#代码混淆："><span class="toc-number">1.</span> <span class="toc-text">代码混淆：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#打包发布"><span class="toc-number">2.</span> <span class="toc-text">打包发布</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/11/12/201511122143/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/11/12/201511122143/&text=Android 代码混淆与打包"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/11/12/201511122143/&title=Android 代码混淆与打包"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/11/12/201511122143/&is_video=false&description=Android 代码混淆与打包"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Android 代码混淆与打包&body=Check out this article: http://09ae9c.com/2015/11/12/201511122143/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/11/12/201511122143/&title=Android 代码混淆与打包"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/11/12/201511122143/&title=Android 代码混淆与打包"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/11/12/201511122143/&title=Android 代码混淆与打包"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/11/12/201511122143/&title=Android 代码混淆与打包"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/11/12/201511122143/&name=Android 代码混淆与打包&description=&lt;p&gt;摸索了两天，大概了解了在 AndroidStudio 中代码混淆和打包发布的过程，在此记录下。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

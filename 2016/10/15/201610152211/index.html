@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="管道是一种通信机制，表现为将前一个进程的输出(stdout)作为后一个进程的输入(stdin)： 1command1 | command2 | command3 在上面的命令中，command1的输出将作为 command2 的输入，然后 command2 的输出又将作为 command3的输入，就像管子一样将数据流传递下去">
+<meta name="keywords" content="Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 中的管道命令">
+<meta property="og:url" content="http://09ae9c.com/2016/10/15/201610152211/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="管道是一种通信机制，表现为将前一个进程的输出(stdout)作为后一个进程的输入(stdin)： 1command1 | command2 | command3 在上面的命令中，command1的输出将作为 command2 的输入，然后 command2 的输出又将作为 command3的输入，就像管子一样将数据流传递下去">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-19T15:16:04.480Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux 中的管道命令">
+<meta name="twitter:description" content="管道是一种通信机制，表现为将前一个进程的输出(stdout)作为后一个进程的输入(stdin)： 1command1 | command2 | command3 在上面的命令中，command1的输出将作为 command2 的输入，然后 command2 的输出又将作为 command3的输入，就像管子一样将数据流传递下去">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Linux 中的管道命令</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2016/11/16/201611162120/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2016/10/14/201610142124/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2016/10/15/201610152211/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2016/10/15/201610152211/&text=Linux 中的管道命令"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2016/10/15/201610152211/&title=Linux 中的管道命令"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2016/10/15/201610152211/&is_video=false&description=Linux 中的管道命令"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Linux 中的管道命令&body=Check out this article: http://09ae9c.com/2016/10/15/201610152211/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2016/10/15/201610152211/&title=Linux 中的管道命令"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2016/10/15/201610152211/&title=Linux 中的管道命令"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2016/10/15/201610152211/&title=Linux 中的管道命令"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2016/10/15/201610152211/&title=Linux 中的管道命令"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2016/10/15/201610152211/&name=Linux 中的管道命令&description=&lt;p&gt;管道是一种通信机制，表现为将前一个进程的输出(stdout)作为后一个进程的输入(stdin)：&lt;/p&gt;
+&lt;figure class=&#34;highlight plain&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;command1 | command2 | command3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;在上面的命令中，&lt;code&gt;command1&lt;/code&gt;的输出将作为 &lt;code&gt;command2&lt;/code&gt; 的输入，然后 &lt;code&gt;command2&lt;/code&gt; 的输出又将作为 &lt;code&gt;command3&lt;/code&gt;的输入，就像管子一样将数据流传递下去&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#选取命令"><span class="toc-number">1.</span> <span class="toc-text">选取命令</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#cut"><span class="toc-number">1.1.</span> <span class="toc-text">cut</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式"><span class="toc-number">1.1.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数"><span class="toc-number">1.1.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例"><span class="toc-number">1.1.3.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#grep"><span class="toc-number">1.2.</span> <span class="toc-text">grep</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-1"><span class="toc-number">1.2.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-1"><span class="toc-number">1.2.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-1"><span class="toc-number">1.2.3.</span> <span class="toc-text">示例</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#排序命令"><span class="toc-number">2.</span> <span class="toc-text">排序命令</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#sort"><span class="toc-number">2.1.</span> <span class="toc-text">sort</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-2"><span class="toc-number">2.1.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-2"><span class="toc-number">2.1.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-2"><span class="toc-number">2.1.3.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#wc"><span class="toc-number">2.2.</span> <span class="toc-text">wc</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-3"><span class="toc-number">2.2.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-3"><span class="toc-number">2.2.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-3"><span class="toc-number">2.2.3.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#uniq"><span class="toc-number">2.3.</span> <span class="toc-text">uniq</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-4"><span class="toc-number">2.3.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-4"><span class="toc-number">2.3.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-4"><span class="toc-number">2.3.3.</span> <span class="toc-text">示例</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#字符转换命令"><span class="toc-number">3.</span> <span class="toc-text">字符转换命令</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#tr"><span class="toc-number">3.1.</span> <span class="toc-text">tr</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-5"><span class="toc-number">3.1.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-5"><span class="toc-number">3.1.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-5"><span class="toc-number">3.1.3.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#col"><span class="toc-number">3.2.</span> <span class="toc-text">col</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-6"><span class="toc-number">3.2.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-6"><span class="toc-number">3.2.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-6"><span class="toc-number">3.2.3.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#join"><span class="toc-number">3.3.</span> <span class="toc-text">join</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-7"><span class="toc-number">3.3.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-7"><span class="toc-number">3.3.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-7"><span class="toc-number">3.3.3.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#paste"><span class="toc-number">3.4.</span> <span class="toc-text">paste</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-8"><span class="toc-number">3.4.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-8"><span class="toc-number">3.4.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-8"><span class="toc-number">3.4.3.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#expand"><span class="toc-number">3.5.</span> <span class="toc-text">expand</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-9"><span class="toc-number">3.5.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-9"><span class="toc-number">3.5.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-9"><span class="toc-number">3.5.3.</span> <span class="toc-text">示例</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#切割命令"><span class="toc-number">4.</span> <span class="toc-text">切割命令</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#split"><span class="toc-number">4.1.</span> <span class="toc-text">split</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-10"><span class="toc-number">4.1.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-10"><span class="toc-number">4.1.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-10"><span class="toc-number">4.1.3.</span> <span class="toc-text">示例</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Linux 中的管道命令
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2016-10-15T14:11:42.000Z" itemprop="datePublished">2016-10-15</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Linux/">Linux</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Linux/">Linux</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>管道是一种通信机制，表现为将前一个进程的输出(stdout)作为后一个进程的输入(stdin)：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">command1 | command2 | command3</span><br></pre></td></tr></table></figure>
+<p>在上面的命令中，<code>command1</code>的输出将作为 <code>command2</code> 的输入，然后 <code>command2</code> 的输出又将作为 <code>command3</code>的输入，就像管子一样将数据流传递下去</p>
+<a id="more"></a>
+<p>管道命令是一系列命令的集合，用于对数据的输入输出进行操作，常见的分类有：</p>
+<ul>
+<li><p>选取命令：cut，grep</p>
+</li>
+<li><p>排序命令：sort，wc，uniq</p>
+</li>
+<li><p>字符转换命令：tr，col，join，paste，expand</p>
+</li>
+<li><p>切割命令：split</p>
+</li>
+</ul>
+<h1 id="选取命令"><a href="#选取命令" class="headerlink" title="选取命令"></a>选取命令</h1><p>选取命令是将一段数据经过分析后，取出想要的部分，或者经由分析关键字，取得想要的数据。</p>
+<h2 id="cut"><a href="#cut" class="headerlink" title="cut"></a>cut</h2><p>这个命令可以将数据的某一段切出来，<strong>处理信息是以行为单位</strong>，如果数据有多行，则会依次对每一行都进行切操作</p>
+<h3 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cut [file] [-dfc]</span><br><span class="line"></span><br><span class="line"># 或者在管道中使用(接受上一条命令的输出作为输入源)</span><br><span class="line"></span><br><span class="line">xxxx | cut [-dfc]</span><br></pre></td></tr></table></figure>
+<h3 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h3><ul>
+<li><p>-d: 后面接分隔字符，与 <code>-f</code>  一起使用</p>
+</li>
+<li><p>-f: 依据 <code>-d</code> 的分隔字符将一段信息切割成几段，后面接参数表示要取第几段</p>
+</li>
+<li><p>-c: 以字符的单位取固定字符区间</p>
+</li>
+</ul>
+<h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><p>打印 <code>/etc/passwd</code>文件中以 “:” 为分隔符的第 1 个字段和第 6 个字段</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cut /etc/passwd -d &quot;:&quot; -f 1,6</span><br></pre></td></tr></table></figure>
+<p>上面的命令会对每一行进行切分操作然后取第 1 和第 6 段</p>
+<p>将 <code>PATH</code> 变量取出，找到第 5 个路径(PATH变量中，路径是以 “:” 分隔的)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo $PATH | cut -d &quot;:&quot; -f 5</span><br></pre></td></tr></table></figure>
+<p>上例中，取多段，例如取第 4 和第 8 段：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo $PATH | cut -d &quot;:&quot; -f 4,8</span><br></pre></td></tr></table></figure>
+<p>对 <code>export</code> 的输出每行取第 8 个字符开始到末尾</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export | cut -c 8-</span><br></pre></td></tr></table></figure>
+<p>上例中，每行取第 8 到第 12 个字符</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">export | cut -c 8-12</span><br></pre></td></tr></table></figure>
+<h2 id="grep"><a href="#grep" class="headerlink" title="grep"></a>grep</h2><p>上面的 <code>cut</code> 命令是在一行信息中<strong>切取</strong>出某部分想要的段，而 <code>grep</code> 命令则是分析一行数据，如果其中有需要的数据，就将其取出来</p>
+<h3 id="格式-1"><a href="#格式-1" class="headerlink" title="格式"></a>格式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep [-acinvr] [--color=auto] [要查找的内容] filename</span><br></pre></td></tr></table></figure>
+<h3 id="参数-1"><a href="#参数-1" class="headerlink" title="参数"></a>参数</h3><ul>
+<li><p>-a: 将二进制文件转换成文本文件进行查找</p>
+</li>
+<li><p>-c: 计算找到匹配的内容的次数</p>
+</li>
+<li><p>-i: 忽略大小写</p>
+</li>
+<li><p>-n: 输出行号</p>
+</li>
+<li><p>-v: 反向选择，即显示没有找到要查找的内容的那一行</p>
+</li>
+<li><p>-color=auto: 设定找到的关键字部分加上颜色，默认跟随系统</p>
+</li>
+<li><p>-r: 递归搜索子目录(如果要查找的是一个目录)</p>
+</li>
+</ul>
+<h3 id="示例-1"><a href="#示例-1" class="headerlink" title="示例"></a>示例</h3><p>将 <code>last</code> 中出现 <code>root</code> 的那一行取出来</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">last | grep &apos;root&apos;</span><br></pre></td></tr></table></figure>
+<p>与上例相反，将 <code>last</code> 中没有出现 <code>root</code> 的取出来</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">last | grep -v &apos;root&apos;</span><br></pre></td></tr></table></figure>
+<p>取 <code>/etc/man.config</code> 中含有 <code>MANPATH</code> 的那几行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grep | &apos;MANPATH&apos; /etc/man.config</span><br></pre></td></tr></table></figure>
+<p>grep 命令中的 “要查找的内容” 可以使用正则表达式，可以实现复杂却高效的查找</p>
+<h1 id="排序命令"><a href="#排序命令" class="headerlink" title="排序命令"></a>排序命令</h1><h2 id="sort"><a href="#sort" class="headerlink" title="sort"></a>sort</h2><p>使输出按照一定方式排序，支持字典排序(默认方式)，数字排序，月份排序，随机排序，反转排序，以及指定特定字段排序</p>
+<h3 id="格式-2"><a href="#格式-2" class="headerlink" title="格式"></a>格式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sort [-fbMnrtuk] [file or stdin]</span><br></pre></td></tr></table></figure>
+<h3 id="参数-2"><a href="#参数-2" class="headerlink" title="参数"></a>参数</h3><ul>
+<li><p>-f: 忽略大小写</p>
+</li>
+<li><p>-b: 忽略最前面的空格</p>
+</li>
+<li><p>-M: 以月份的方式排序(JAN,FEB…)</p>
+</li>
+<li><p>-n: 以数字方式排序</p>
+</li>
+<li><p>-r: 反向排序</p>
+</li>
+<li><p>-u: 去除重复，相同的数据只显示一行</p>
+</li>
+<li><p>-t: 分隔符，默认用 TAB 键分隔</p>
+</li>
+<li><p>-k: 以指定的区间来进行排序</p>
+</li>
+</ul>
+<h3 id="示例-2"><a href="#示例-2" class="headerlink" title="示例"></a>示例</h3><p>将 <code>/etc/passwd</code> 排序显示(默认字典方式)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/passwd | sort</span><br></pre></td></tr></table></figure>
+<p><code>/etc/passwd</code> 每一行都是以 “:” 进行分隔的，将这个文件中以第 3 列的数据进行排序</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/passwd | sort -t &apos;:&apos; -k 3</span><br></pre></td></tr></table></figure>
+<h2 id="wc"><a href="#wc" class="headerlink" title="wc"></a>wc</h2><p>用于统计并输出一个文件中行、单词和字节的数目</p>
+<h3 id="格式-3"><a href="#格式-3" class="headerlink" title="格式"></a>格式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wc [-lwcmL] filename</span><br></pre></td></tr></table></figure>
+<h3 id="参数-3"><a href="#参数-3" class="headerlink" title="参数"></a>参数</h3><ul>
+<li><p>-l: 查看行数</p>
+</li>
+<li><p>-w: 查看单词数(英文)</p>
+</li>
+<li><p>-c: 查看字节数</p>
+</li>
+<li><p>-m: 查看字符数</p>
+</li>
+<li><p>-L: 查看最长行字节数</p>
+</li>
+</ul>
+<h3 id="示例-3"><a href="#示例-3" class="headerlink" title="示例"></a>示例</h3><p>查看 <code>/test.txt</code> 文件中有多少行，单词，字节数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /test.txt | wc</span><br></pre></td></tr></table></figure>
+<p>查看 <code>/test.txt</code> 文件中有多少个单词</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wc -w /test.txt</span><br></pre></td></tr></table></figure>
+<h2 id="uniq"><a href="#uniq" class="headerlink" title="uniq"></a>uniq</h2><p>用于过滤或者输出重复数据</p>
+<h3 id="格式-4"><a href="#格式-4" class="headerlink" title="格式"></a>格式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">uniq [-idDc]</span><br></pre></td></tr></table></figure>
+<h3 id="参数-4"><a href="#参数-4" class="headerlink" title="参数"></a>参数</h3><ul>
+<li><p>-i: 忽略大小写</p>
+</li>
+<li><p>-d: 输出重复的数据(重复的只输出一个)</p>
+</li>
+<li><p>-D: 输出所有重复的数据(有几次重复就输出几次)</p>
+</li>
+<li><p>-c: 计数</p>
+</li>
+</ul>
+<h3 id="示例-4"><a href="#示例-4" class="headerlink" title="示例"></a>示例</h3><p>查看 命令执行历史，过滤掉重复执行的命令。通过 <code>history</code> 命令能够查看当前系统执行的命令历史，一行就是一条历史命令，每一行中，前 7 个字符为行号，因此要过滤重复命令，首先需要去掉行号，并且相同命令的参数和选项可能不同，因此也要去掉命令后面的参数和选项</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">history | cut -c 8- | cut -d &apos; &apos; -f 1| sort | uniq</span><br></pre></td></tr></table></figure>
+<h1 id="字符转换命令"><a href="#字符转换命令" class="headerlink" title="字符转换命令"></a>字符转换命令</h1><h2 id="tr"><a href="#tr" class="headerlink" title="tr"></a>tr</h2><p>用于删除一段文本数据中的某些文字或者对文字进行转换</p>
+<h3 id="格式-5"><a href="#格式-5" class="headerlink" title="格式"></a>格式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tr [-ds] SET1 [SET2]</span><br></pre></td></tr></table></figure>
+<h3 id="参数-5"><a href="#参数-5" class="headerlink" title="参数"></a>参数</h3><ul>
+<li><p>-d: 删除数据中和 SET1 匹配的字符串</p>
+</li>
+<li><p>-s: 删除和 SET1 匹配的连续并重复字符串(注意必须是连续的相同字符才会去重)</p>
+</li>
+</ul>
+<h3 id="示例-5"><a href="#示例-5" class="headerlink" title="示例"></a>示例</h3><p>将输出信息中的所有小写字符转换成大写<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;hello world&quot; | tr &apos;[a-z]&apos; &apos;[A-Z]&apos;</span><br></pre></td></tr></table></figure></p>
+<p>将输出信息中的所有 “l”,”o” 和”d”<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;hello world&quot; | tr -d &apos;lod&apos;</span><br></pre></td></tr></table></figure></p>
+<h2 id="col"><a href="#col" class="headerlink" title="col"></a>col</h2><p>将 Tab 换成对等数量的空格建，或者反转这个操作</p>
+<h3 id="格式-6"><a href="#格式-6" class="headerlink" title="格式"></a>格式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">col [-xh]</span><br></pre></td></tr></table></figure>
+<h3 id="参数-6"><a href="#参数-6" class="headerlink" title="参数"></a>参数</h3><ul>
+<li><p>-x: 将 Tab 转换成空格</p>
+</li>
+<li><p>-h: 将空格转换成 Tab</p>
+</li>
+</ul>
+<h3 id="示例-6"><a href="#示例-6" class="headerlink" title="示例"></a>示例</h3><p>查看 <code>/etc/protocols</code> 中的不可见字符，可以看到很多 <code>^I</code>，这其实就是 Tab 转义成可见字符的符号<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat -A /etc/protocols</span><br></pre></td></tr></table></figure></p>
+<p>使用 col -x 将 <code>/etc/protocols</code> 中的 Tab 转换为空格,然后再使用 cat 查看， ^I 不见了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/protocols | col -x | cat -A</span><br></pre></td></tr></table></figure></p>
+<h2 id="join"><a href="#join" class="headerlink" title="join"></a>join</h2><p>将两个文件中有相同数据的那一行合并起来</p>
+<h3 id="格式-7"><a href="#格式-7" class="headerlink" title="格式"></a>格式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">join [-ti12] file1 file2</span><br></pre></td></tr></table></figure>
+<h3 id="参数-7"><a href="#参数-7" class="headerlink" title="参数"></a>参数</h3><ul>
+<li><p>-t: 指定分隔符，默认是空格</p>
+</li>
+<li><p>-i: 忽略大小写</p>
+</li>
+<li><p>-1: 指明第一个文件要用哪个字段来对比，默认是第一个字段</p>
+</li>
+<li><p>-2: 指明第二个文件要用哪个字段来对比，默认是第一个字段</p>
+</li>
+</ul>
+<h3 id="示例-7"><a href="#示例-7" class="headerlink" title="示例"></a>示例</h3><p>假设文件 <code>a.txt</code> 中的内容是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a:b:c:d:e</span><br></pre></td></tr></table></figure></p>
+<p> 文件 <code>b.txt</code> 中的内容是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a:a:b:c:d:e:f</span><br></pre></td></tr></table></figure></p>
+<p>使用 join 命令合并 <code>a.txt</code> 和 <code>b.txt</code>，以 “:” 分隔，以第一个段相同者整合成一行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">join -t &apos;:&apos; a.txt b.txt</span><br></pre></td></tr></table></figure></p>
+<p>结果是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a:b:c:d:e:a:b:c:d:e:f</span><br></pre></td></tr></table></figure></p>
+<p>使用 join 命令合并 <code>a.txt</code> 和 <code>b.txt</code>,以 “:” 分隔，第一个文件以第 2 个段且第二个文件以第 3 个段整合成一行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">join -t &apos;:&apos; -1 2 a.txt -2 3 b.txt</span><br></pre></td></tr></table></figure></p>
+<p>结果是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">b:a:c:d:e:a:a:c:d:e:f</span><br></pre></td></tr></table></figure></p>
+<h2 id="paste"><a href="#paste" class="headerlink" title="paste"></a>paste</h2><p>与 join 命令类似，它是在不对比数据的情况下，简单地将多个文件合并一起，以 Tab 隔开</p>
+<h3 id="格式-8"><a href="#格式-8" class="headerlink" title="格式"></a>格式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">paste [-d] file1 file2</span><br></pre></td></tr></table></figure>
+<h3 id="参数-8"><a href="#参数-8" class="headerlink" title="参数"></a>参数</h3><ul>
+<li>-d: 后面接分隔符，默认是用 Tab 来分隔</li>
+<li>-s: 不合并到一行，每个文件单独一行</li>
+<li><ul>
+<li>: 如果 file1 部分是 <code>-</code>,表示来自标准输入的数据</li>
+</ul>
+</li>
+</ul>
+<h3 id="示例-8"><a href="#示例-8" class="headerlink" title="示例"></a>示例</h3><p>假设文件 <code>a.txt</code> 中的内容是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a:b:c:d:e</span><br></pre></td></tr></table></figure></p>
+<p> 文件 <code>b.txt</code> 中的内容是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a:a:b:c:d:e:f</span><br></pre></td></tr></table></figure></p>
+<p>使用 <code>paste</code> 命令将两个文件合并：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">paste a.txt b.txt</span><br></pre></td></tr></table></figure></p>
+<p>结果是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a:b:c:d:e       a:a:b:c:d:e:f</span><br></pre></td></tr></table></figure></p>
+<p>使用 <code>cat</code> 读出 <code>a.txt</code> 的内容，然后与 <code>b.txt</code> 的内容合并在一起<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat a.txt | paste - b.txt</span><br></pre></td></tr></table></figure></p>
+<p>结果是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a:b:c:d:e       a:a:b:c:d:e:f</span><br></pre></td></tr></table></figure></p>
+<h2 id="expand"><a href="#expand" class="headerlink" title="expand"></a>expand</h2><p>将 Tab 按键转换成空格键</p>
+<h3 id="格式-9"><a href="#格式-9" class="headerlink" title="格式"></a>格式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">expand [-t] file</span><br></pre></td></tr></table></figure>
+<h3 id="参数-9"><a href="#参数-9" class="headerlink" title="参数"></a>参数</h3><ul>
+<li>-t: 后面接数字，表示一个 tab 键代表多少个空格，默认一个 tab 代表 8 个空格</li>
+</ul>
+<h3 id="示例-9"><a href="#示例-9" class="headerlink" title="示例"></a>示例</h3><p>上个命令 <code>paste</code> 默认将两个文件合并，以 tab 分隔，现在将 tab 替换成空格<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat a.txt | paste - b.txt | expand -t 1</span><br></pre></td></tr></table></figure></p>
+<p>上述命令中 <code>expand -t 1</code> 的意思是将一个 Tab 转换成一个空格</p>
+<h1 id="切割命令"><a href="#切割命令" class="headerlink" title="切割命令"></a>切割命令</h1><h2 id="split"><a href="#split" class="headerlink" title="split"></a>split</h2><p>将一个文件按照给定的分隔符切分成多个文件</p>
+<h3 id="格式-10"><a href="#格式-10" class="headerlink" title="格式"></a>格式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">split [-bl] file PREFIX</span><br></pre></td></tr></table></figure>
+<h3 id="参数-10"><a href="#参数-10" class="headerlink" title="参数"></a>参数</h3><ul>
+<li>-b: 后面接将要切割的文件大小，可加单位，如 b,k,m 等</li>
+<li>-l: 以行数进行切割</li>
+<li>PREFIX: 分割后的文件前缀，如果对一个大文件切分，会切分成多个小文件，这个就是指定各个小文件名的前缀</li>
+</ul>
+<h3 id="示例-10"><a href="#示例-10" class="headerlink" title="示例"></a>示例</h3><p>假设 <code>temp.txt</code> 大小为 100KB，要将其分成 50KB 大小的文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">split -b 500k temp.txt splitfile</span><br></pre></td></tr></table></figure></p>
+<p>分割后会生成两个文件：<code>splitfileaa</code> 和 <code>splitfileab</code></p>
+<p>假设当前目录下使用 <code>ls -la</code> 查看有 6 行，将使用 <code>ls -la</code> 命令的输出以 2 行记录成一个文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls -la | split -l 2 - lsout</span><br></pre></td></tr></table></figure></p>
+<p>这样会生成三个文件，分别是：<code>lsoutaa</code>,<code>lsoutab</code> 和 <code>lsoutac</code>，每个文件中有两行</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#选取命令"><span class="toc-number">1.</span> <span class="toc-text">选取命令</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#cut"><span class="toc-number">1.1.</span> <span class="toc-text">cut</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式"><span class="toc-number">1.1.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数"><span class="toc-number">1.1.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例"><span class="toc-number">1.1.3.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#grep"><span class="toc-number">1.2.</span> <span class="toc-text">grep</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-1"><span class="toc-number">1.2.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-1"><span class="toc-number">1.2.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-1"><span class="toc-number">1.2.3.</span> <span class="toc-text">示例</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#排序命令"><span class="toc-number">2.</span> <span class="toc-text">排序命令</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#sort"><span class="toc-number">2.1.</span> <span class="toc-text">sort</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-2"><span class="toc-number">2.1.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-2"><span class="toc-number">2.1.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-2"><span class="toc-number">2.1.3.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#wc"><span class="toc-number">2.2.</span> <span class="toc-text">wc</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-3"><span class="toc-number">2.2.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-3"><span class="toc-number">2.2.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-3"><span class="toc-number">2.2.3.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#uniq"><span class="toc-number">2.3.</span> <span class="toc-text">uniq</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-4"><span class="toc-number">2.3.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-4"><span class="toc-number">2.3.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-4"><span class="toc-number">2.3.3.</span> <span class="toc-text">示例</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#字符转换命令"><span class="toc-number">3.</span> <span class="toc-text">字符转换命令</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#tr"><span class="toc-number">3.1.</span> <span class="toc-text">tr</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-5"><span class="toc-number">3.1.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-5"><span class="toc-number">3.1.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-5"><span class="toc-number">3.1.3.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#col"><span class="toc-number">3.2.</span> <span class="toc-text">col</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-6"><span class="toc-number">3.2.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-6"><span class="toc-number">3.2.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-6"><span class="toc-number">3.2.3.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#join"><span class="toc-number">3.3.</span> <span class="toc-text">join</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-7"><span class="toc-number">3.3.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-7"><span class="toc-number">3.3.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-7"><span class="toc-number">3.3.3.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#paste"><span class="toc-number">3.4.</span> <span class="toc-text">paste</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-8"><span class="toc-number">3.4.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-8"><span class="toc-number">3.4.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-8"><span class="toc-number">3.4.3.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#expand"><span class="toc-number">3.5.</span> <span class="toc-text">expand</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-9"><span class="toc-number">3.5.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-9"><span class="toc-number">3.5.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-9"><span class="toc-number">3.5.3.</span> <span class="toc-text">示例</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#切割命令"><span class="toc-number">4.</span> <span class="toc-text">切割命令</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#split"><span class="toc-number">4.1.</span> <span class="toc-text">split</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-10"><span class="toc-number">4.1.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-10"><span class="toc-number">4.1.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#示例-10"><span class="toc-number">4.1.3.</span> <span class="toc-text">示例</span></a></li></ol></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2016/10/15/201610152211/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2016/10/15/201610152211/&text=Linux 中的管道命令"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2016/10/15/201610152211/&title=Linux 中的管道命令"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2016/10/15/201610152211/&is_video=false&description=Linux 中的管道命令"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Linux 中的管道命令&body=Check out this article: http://09ae9c.com/2016/10/15/201610152211/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2016/10/15/201610152211/&title=Linux 中的管道命令"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2016/10/15/201610152211/&title=Linux 中的管道命令"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2016/10/15/201610152211/&title=Linux 中的管道命令"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2016/10/15/201610152211/&title=Linux 中的管道命令"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2016/10/15/201610152211/&name=Linux 中的管道命令&description=&lt;p&gt;管道是一种通信机制，表现为将前一个进程的输出(stdout)作为后一个进程的输入(stdin)：&lt;/p&gt;
+&lt;figure class=&#34;highlight plain&#34;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&#34;gutter&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&#34;code&#34;&gt;&lt;pre&gt;&lt;span class=&#34;line&#34;&gt;command1 | command2 | command3&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+&lt;p&gt;在上面的命令中，&lt;code&gt;command1&lt;/code&gt;的输出将作为 &lt;code&gt;command2&lt;/code&gt; 的输入，然后 &lt;code&gt;command2&lt;/code&gt; 的输出又将作为 &lt;code&gt;command3&lt;/code&gt;的输入，就像管子一样将数据流传递下去&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

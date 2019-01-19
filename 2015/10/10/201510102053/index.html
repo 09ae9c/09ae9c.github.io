@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="本文介绍 Fresco 中的内存管理，作为一个图片加载框架，本身就需要涉及到许多内存操作，图片在显示的时候需要占用大量内存资源，在介绍 Fresco 内存管理之前，有必要先简单了解下 Android 中的内存管理机制。">
+<meta name="keywords" content="Fresco">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fresco 内存管理">
+<meta property="og:url" content="http://09ae9c.com/2015/10/10/201510102053/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="本文介绍 Fresco 中的内存管理，作为一个图片加载框架，本身就需要涉及到许多内存操作，图片在显示的时候需要占用大量内存资源，在介绍 Fresco 内存管理之前，有必要先简单了解下 Android 中的内存管理机制。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-xpt1/t39.2365-6/11057083_393469260836543_318035251_n.png">
+<meta property="og:updated_time" content="2019-01-19T15:16:04.453Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Fresco 内存管理">
+<meta name="twitter:description" content="本文介绍 Fresco 中的内存管理，作为一个图片加载框架，本身就需要涉及到许多内存操作，图片在显示的时候需要占用大量内存资源，在介绍 Fresco 内存管理之前，有必要先简单了解下 Android 中的内存管理机制。">
+<meta name="twitter:image" content="https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-xpt1/t39.2365-6/11057083_393469260836543_318035251_n.png">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Fresco 内存管理</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2015/10/12/201510121023/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2015/10/06/201510062353/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/10/10/201510102053/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/10/10/201510102053/&text=Fresco 内存管理"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/10/10/201510102053/&title=Fresco 内存管理"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/10/10/201510102053/&is_video=false&description=Fresco 内存管理"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Fresco 内存管理&body=Check out this article: http://09ae9c.com/2015/10/10/201510102053/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/10/10/201510102053/&title=Fresco 内存管理"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/10/10/201510102053/&title=Fresco 内存管理"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/10/10/201510102053/&title=Fresco 内存管理"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/10/10/201510102053/&title=Fresco 内存管理"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/10/10/201510102053/&name=Fresco 内存管理&description=&lt;p&gt;本文介绍 Fresco 中的内存管理，作为一个图片加载框架，本身就需要涉及到许多内存操作，图片在显示的时候需要占用大量内存资源，在介绍 Fresco 内存管理之前，有必要先简单了解下 Android 中的内存管理机制。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Android-中的内存管理"><span class="toc-number">1.</span> <span class="toc-text">Android 中的内存管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Android-中的-Bitmap"><span class="toc-number">2.</span> <span class="toc-text">Android 中的 Bitmap</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Fresco-中的缓存管理"><span class="toc-number">3.</span> <span class="toc-text">Fresco 中的缓存管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Image-Pipeline"><span class="toc-number">3.1.</span> <span class="toc-text">Image Pipeline</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Fresco 内存管理
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2015-10-10T12:53:54.000Z" itemprop="datePublished">2015-10-10</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Fresco-源码解析/">Fresco 源码解析</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Fresco/">Fresco</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>本文介绍 Fresco 中的内存管理，作为一个图片加载框架，本身就需要涉及到许多内存操作，图片在显示的时候需要占用大量内存资源，在介绍 Fresco 内存管理之前，有必要先简单了解下 Android 中的内存管理机制。</p>
+<a id="more"></a>
+<h2 id="Android-中的内存管理"><a href="#Android-中的内存管理" class="headerlink" title="Android 中的内存管理"></a>Android 中的内存管理</h2><p>前面的文章中有介绍到，在 Android 中，每一个应用程序会分配一个单独的 Linux 用户进程，而每一个进程都会单独使用一个 Dalvik 虚拟机实例来运行，这样做的目的是：</p>
+<ul>
+<li>应用之间是相互独立的，一旦某个应用崩溃了，仅仅是这个应用的进程被销毁，系统中的其他应用不会受到影响</li>
+<li>系统会为不同类型的进程分配不同的内存使用上限，如果某个应用使用的内存超过了这个上限值，则会引发 OOM</li>
+</ul>
+<p>在 Android 中，一个应用程序在运行的时会分配一个内存区，内存区分为栈内存和堆内存</p>
+<ul>
+<li>栈（Stack）：线程私有(内存区只能被当前线程使用)，生命周期与线程相同，由虚拟机控制，主要用于存储局部变量，操作数，方法出口等信息，以帧为单位入栈出栈（一个方法从调用至执行完成的过程，就对应一个帧在栈中的入栈出栈过程）</li>
+<li><p>堆（Heap）：在 Android 中，堆分为 Dalvik vm Heap 和 Native Heap，两者是相互独立的，前者是 java 进程所使用的内存区，是开发中常用到的堆区，也是垃圾回收器（ GC ）管理的主要区域，后者是 native 进程所使用的内存区，通常在 NDK 开发中用到：</p>
+<ul>
+<li><p>Dalvik vm Heap：线程共享（内存区被当前进程中的所有线程共享，在应用启动时创建），由程序控制，用于分配 java 对象，代码中 new 创建的对象都在这个内存区中，<strong>内存大小有限制</strong>，其最大值是前面文章中提到过的一个应用程序可以使用的最大内存值，如果使用的内存超出这个值，便会引发 OOM</p>
+</li>
+<li><p>Native Heap：native 进程的内存区，用于分配 C/C++ 代码中 malloc 申请的内存，<strong>内存大小不受单个进程可分配内存的限制</strong>，但是受系统限制</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>通过以上描述，可以总结一下：Android 中一个应用程序是运行在一个单独的 Dalvik 虚拟机创建的进程中，虚拟机的内存结构中有两个重要的内存区，栈和堆，其中栈主要用来存放局部变量和方法等，而堆主要是用来存放对象，并且有垃圾回收机制，但是堆的内存大小是有限制的，内存使用超出后便会引发 OOM；在 NDK 开发中，会有一个 Native Heap，这个内存区域主要是用来存放 C/C++ 代码申请的空间，内存大小没有限制，没有垃圾回收机制，因此不会引发 OOM，但是需要手动释放内存</p>
+<h2 id="Android-中的-Bitmap"><a href="#Android-中的-Bitmap" class="headerlink" title="Android 中的 Bitmap"></a>Android 中的 Bitmap</h2><p>Android 中图片存在的主要形式是位图（Bitmap），也就是由像素点组成的图像，每个点可以由多种色彩表示，包括2、4、8、16、24和32位色彩。位图通常需要占用大量的内存，并且是在 Dalvik vm Heap 中分配内存的，因此很容易引起 GC， 频繁的 GC 可能导致运行卡顿，如何处理 Bitmap 是 Frasco 中的一个重点。</p>
+<h2 id="Fresco-中的缓存管理"><a href="#Fresco-中的缓存管理" class="headerlink" title="Fresco 中的缓存管理"></a>Fresco 中的缓存管理</h2><p>根据官方文档的描述，在 Fresco 中使用了三级缓存，分别是：</p>
+<ul>
+<li><p>Bitmap 缓存：存储 Bitmap 对象，这些 Bitmap 对象可以立刻用来显示或者用于后处理。在 5.0 以下系统，Bitmap 缓存位于 ashmem(类似 Native Heap，具体可以参考 <a href="https://code.facebook.com/posts/366199913563917" target="_blank" rel="noopener">这篇文章</a>)，这样 Bitmap 对象的创建和释放将不会引发 GC，更少的 GC 会使应用运行得更加流畅。5.0 及其以上系统，内存管理有了很大改进，所以Bitmap缓存直接位于 Dalvik vm Heap 上。当应用在后台运行时，该缓存会被清空。</p>
+</li>
+<li><p>内存缓存：这个缓存存储的是原始压缩格式的图片。从该缓存取到的图片在使用之前，需要先进行解码。如果有调整大小，旋转，或者 WebP 编码转换工作需要完成，这些工作会在解码之前进行。应用在后台时，这个缓存同样会被清空。</p>
+</li>
+<li><p>文件缓存：和未解码的内存缓存相似，文件缓存存储的是未解码的原始压缩格式的图片，在使用之前同样需要经过解码等处理。和内存缓存不一样，应用在后台时，内容是不会被清空的。即使关机也不会。用户可以随时用系统的设置菜单中进行清空缓存操作</p>
+</li>
+</ul>
+<h3 id="Image-Pipeline"><a href="#Image-Pipeline" class="headerlink" title="Image Pipeline"></a>Image Pipeline</h3><p>在 Fresco 中，Image Pipeline 负责完成图像加载，大致流程如下：</p>
+<ol>
+<li>检查内存缓存，如有，返回</li>
+<li>后台线程开始后续工作</li>
+<li>检查是否在未解码内存缓存中。如有，解码，变换，返回，然后缓存到内存缓存中。</li>
+<li>检查是否在文件缓存中，如果有，变换，返回。缓存到未解码缓存和内存缓存中。</li>
+<li>从网络或者本地加载。加载完成后，解码，变换，返回。存到各个缓存中。</li>
+</ol>
+<p>下面是官方给出的一张图片用于描述 Image Pipeline</p>
+<p><img src="https://fbcdn-dragon-a.akamaihd.net/hphotos-ak-xpt1/t39.2365-6/11057083_393469260836543_318035251_n.png" alt=""></p>
+<p>上面的步骤描述了图片的加载过程，关于 Fresco 的更详细描述可以参考 <a href="http://blog.csdn.net/sgwhp/article/details/49640611" target="_blank" rel="noopener">这片文章</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Android-中的内存管理"><span class="toc-number">1.</span> <span class="toc-text">Android 中的内存管理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Android-中的-Bitmap"><span class="toc-number">2.</span> <span class="toc-text">Android 中的 Bitmap</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Fresco-中的缓存管理"><span class="toc-number">3.</span> <span class="toc-text">Fresco 中的缓存管理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Image-Pipeline"><span class="toc-number">3.1.</span> <span class="toc-text">Image Pipeline</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/10/10/201510102053/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/10/10/201510102053/&text=Fresco 内存管理"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/10/10/201510102053/&title=Fresco 内存管理"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/10/10/201510102053/&is_video=false&description=Fresco 内存管理"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Fresco 内存管理&body=Check out this article: http://09ae9c.com/2015/10/10/201510102053/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/10/10/201510102053/&title=Fresco 内存管理"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/10/10/201510102053/&title=Fresco 内存管理"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/10/10/201510102053/&title=Fresco 内存管理"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/10/10/201510102053/&title=Fresco 内存管理"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/10/10/201510102053/&name=Fresco 内存管理&description=&lt;p&gt;本文介绍 Fresco 中的内存管理，作为一个图片加载框架，本身就需要涉及到许多内存操作，图片在显示的时候需要占用大量内存资源，在介绍 Fresco 内存管理之前，有必要先简单了解下 Android 中的内存管理机制。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

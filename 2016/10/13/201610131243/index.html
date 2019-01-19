@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="工作的调度方式有两种：  突发：一次性的，处理完就结束  例行：每隔一定的周期处理的事务   在 Linux 中对应的有两个命令来实现这两个功能：at 和 crontab">
+<meta name="keywords" content="Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 中的定时任务">
+<meta property="og:url" content="http://09ae9c.com/2016/10/13/201610131243/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="工作的调度方式有两种：  突发：一次性的，处理完就结束  例行：每隔一定的周期处理的事务   在 Linux 中对应的有两个命令来实现这两个功能：at 和 crontab">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-19T15:16:04.481Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Linux 中的定时任务">
+<meta name="twitter:description" content="工作的调度方式有两种：  突发：一次性的，处理完就结束  例行：每隔一定的周期处理的事务   在 Linux 中对应的有两个命令来实现这两个功能：at 和 crontab">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Linux 中的定时任务</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2016/10/14/201610142124/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2016/10/12/201610122212/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2016/10/13/201610131243/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2016/10/13/201610131243/&text=Linux 中的定时任务"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2016/10/13/201610131243/&title=Linux 中的定时任务"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2016/10/13/201610131243/&is_video=false&description=Linux 中的定时任务"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Linux 中的定时任务&body=Check out this article: http://09ae9c.com/2016/10/13/201610131243/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2016/10/13/201610131243/&title=Linux 中的定时任务"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2016/10/13/201610131243/&title=Linux 中的定时任务"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2016/10/13/201610131243/&title=Linux 中的定时任务"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2016/10/13/201610131243/&title=Linux 中的定时任务"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2016/10/13/201610131243/&name=Linux 中的定时任务&description=&lt;p&gt;工作的调度方式有两种：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;突发：一次性的，处理完就结束&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;例行：每隔一定的周期处理的事务&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在 Linux 中对应的有两个命令来实现这两个功能：at 和 crontab&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#at"><span class="toc-number">1.</span> <span class="toc-text">at</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式"><span class="toc-number">1.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数"><span class="toc-number">1.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#调度管理"><span class="toc-number">1.3.</span> <span class="toc-text">调度管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#batch-命令"><span class="toc-number">1.4.</span> <span class="toc-text">batch 命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#crontab"><span class="toc-number">2.</span> <span class="toc-text">crontab</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-1"><span class="toc-number">2.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-1"><span class="toc-number">2.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#任务格式"><span class="toc-number">2.3.</span> <span class="toc-text">任务格式</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Linux 中的定时任务
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2016-10-13T04:43:52.000Z" itemprop="datePublished">2016-10-13</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Linux/">Linux</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Linux/">Linux</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>工作的调度方式有两种：</p>
+<ul>
+<li><p>突发：一次性的，处理完就结束</p>
+</li>
+<li><p>例行：每隔一定的周期处理的事务</p>
+</li>
+</ul>
+<p>在 Linux 中对应的有两个命令来实现这两个功能：at 和 crontab</p>
+<a id="more"></a>
+<h2 id="at"><a href="#at" class="headerlink" title="at"></a>at</h2><p><strong>处理仅执行一次就结束的任务</strong></p>
+<p><code>atd</code> 服务是负责处理 <code>at</code> 调度的服务，要使用 at 调度，首先需要确保<code>atd</code>服务是处于运行状态的，启动命令是：</p>
+<p>(注：有的系统中默认没有安装 <code>at</code> 需要先安装在运行)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 安装 at</span><br><span class="line"></span><br><span class="line">sudo apt-get install at</span><br><span class="line"></span><br><span class="line"># 启动 atd 服务</span><br><span class="line"></span><br><span class="line">sudo service atd start</span><br><span class="line"></span><br><span class="line"># 设置成开机自启</span><br><span class="line"></span><br><span class="line">chkconfig atd on</span><br></pre></td></tr></table></figure>
+<p><code>at</code>命令执行的原理是将要执行的工作以文本文件的方式写入 <code>/var/spool/at/</code> 目录下，然后等待 <code>atd</code> 服务在指定时间取用和执行。默认情况下，只有 root 用户才能使用 <code>at</code>命令，可以通过编辑 <code>/etc/at.allow</code> 和  <code>/etc/at.deny</code> 这两个文件来控制 <code>at</code> 的使用权限(一般系统默认只保留 <code>/etc/at.deny</code>文件，编辑这个文件就够了)</p>
+<h3 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">at [-mlvd] TIME</span><br></pre></td></tr></table></figure>
+<h3 id="参数"><a href="#参数" class="headerlink" title="参数"></a>参数</h3><ul>
+<li><p>-m: 当 at 的工作完成后，用 email 通知用户该工作已完成</p>
+</li>
+<li><p>-l: 列出目前系统上面的所有该用户的 at 调度任务</p>
+</li>
+<li><p>-v: 使用友好的时间格式列出调度任务列表</p>
+</li>
+<li><p>-d: 取消一个在任务列表中的任务</p>
+</li>
+<li><p>-c:查看指定任务的详细内容，紧随其后的是任务序号(这个序号可以通过调用 -l 查看列表查到)</p>
+</li>
+<li><p>TIME:时间格式，用于指定任务在什么时候执行，格式有：</p>
+<ul>
+<li><p>HH:MM    例如 04:00</p>
+</li>
+<li><p>HH:MM YYYY-MM-DD    例如 05:13 2016-12-11</p>
+</li>
+<li><p>HH:MM[am|pm] [Month] [Date]    例如 06am March 13</p>
+</li>
+<li><p>HH:MM[am|pm] + number [minutes] [hours] [days] [weeks]    例如 now + 5 minutes</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="调度管理"><a href="#调度管理" class="headerlink" title="调度管理"></a>调度管理</h3><p>atq: 查询目前有多少 at 工作调度(会列出所有工作和其对应的工作号(jobnumber)</p>
+<p>atrm: 删除指定工作(通过 jobnumber)指定</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">atq</span><br><span class="line"></span><br><span class="line">atrm [jobnumber]</span><br></pre></td></tr></table></figure>
+<h3 id="batch-命令"><a href="#batch-命令" class="headerlink" title="batch 命令"></a>batch 命令</h3><p><code>batch</code> 命令用法同 <code>at</code>，唯一区别是，通过 <code>batch</code> 命令执行的调用，只有当 CPU 负载小于 0.8 时才执行，也就是说如果在任务将要执行时，系统负载太高，这个任务就不会执行</p>
+<h2 id="crontab"><a href="#crontab" class="headerlink" title="crontab"></a>crontab</h2><p>这个命令设置的工作将会循环一直执行下去，可循环的时间为分钟，小时，每周，每月或每年。</p>
+<p><code>cron</code> 服务负责处理 <code>crontab</code> 调度的任务，首先需要确保 <code>cron</code> 服务处于运行状态，启动命令是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo service cron start</span><br></pre></td></tr></table></figure>
+<p>默认情况下，只有 root 用户才能使用 <code>cron</code>命令，可以通过编辑  <code>/etc/cron.deny</code> 这两个文件来控制 <code>cron</code> 的使用权限。使用 <code>crontab</code> 创建的工作调度会被记录到 <code>/var/spool/cron</code> 目录下，并以不用用户区分，例如 tc 创建的 <code>crontab</code> 记录在 <code>/var/spool/cron/tc</code> 目录中。 工作的日志会被记录在 <code>/var/log/cron</code>文件中。<code>cron</code> 服务的最低循环检测间隔是“分钟”，所以 <code>cron</code> 会每分钟读取一次 <code>/etc/crontab</code> 与 <code>/var/spool/cron</code>中的数据(如果修改了 <code>/etc/crontab</code>文件，需要重启 <code>cron</code> 服务才能生效)</p>
+<h3 id="格式-1"><a href="#格式-1" class="headerlink" title="格式"></a>格式</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">crontab [-u username] [-l|-e|-r]</span><br></pre></td></tr></table></figure>
+<h3 id="参数-1"><a href="#参数-1" class="headerlink" title="参数"></a>参数</h3><ul>
+<li><p>-u: 为指定用户创建或删除工作调度(一般是 root 用户使用)</p>
+</li>
+<li><p>-e: 编辑 crontab 的工作内容</p>
+</li>
+<li><p>-l: 查阅 crontab 的工作内容</p>
+</li>
+<li><p>-r: 删除所有 crontab 的工作内容，若仅删除一项，用 -e 去编辑</p>
+</li>
+</ul>
+<h3 id="任务格式"><a href="#任务格式" class="headerlink" title="任务格式"></a>任务格式</h3><p>在 <code>crontab</code> 任务文件中，每一行代表一项任务，每一项任务的格式都是六个字段，如下：</p>
+<table>
+<thead>
+<tr>
+<th>分钟</th>
+<th>小时</th>
+<th>日期</th>
+<th>月份</th>
+<th>周</th>
+<th>命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0~59</td>
+<td>0~23</td>
+<td>1~31</td>
+<td>1~12</td>
+<td>0~7</td>
+<td>要执行的命令</td>
+</tr>
+</tbody>
+</table>
+<p>注:周的数字为 0 或 7 时都代表星期天，另外还有一些特殊字符如：</p>
+<table>
+<thead>
+<tr>
+<th>特殊字符</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>*</td>
+<td>任何时刻都接受，无论何时都执行命令，例如每天 12:00 执行工作，则任务是:<code>0 12 * * * command</code></td>
+</tr>
+<tr>
+<td>,</td>
+<td>分隔时段，例如要执行的工作在 3:00 和 6:00，则任务是:<code>0 3,6 * * * command</code></td>
+</tr>
+<tr>
+<td>-</td>
+<td>连接时间段，例如 8:00 到 12:00 之间每小时的 20 分执行工作，则任务是:<code>20 8-12 * * * command</code></td>
+</tr>
+<tr>
+<td>/n</td>
+<td>每隔 n 个单位，例如每 5 分钟执行一次工作，则任务是:<code>*/5 * * * * command</code>，也可以写成 <code>0-59/5 * * * * command</code></td>
+</tr>
+</tbody>
+</table>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#at"><span class="toc-number">1.</span> <span class="toc-text">at</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式"><span class="toc-number">1.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数"><span class="toc-number">1.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#调度管理"><span class="toc-number">1.3.</span> <span class="toc-text">调度管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#batch-命令"><span class="toc-number">1.4.</span> <span class="toc-text">batch 命令</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#crontab"><span class="toc-number">2.</span> <span class="toc-text">crontab</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式-1"><span class="toc-number">2.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#参数-1"><span class="toc-number">2.2.</span> <span class="toc-text">参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#任务格式"><span class="toc-number">2.3.</span> <span class="toc-text">任务格式</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2016/10/13/201610131243/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2016/10/13/201610131243/&text=Linux 中的定时任务"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2016/10/13/201610131243/&title=Linux 中的定时任务"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2016/10/13/201610131243/&is_video=false&description=Linux 中的定时任务"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Linux 中的定时任务&body=Check out this article: http://09ae9c.com/2016/10/13/201610131243/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2016/10/13/201610131243/&title=Linux 中的定时任务"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2016/10/13/201610131243/&title=Linux 中的定时任务"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2016/10/13/201610131243/&title=Linux 中的定时任务"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2016/10/13/201610131243/&title=Linux 中的定时任务"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2016/10/13/201610131243/&name=Linux 中的定时任务&description=&lt;p&gt;工作的调度方式有两种：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;突发：一次性的，处理完就结束&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;例行：每隔一定的周期处理的事务&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;在 Linux 中对应的有两个命令来实现这两个功能：at 和 crontab&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
