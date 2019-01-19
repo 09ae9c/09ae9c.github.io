@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="重构的定义是：在不改变代码外在行为的前提下，对代码做出修改，以改进程序的内部结构。在阅读本书之前的一些日常开发中就已经有过一些类似重构的操作，利用现代化的 IDE 可以很方便的进行一些重构操作，例如批量查找修改，格式整理等，本书整理了作者的多年编程工作中的重构经验，虽然有些经验现在看来有些过时了，不能全盘接受，但其中大部分经验都是经过时间检验的优秀的经验，是值得借鉴学习的，从而避免自己再走一遍坑。">
+<meta name="keywords" content="读书笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《重构 改善既有代码的设计》读书笔记">
+<meta property="og:url" content="http://09ae9c.com/2017/02/13/20190119202133/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="重构的定义是：在不改变代码外在行为的前提下，对代码做出修改，以改进程序的内部结构。在阅读本书之前的一些日常开发中就已经有过一些类似重构的操作，利用现代化的 IDE 可以很方便的进行一些重构操作，例如批量查找修改，格式整理等，本书整理了作者的多年编程工作中的重构经验，虽然有些经验现在看来有些过时了，不能全盘接受，但其中大部分经验都是经过时间检验的优秀的经验，是值得借鉴学习的，从而避免自己再走一遍坑。">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-19T14:27:29.666Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="《重构 改善既有代码的设计》读书笔记">
+<meta name="twitter:description" content="重构的定义是：在不改变代码外在行为的前提下，对代码做出修改，以改进程序的内部结构。在阅读本书之前的一些日常开发中就已经有过一些类似重构的操作，利用现代化的 IDE 可以很方便的进行一些重构操作，例如批量查找修改，格式整理等，本书整理了作者的多年编程工作中的重构经验，虽然有些经验现在看来有些过时了，不能全盘接受，但其中大部分经验都是经过时间检验的优秀的经验，是值得借鉴学习的，从而避免自己再走一遍坑。">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>《重构 改善既有代码的设计》读书笔记</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2017/02/28/20190119212847/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2017/01/22/20190119202159/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2017/02/13/20190119202133/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2017/02/13/20190119202133/&text=《重构 改善既有代码的设计》读书笔记"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2017/02/13/20190119202133/&title=《重构 改善既有代码的设计》读书笔记"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2017/02/13/20190119202133/&is_video=false&description=《重构 改善既有代码的设计》读书笔记"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=《重构 改善既有代码的设计》读书笔记&body=Check out this article: http://09ae9c.com/2017/02/13/20190119202133/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2017/02/13/20190119202133/&title=《重构 改善既有代码的设计》读书笔记"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2017/02/13/20190119202133/&title=《重构 改善既有代码的设计》读书笔记"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2017/02/13/20190119202133/&title=《重构 改善既有代码的设计》读书笔记"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2017/02/13/20190119202133/&title=《重构 改善既有代码的设计》读书笔记"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2017/02/13/20190119202133/&name=《重构 改善既有代码的设计》读书笔记&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#何为重构"><span class="toc-number">1.</span> <span class="toc-text">何为重构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#为何重构"><span class="toc-number">2.</span> <span class="toc-text">为何重构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#何时重构"><span class="toc-number">3.</span> <span class="toc-text">何时重构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#代码的坏味道"><span class="toc-number">4.</span> <span class="toc-text">代码的坏味道</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#构筑测试体系"><span class="toc-number">5.</span> <span class="toc-text">构筑测试体系</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#重新组织函数"><span class="toc-number">6.</span> <span class="toc-text">重新组织函数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#在对象之间搬移特性"><span class="toc-number">7.</span> <span class="toc-text">在对象之间搬移特性</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#重新组织数据"><span class="toc-number">8.</span> <span class="toc-text">重新组织数据</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#简化条件表达式"><span class="toc-number">9.</span> <span class="toc-text">简化条件表达式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#简化函数调用"><span class="toc-number">10.</span> <span class="toc-text">简化函数调用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#处理概括关系"><span class="toc-number">11.</span> <span class="toc-text">处理概括关系</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#大型重构"><span class="toc-number">12.</span> <span class="toc-text">大型重构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">13.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        《重构 改善既有代码的设计》读书笔记
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2017-02-13T14:10:22.000Z" itemprop="datePublished">2017-02-13</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/读书笔记/">读书笔记</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/读书笔记/">读书笔记</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>重构的定义是：<strong>在不改变代码外在行为的前提下，对代码做出修改，以改进程序的内部结构</strong>。在阅读本书之前的一些日常开发中就已经有过一些类似重构的操作，利用现代化的 IDE 可以很方便的进行一些重构操作，例如批量查找修改，格式整理等，本书整理了作者的多年编程工作中的重构经验，虽然有些经验现在看来有些过时了，不能全盘接受，但其中大部分经验都是经过时间检验的优秀的经验，是值得借鉴学习的，从而避免自己再走一遍坑。</p>
+<blockquote>
+<blockquote>
+<p>重构不止可以改善既有的设计，还可以帮助我们理解原来很难理解的流程。比如一个复杂的条件表达式，我们可能需要很久才能看明白这个表达式的作用，还可能看了好久终于看明白了，过了没多长时间又忘了，现在还要从头看，如果我们把这个表达式运用 Extract Method 抽象出来，并起一个易于理解的名字，如果函数名字起得好，下次当我们再看到这段代码时，不用看逻辑我们就知道这个函数是做什么的。如果对这个函数内所有难于理解的地方我们做了适当的重构，把每个细小的逻辑抽象成一个小函数并起一个容易理解的名字，当我们看代码时就有可能像看注释一样，不用再像以前一样通过看代码的实现来猜测这段代码到底是做什么的，好的代码胜过注释，毕竟注释还是有可能更新不及时的。</p>
+</blockquote>
+</blockquote>
+<p>可以看出，重构对于提高生产力是很重要的，经过重构优化的代码可以很轻松的阅读和理解并加以扩展。当然，有时候不一定重构就能起到这样的效果，对于经验不足的程序员，经过重构后的代码可能比原始代码更糟糕，正如作者所说：“任何一个傻瓜都能写出计算机可以理解的代码，唯有写出人能理解的代码，才是优秀的程序员”。本书总结了作者的重构经验，帮助我们快速掌握好的重构方法。</p>
+<h1 id="何为重构"><a href="#何为重构" class="headerlink" title="何为重构"></a>何为重构</h1><ul>
+<li><p>名词形式：对软件内部结构的一种调整，目的是在不改变软件可观察行为的前提下，提高其可理解性，降低修改成本</p>
+</li>
+<li><p>动词形式：是用一系列重构手法，在不改变软件可观察行为的前提下，调整其结构</p>
+</li>
+</ul>
+<h1 id="为何重构"><a href="#为何重构" class="headerlink" title="为何重构"></a>为何重构</h1><ul>
+<li>改进软件设计：需要为程序添加新特性时，原有的代码结构使得无法很方便的达成目的，那就重构代码</li>
+<li>使软件更容易理解：重构后的代码结构清晰，易于理解</li>
+<li>帮助找到 BUG：重构可以增加对代码的理解，从而容易发现 BUG</li>
+<li>提高编程速度：重构花费时间，但重构可以改善代码结构，使代码更容易理解，更方便添加新特性</li>
+</ul>
+<h1 id="何时重构"><a href="#何时重构" class="headerlink" title="何时重构"></a>何时重构</h1><ul>
+<li>三次法则：第一次做某件事时，只管去做；第二次做类似的事会产生反感，但无论如何还是可以去做；第三次再做类似的事，你就应该重构</li>
+<li>添加功能时重构</li>
+<li>修补错误时重构</li>
+<li>复审代码时重构</li>
+</ul>
+<p><strong>教训</strong>：哪怕你完全了解系统，也请实际度量它的性能，不要臆测，臆测会让你学到一些东西，但十有八九你是错的。</p>
+<h1 id="代码的坏味道"><a href="#代码的坏味道" class="headerlink" title="代码的坏味道"></a>代码的坏味道</h1><blockquote>
+<blockquote>
+<p>我们并不试图给你一个何时必须重构的精确衡量标准。从我们的经验来看，没有任何量度规矩比得上一个见识广博者的直觉。我们只会告诉你一些迹象，它会指出“这里有一个可以用重构解决的问题”。你必须培养出自己的判断力，学会判断一个类内有多少实例变量算是太大，一个函数内有多少行代码才算太长。</p>
+</blockquote>
+</blockquote>
+<ul>
+<li>重复代码</li>
+<li>过长函数</li>
+<li>过大的类</li>
+<li>过长参数列</li>
+<li>发散式变化：一个类受多种变化的影响</li>
+<li>霰弹式修改：一种变化引发多个类相应的修改</li>
+<li>依恋情结：将总是一起变化的东西放在一起</li>
+<li>数据泥团：两个类中相同的字段，许多函数签名中相同的参数，这些总是一起出现的参数可能应该拥有属于它们自己的对象</li>
+<li>基本类型偏执：将很多在一起出现的变量组合成一个结构型数据</li>
+<li>Switch 惊悚现身：Switch 带来重复，尽量少用 Switch 语句</li>
+<li>平行继承体系：让一个继承体系的实例引用另一个继承体系的实例</li>
+<li>冗赘类：如果一个类的所得不值其身价，它就应该消失</li>
+<li>夸夸其谈未来性：如果某个抽象类其实没有太大的作用，请除掉</li>
+<li>令人迷惑的暂时字段：某个类的实例变量仅为某种特定情况而设定</li>
+<li>过度耦合的消息链：一个对象请求另一个对象，然后再向后者请求一个对象，然后再请求一个对象…</li>
+<li>中间人：无用的委托，过多中间层</li>
+<li>狎昵关系：两个类关系太过紧密，一个类过于关注另一个类的成员</li>
+<li>异曲同工的类：不同的类或函数，做着相同的事</li>
+<li>不完美的类库：类库的设计不可能完全</li>
+<li>纯稚的数据类：拥有一些字段，和访问它们的函数，除此之外一无长物</li>
+<li>被拒绝的遗赠：子类应该继承父类的数据和函数</li>
+<li>过多的注释：如果一段代码做过多的注释，是时候考虑重构了</li>
+</ul>
+<h1 id="构筑测试体系"><a href="#构筑测试体系" class="headerlink" title="构筑测试体系"></a>构筑测试体系</h1><p>如果你想进行重构，首要前提就是拥有一个可靠的测试环境。程序员的工作中，编写代码只占很小的一部分，剩下的很大一部分时间留给了设计和调试，拥有好的测试环境，可以减少调试的时间，大大提高效率。</p>
+<h1 id="重新组织函数"><a href="#重新组织函数" class="headerlink" title="重新组织函数"></a>重新组织函数</h1><ul>
+<li>提炼函数：函数命名要尽量简短良好，细粒度：复用机会大，高层函数读起来就像注释，函数复写更容易。命名以“做什么”来命名</li>
+<li>内联函数：对于一些函数，可能其实现和名字一样容易，没必要在封装一层</li>
+<li>内联临时变量：一个临时变量只被简单表达式赋值了一次，而妨碍了其他重构</li>
+<li>以查询取代临时变量：太多的临时变量不方便其他重构手法</li>
+<li>引入解释性变量：复杂表达式中的结果放进一个临时变量，以此解释表达式用途</li>
+<li>分解临时变量：某个临时变量被赋值超过一个，既不是循环变量也不用于收集计算结果，则针对每一次赋值，创造一个独立的对应的临时变量</li>
+<li>移除对参数的赋值：代码对一个参数进行赋值，以一个临时变量取代该参数的位置</li>
+<li>以函数对象取代函数：大型函数中对局部变量的使用无法使用Extract Method</li>
+<li>替换算法：把某个算法替换为一个更清晰的算法</li>
+</ul>
+<h1 id="在对象之间搬移特性"><a href="#在对象之间搬移特性" class="headerlink" title="在对象之间搬移特性"></a>在对象之间搬移特性</h1><ul>
+<li>搬移函数：类中的一个函数使用另一个类的对象的次数很多，有可能这个函数放错了位置</li>
+<li>搬移字段：某个字段被其所驻类之外的另一个类更多地用到</li>
+<li>提炼类：某个类做了应该由两个类应该做的事，类中的某些函数和某些数据总是一起出现，应该将函数和数据分离出去</li>
+<li>类内联化：某个类没有做太多的事情</li>
+<li>隐藏委托关系：客户通过一个委托类来调用另一个对象。在服务类上建立客户所需的所有函数，用以隐藏委托关系</li>
+<li>移除中间人：某个类的指责很简单，做了过多的简单委托动作</li>
+<li>引入外部函数：需要为提供服务的类增加一个函数，但无法修改这个类。在客户类中建立一个函数，并以第一参数形式传入一个服务类实例</li>
+<li>引入本地扩展：需要为服务类提供一些额外函数，但无法修改这个类</li>
+</ul>
+<h1 id="重新组织数据"><a href="#重新组织数据" class="headerlink" title="重新组织数据"></a>重新组织数据</h1><ul>
+<li>自封装字段：直接访问一个字段，但与字段之间的耦合关系逐渐变得笨拙，为这个字段建立取值设值函数，并且只以这些函数来访问字段</li>
+<li>以对象取代数据值：有一个数据项，需要对这个数据项添加一个行为，把这个数据项封装为一个类</li>
+<li>将值对象改为引用对象：从一个类衍生出许多彼此相等的实例，希望将它们替换为同一个对象</li>
+<li>将引用对象改为值对象：有一个引用对象，很小且不可改变，而且不易管理</li>
+<li>如果引用对象开始变得难以使用，也许就应该将它改为值对象。引用是对象必须被某种方式控制，总是必须向其控制者请求适当地引用对象。它们可能造成内存区域之间错综复杂的关联。在分布系统和兵法系统中，不可变的值对象特别有用，因为你无需考虑它们的同步问题</li>
+<li>以对象取代数组：数组中的不同元素表示不同东西，不容易理解，以对象取代数组，对于数组中的每个元素，以一个字段来表示</li>
+<li>复制“被监视数据”：有一些领域数据置身于GUI控件中，而领域函数需要访问这些数据</li>
+<li>将单向关联改为双向关联：两个类都需要使用对方的特性，但现在直邮一条意向连接</li>
+<li>将双向关联该为单向关联：两个类互相引用，但其实一个类不需要引用另一个类</li>
+<li>封装字段：封装 public 字段，改为 private，提供相应的 public 属性的访问函数</li>
+<li>以State/Strategy取代类型码：有一个类型码，它会影响类的行为，但无法通过继承手法消除它</li>
+<li>以字段取代子类：的各个子类的唯一差别只在“返回常量数据”的函数身上，修改这些函数，使他们返回父类中的某个（新增）字段，然后销毁子类</li>
+</ul>
+<h1 id="简化条件表达式"><a href="#简化条件表达式" class="headerlink" title="简化条件表达式"></a>简化条件表达式</h1><ul>
+<li>分解条件表达式：有一个复杂的条件语句，将 if 条件，else 中的段落全部提炼为函数，简化结构</li>
+<li>合并条件表达式：有一系列条件测试，都得到相同结果，则将它们合并为一个，并将其提炼为一个独立函数</li>
+<li>合并重复的条件片段：在条件表达式我的每个分支上有着相同的一段代码，将这段重复代码搬移到条件表达式之外</li>
+<li>移除控制标记：在一系列布尔表达式中，某个变量带有“控制标记”的作用，以 break 语句或 return 语句取代控制标记</li>
+<li>以卫语句取代嵌套条件表达式：函数中的条件逻辑使人难以看清正常的执行路径。使用卫语句表现所有特殊情况</li>
+<li>以多态取代条件表达式：手上有个条件表达式，它根据对象类型的不同而选择不同的行为。将这个条件表达式的每个分支放进一个子类内的覆写函数中，然后将原始函数声明为抽象函数</li>
+<li>引入 Null 对象：需要再三检查某对象是否为null，将null值替换为null对象</li>
+<li>引入断言：某一段代码需要对程序状态做出某种假设。以断言明确表现这种假设，这种假设是代码正确运行的必要条件，但是要谨慎使用断言</li>
+</ul>
+<h1 id="简化函数调用"><a href="#简化函数调用" class="headerlink" title="简化函数调用"></a>简化函数调用</h1><ul>
+<li>函数改名：函数的名称未能解释函数的用途，则修改函数名称</li>
+<li>添加参数：某个函数需要从调用端得到更多信息，为此函数添加一个对象参数，让该对象带劲函数所需信息，如果可以，不要添加参数</li>
+<li>移除参数：当函数不再需要某个参数时，移除它，不要为某个未知的需求预留参数</li>
+<li>将查询函数和修改函数分离：某个函数既返回对象状态值，又修改对象状态</li>
+<li>令函数携带参数：若干函数做了类似的工作，但在函数本体中却包含了不同的值，建立一个单一函数，以参数表达那些不同的值</li>
+<li>以明确函数取代参数：有一个函数，其中完全取决于参数值而采取不同行为，针对该参数的每一个可能值，建立一个独立函数</li>
+<li>保持对象完整：从某个对象中取出若干之，将它们作为某一次函数调用时的参数。改为传递整个对象</li>
+<li>以函数取代参数：对象调用某个函数，并将所得结果作为参数。传递给另一个函数。而接受该参数的函数本身也能够调用前一个函数。让参数接受者去除该项参数，并直接调用前一个函数</li>
+<li>引入参数对象：某些参数总是很自然地同时出现，以一个对象取代这些参数</li>
+<li>移除设值函数：类中的某个字段应该在对象创建时被设值，然后就不再改变，则去掉该字段的所有设值函数</li>
+<li>隐藏函数：有一个函数，从来没有被其他任何类用到，则将这个函数修改为private</li>
+<li>以工厂函数取代构造函数：希望在创建对象时不仅仅是做简单的构建动作，将构造函数替换为工厂函数</li>
+<li>封装向下转型：某个函数返回的对象，需要由函数调用者执行向下转型，则将向下转型动作移到函数中</li>
+<li>以异常取代错误码：避免过多的嵌套层次和修改困难</li>
+<li>以测试取代异常：异常只应该被用于异常的，罕见的，意料之外的行为，不应该作为条件检查用</li>
+</ul>
+<h1 id="处理概括关系"><a href="#处理概括关系" class="headerlink" title="处理概括关系"></a>处理概括关系</h1><ul>
+<li>字段上移：两个子类拥有相同的字段，则将该字段移至父类</li>
+<li>函数上移：有些函数，各个子类中产生完全相同的结果，则将该函数移至父类</li>
+<li>构造函数本体上移：各个子类中拥有一些构造函数，它们的本体几乎完全一致。在父类中新建一个构造函数，并在子类构造函数中调用它</li>
+<li>函数下移：父类中的某个函数只与部分（而非全部）子类有关，则将这个函数移到相关的子类中去</li>
+<li>字段下移：父类中的某个字段只被部分（而非全部）子类用到，则将这个字段移到需要他的那些子类去</li>
+<li>提炼子类：类中的某些特性只被某些（而非全部）实例用到。新建一个子类，将上面所说的那一部分特性移到子类中</li>
+<li>提炼父类：两个类有相似特性，则为这两个类建立一个父类，将相同特性移至父类</li>
+<li>提炼接口：若干客户使用类接口中的同一子集，或者两个类的接口有部分相同。则将相同的子集提炼到一个独立接口中</li>
+<li>折叠继承体系：父类和子类之间无太大区别，则将它们合为一体</li>
+<li>塑造模板函数：有一些子类，其中相应的某些函数以相同顺序执行类似的操作，但各个操作的细节有所不同。将这些操作分别放进独立函数中，并保持它们都有相同的签名，于是原函数也就变的相同了，然后将原函数上移至父类</li>
+<li>以委托取代继承：某个子类只使用父类接口中的一部分，或是根本不需要继承而来的数据。在子类中新建一个字段用以保存父类，调整子类函数，令他改而委托父le类，然后去掉两者之间的继承关系</li>
+<li>以继承取代委托：在两个类之间使用委托关系，并经常为整个接口编写许多极简单的委托函数，则让委托类继承受托类</li>
+</ul>
+<h1 id="大型重构"><a href="#大型重构" class="headerlink" title="大型重构"></a>大型重构</h1><ul>
+<li>梳理并分解继承体系：某个继承体系同时承担两项责任，建立两个继承体系，并通过委托关系让其中一个可以调用另一个</li>
+<li>将过程化设计转化为对象设计：对于一些传统过程化风格的代码，将数据记录编程对象，将大块的行为分成小块，并将行为移入相关对象之中</li>
+<li>将领域和表述/显示分离：某些 GUI 类之中包含了领域逻辑，将领域逻辑分离出来，为它们建立独立的领域类</li>
+<li>提炼继承体系：有某个类做了太多工作，其中一部分工作是以大量条件表达式完成的，则应该建立继承体系，以一个子类表示一种特殊情况</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>如同《代码整洁之道》，本书介绍了相当多作者多年的编程经历中的优秀经验，不乏有相同之处，希望通过前辈们的经验，使我们在日常开发中少走一些坑，提高编程能力</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#何为重构"><span class="toc-number">1.</span> <span class="toc-text">何为重构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#为何重构"><span class="toc-number">2.</span> <span class="toc-text">为何重构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#何时重构"><span class="toc-number">3.</span> <span class="toc-text">何时重构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#代码的坏味道"><span class="toc-number">4.</span> <span class="toc-text">代码的坏味道</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#构筑测试体系"><span class="toc-number">5.</span> <span class="toc-text">构筑测试体系</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#重新组织函数"><span class="toc-number">6.</span> <span class="toc-text">重新组织函数</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#在对象之间搬移特性"><span class="toc-number">7.</span> <span class="toc-text">在对象之间搬移特性</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#重新组织数据"><span class="toc-number">8.</span> <span class="toc-text">重新组织数据</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#简化条件表达式"><span class="toc-number">9.</span> <span class="toc-text">简化条件表达式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#简化函数调用"><span class="toc-number">10.</span> <span class="toc-text">简化函数调用</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#处理概括关系"><span class="toc-number">11.</span> <span class="toc-text">处理概括关系</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#大型重构"><span class="toc-number">12.</span> <span class="toc-text">大型重构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">13.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2017/02/13/20190119202133/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2017/02/13/20190119202133/&text=《重构 改善既有代码的设计》读书笔记"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2017/02/13/20190119202133/&title=《重构 改善既有代码的设计》读书笔记"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2017/02/13/20190119202133/&is_video=false&description=《重构 改善既有代码的设计》读书笔记"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=《重构 改善既有代码的设计》读书笔记&body=Check out this article: http://09ae9c.com/2017/02/13/20190119202133/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2017/02/13/20190119202133/&title=《重构 改善既有代码的设计》读书笔记"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2017/02/13/20190119202133/&title=《重构 改善既有代码的设计》读书笔记"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2017/02/13/20190119202133/&title=《重构 改善既有代码的设计》读书笔记"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2017/02/13/20190119202133/&title=《重构 改善既有代码的设计》读书笔记"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2017/02/13/20190119202133/&name=《重构 改善既有代码的设计》读书笔记&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="时间和日期处理，在一个应用中都是很重要的，掌握时间和日期类的处理也是很重要的。Java中的Calendar类和Date类，在java.util包下。在JDK1.0中，Date类是唯一处理时间的类，但是由于Date类中方法比较少并且有一些方法不便于实现国际化，所以从JDK1.1版本开始新增了Calendar类，增加了许多功能强大的方法，推荐使用 Calendar类进行时间和日期处理。下面开始总结Da">
+<meta name="keywords" content="Java,Calendar,Date">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java 中时间相关操作">
+<meta property="og:url" content="http://09ae9c.com/2015/09/27/20190119211453/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="时间和日期处理，在一个应用中都是很重要的，掌握时间和日期类的处理也是很重要的。Java中的Calendar类和Date类，在java.util包下。在JDK1.0中，Date类是唯一处理时间的类，但是由于Date类中方法比较少并且有一些方法不便于实现国际化，所以从JDK1.1版本开始新增了Calendar类，增加了许多功能强大的方法，推荐使用 Calendar类进行时间和日期处理。下面开始总结Da">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-19T14:27:29.653Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java 中时间相关操作">
+<meta name="twitter:description" content="时间和日期处理，在一个应用中都是很重要的，掌握时间和日期类的处理也是很重要的。Java中的Calendar类和Date类，在java.util包下。在JDK1.0中，Date类是唯一处理时间的类，但是由于Date类中方法比较少并且有一些方法不便于实现国际化，所以从JDK1.1版本开始新增了Calendar类，增加了许多功能强大的方法，推荐使用 Calendar类进行时间和日期处理。下面开始总结Da">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Java 中时间相关操作</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2015/10/05/20190119212219/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2015/06/20/20190119211927/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/09/27/20190119211453/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/09/27/20190119211453/&text=Java 中时间相关操作"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/09/27/20190119211453/&title=Java 中时间相关操作"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/09/27/20190119211453/&is_video=false&description=Java 中时间相关操作"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Java 中时间相关操作&body=Check out this article: http://09ae9c.com/2015/09/27/20190119211453/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/09/27/20190119211453/&title=Java 中时间相关操作"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/09/27/20190119211453/&title=Java 中时间相关操作"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/09/27/20190119211453/&title=Java 中时间相关操作"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/09/27/20190119211453/&title=Java 中时间相关操作"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/09/27/20190119211453/&name=Java 中时间相关操作&description=&lt;p&gt;时间和日期处理，在一个应用中都是很重要的，掌握时间和日期类的处理也是很重要的。Java中的Calendar类和Date类，在java.util包下。在JDK1.0中，Date类是唯一处理时间的类，但是由于Date类中方法比较少并且有一些方法不便于实现国际化，所以从JDK1.1版本开始新增了Calendar类，增加了许多功能强大的方法，&lt;strong&gt;推荐使用&lt;/strong&gt; Calendar类进行时间和日期处理。下面开始总结Date类和Calendar类的一些使用方法&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Date类"><span class="toc-number">1.</span> <span class="toc-text">Date类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Date的构造"><span class="toc-number">1.1.</span> <span class="toc-text">Date的构造</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Date的操作"><span class="toc-number">1.2.</span> <span class="toc-text">Date的操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式化"><span class="toc-number">1.2.1.</span> <span class="toc-text">格式化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#类型转换"><span class="toc-number">1.2.2.</span> <span class="toc-text">类型转换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#时间比较"><span class="toc-number">1.2.3.</span> <span class="toc-text">时间比较</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Java 中时间相关操作
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2015-09-27T04:40:10.000Z" itemprop="datePublished">2015-09-27</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Java-基础/">Java 基础</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Calendar/">Calendar</a>, <a class="tag-link" href="/tags/Date/">Date</a>, <a class="tag-link" href="/tags/Java/">Java</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>时间和日期处理，在一个应用中都是很重要的，掌握时间和日期类的处理也是很重要的。Java中的Calendar类和Date类，在java.util包下。在JDK1.0中，Date类是唯一处理时间的类，但是由于Date类中方法比较少并且有一些方法不便于实现国际化，所以从JDK1.1版本开始新增了Calendar类，增加了许多功能强大的方法，<strong>推荐使用</strong> Calendar类进行时间和日期处理。下面开始总结Date类和Calendar类的一些使用方法</p>
+<a id="more"></a>
+<h1 id="Date类"><a href="#Date类" class="headerlink" title="Date类"></a>Date类</h1><p>在Java中有两个Date类，一个是java.sql.Date，另一个是java.util.Date，他们的关系是：前者是后者的子类，主要用在构造SQL语句的时候，比如读写数据库的时候可以使用它，后者是在大多是情况下使用的。他们的用法基本都是一样的。</p>
+<h2 id="Date的构造"><a href="#Date的构造" class="headerlink" title="Date的构造"></a>Date的构造</h2><p>创建一个Date类的对象，构造方法的参数可以有如下几种：</p>
+<ul>
+<li>无参构造方法，使用默认无参构造方法创建出来的对象表示<strong>当前系统时间</strong>：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Date date = new Date();</span><br></pre></td></tr></table></figure>
+<ul>
+<li>long类型的时间，long类型的时间就是自1970年1月1日00:00:00这一刻开始到目前所经历的<strong>毫秒数</strong>，这个值每时每刻都在变大，Date类可以已它作为构造参数创建一个指定的Date，比如：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Date now = new Date(System.currentTimeMillis());</span><br></pre></td></tr></table></figure>
+<p>这样就将当前系统时间封装成了一个Date类型数据，通过这个数据能够得到年月日等信息。</p>
+<ul>
+<li>具体的年，月，日。传入具体的年月日的数值(年的数值并不是表示绝对的时间，而是自1900年开始的年份，所以，如果要表示年，应为指定值减去1900，比如要表示2015年，则应填写（2015-1900），月份的数值是从0到11,所以如果想表示3月，月份的数值就应该填2)，以构造一个指定日期的Date类型数据,得到一个指定日期0点0分0秒的Date对象：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Date date= new Date(2015-1900, 11, 27);//或者Date date = new Date(115,11,27)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<ul>
+<li>具体到时分秒的构造方法。传入一个具体时间的 值以构造指定时间的Date对象，比如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Date date1=new Date(2015-1900,11,30,23,59,59);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>这样就创建了一个2015年12月30日23时59分59秒的Date对象</p>
+<p>所有这些参数都是有取值范围的，就像秒的范围为0-59一样，如果在构造一个Date对象时参数的值超出了取值范围，会默认往后叠加的，比如一个Date对象的构造为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Date oldDate = new Date(2015-1900, 4, 40);</span><br></pre></td></tr></table></figure>
+<p>表面上看，这样得到的是一个2015年5月40日的Date对象，当然，肯定是不存在这个日期的，所以Date类型会自动往后叠加，打印输出为：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2015-06-09 00:00:00</span><br></pre></td></tr></table></figure></p>
+<h2 id="Date的操作"><a href="#Date的操作" class="headerlink" title="Date的操作"></a>Date的操作</h2><p>构造完成后，需要对它进行一些操作，来满足具体的需求，常用的有格式化输入输出，Date类型时间和String类型时间的转换，日期比较，加减</p>
+<h3 id="格式化"><a href="#格式化" class="headerlink" title="格式化"></a>格式化</h3><p>按照指定格式输出一个时间，为了满足不同的使用场景，比如有的时候仅需要显示时分，如“12：30”有的时候需要显示完整的时间，如“01-01 12:30”这样不同的显示只需要不同的格式，而Date对象不需要做任何改动，使用起来很灵活，这就需要用到SimpleDateFormat类来实现，下面是一个简单的例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">SimpleDateFormat format1 = new SimpleDateFormat(&quot;YYYY-MM-dd HH:mm:ss&quot;);</span><br><span class="line">SimpleDateFormat format2 = new SimpleDateFormat(&quot;HH:mm:ss&quot;);</span><br><span class="line"></span><br><span class="line">Date date = new Date();</span><br><span class="line"></span><br><span class="line">System.out.println(format1.format(date));</span><br><span class="line">System.out.println(format2.format(date));</span><br></pre></td></tr></table></figure>
+<p>输出结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2015-11-29 20:27:24</span><br><span class="line">20:27:24</span><br></pre></td></tr></table></figure>
+<p>可以看到，控制Date输出显示格式的，就是SimpleDateFormat类的构造参数，这个构造参数规范了Date输出的格式，SimpleDateFormat中一些格式字符的含义如下：</p>
+<ul>
+<li><strong>G</strong>：     年代标志符</li>
+<li><strong>y</strong>：      年(大小写无区别)</li>
+<li><strong>M</strong>：    月(大写表示 月，小写表示 分)</li>
+<li><strong>d</strong>：      日（大写表示一年中的第几天，小写表示 日）</li>
+<li><strong>H</strong>：     时（24小时制的时间）</li>
+<li><strong>m</strong>：    分</li>
+<li><strong>s</strong>：     秒</li>
+<li><strong>S</strong>：     毫秒</li>
+<li><strong>E</strong>：     星期</li>
+<li><strong>D</strong>：    一年中的第几天</li>
+<li><strong>w</strong>：   一年中第几个星期</li>
+<li><strong>W</strong>：一月中第几个星期</li>
+<li><strong>a</strong>： 上午或下午的标志符</li>
+<li><strong>k</strong>： 一天中的第几个小时（24小时制）</li>
+<li><strong>K</strong>： 一天中的第几个小时（12小时制）</li>
+<li><strong>z</strong>： 时区</li>
+</ul>
+<p>有了以上字符的解释，就能很轻松的构造任意格式的时间了，比如：“yyyy年mm月dd日 HH:mm:ss 是第D天 在第w周”输出如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2015年52月29日 20:52:21 是第333天 在第49周</span><br></pre></td></tr></table></figure></p>
+<h3 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h3><p>在很多时候需要将Date类型数据转换成String类型数据用以显示，或者将String类型的时间转成Date类型用以计算比较，所以下面是通用的类型转换代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">   * 将String类型的时间转换成Date类型,传入的时间格式必须要满足下面的格式，否则会报错</span><br><span class="line">   */</span><br><span class="line">  public static Date str2Date(String dateStr) &#123;</span><br><span class="line">      SimpleDateFormat format = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;, Locale.CHINA);</span><br><span class="line">      Date date = null;</span><br><span class="line">      try &#123;</span><br><span class="line">          date = format.parse(dateStr);</span><br><span class="line">      &#125; catch (ParseException e) &#123;</span><br><span class="line">          e.printStackTrace();</span><br><span class="line">      &#125;</span><br><span class="line">      return date;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">  /**</span><br><span class="line">   * 将Date型转换成指定格式的时间字符串</span><br><span class="line">   */</span><br><span class="line">  public static String date2Str(Date date) &#123;</span><br><span class="line">      SimpleDateFormat format = new SimpleDateFormat(&quot;yyyy-MM-dd HH:mm:ss&quot;, Locale.CHINA);</span><br><span class="line">      return format.format(date);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="时间比较"><a href="#时间比较" class="headerlink" title="时间比较"></a>时间比较</h3><p>有时候需要比较两个时间谁在前谁在后，可以使用Date类的compareTo方法来实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">  * 如果d1在d2后则返回true，否则返回false</span><br><span class="line">  */</span><br><span class="line"> public static boolean greater(Date d1, Date d2) &#123;</span><br><span class="line">     //如果compareTo返回0，表示两个日期相等，返回小于0的值，表示d1在d2之前，大于0表示d1在d2之后</span><br><span class="line">     return d1.compareTo(d2) &gt; 0;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>有时候想要获取指定时间之前或之后一段时间的日期，如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">  * 返回当前日期之后或者之前n天的时间</span><br><span class="line">  * n为正数表示当前日期之后的时间</span><br><span class="line">  * n为负数表示当前日期之前的时间</span><br><span class="line">  */</span><br><span class="line"> public static Date duration(int n) &#123;</span><br><span class="line"></span><br><span class="line">     return new Date(new Date().getTime() + n * 24 * 60 * 60 * 1000);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
+<p>类似发布微博后显示距离当前时间“几分钟前”，“几小时前”的日期比较可以如下实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> * 返回发布时间距离当前的时间</span><br><span class="line"> */</span><br><span class="line">public static String timeAgo(Date createdTime) &#123;</span><br><span class="line">        SimpleDateFormat format = new SimpleDateFormat(&quot;MM-dd HH:mm&quot;, Locale.CHINA);</span><br><span class="line">        if (createdTime != null) &#123;</span><br><span class="line">            long agoTimeInMin = (new Date(System.currentTimeMillis()).getTime() - createdTime.getTime()) / 1000 / 60;</span><br><span class="line">            //如果在当前时间以前一分钟内</span><br><span class="line">            if (agoTimeInMin &lt;= 1) &#123;</span><br><span class="line">                return &quot;刚刚&quot;;</span><br><span class="line">            &#125; else if (agoTimeInMin &lt;= 60) &#123;</span><br><span class="line">                //如果传入的参数时间在当前时间以前10分钟之内</span><br><span class="line">                return agoTimeInMin + &quot;分钟前&quot;;</span><br><span class="line">            &#125; else if (agoTimeInMin &lt;= 60 * 24) &#123;</span><br><span class="line">                return agoTimeInMin / 60 + &quot;小时前&quot;;</span><br><span class="line">            &#125; else if (agoTimeInMin &lt;= 60 * 24 * 2) &#123;</span><br><span class="line">                return agoTimeInMin / (60 * 24) + &quot;天前&quot;;</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                return format.format(createdTime);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            return format.format(new Date(0));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Date类"><span class="toc-number">1.</span> <span class="toc-text">Date类</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Date的构造"><span class="toc-number">1.1.</span> <span class="toc-text">Date的构造</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Date的操作"><span class="toc-number">1.2.</span> <span class="toc-text">Date的操作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#格式化"><span class="toc-number">1.2.1.</span> <span class="toc-text">格式化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#类型转换"><span class="toc-number">1.2.2.</span> <span class="toc-text">类型转换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#时间比较"><span class="toc-number">1.2.3.</span> <span class="toc-text">时间比较</span></a></li></ol></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/09/27/20190119211453/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/09/27/20190119211453/&text=Java 中时间相关操作"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/09/27/20190119211453/&title=Java 中时间相关操作"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/09/27/20190119211453/&is_video=false&description=Java 中时间相关操作"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Java 中时间相关操作&body=Check out this article: http://09ae9c.com/2015/09/27/20190119211453/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/09/27/20190119211453/&title=Java 中时间相关操作"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/09/27/20190119211453/&title=Java 中时间相关操作"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/09/27/20190119211453/&title=Java 中时间相关操作"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/09/27/20190119211453/&title=Java 中时间相关操作"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/09/27/20190119211453/&name=Java 中时间相关操作&description=&lt;p&gt;时间和日期处理，在一个应用中都是很重要的，掌握时间和日期类的处理也是很重要的。Java中的Calendar类和Date类，在java.util包下。在JDK1.0中，Date类是唯一处理时间的类，但是由于Date类中方法比较少并且有一些方法不便于实现国际化，所以从JDK1.1版本开始新增了Calendar类，增加了许多功能强大的方法，&lt;strong&gt;推荐使用&lt;/strong&gt; Calendar类进行时间和日期处理。下面开始总结Date类和Calendar类的一些使用方法&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

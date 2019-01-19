@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="APT(Annotation Processing Tool) 是一种处理注解的工具，可以在源代码中检测出注解并通过相应的 Processor 进行处理，以达到根据注解信息自动生成代码的目的。 注解与注释注释是对于辅助理解代码的一些旁注，只在源代码中存在，不会被编译，编译后的产物中是不存在注释，对编译后的产物进行反编译得到的源代码是没有注释的 注解(也被称为元数据)为在代码中添加信息提供了一种形式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 使用 APT 在编译期生成代码">
+<meta property="og:url" content="http://09ae9c.com/2018/10/07/20190119213338/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="APT(Annotation Processing Tool) 是一种处理注解的工具，可以在源代码中检测出注解并通过相应的 Processor 进行处理，以达到根据注解信息自动生成代码的目的。 注解与注释注释是对于辅助理解代码的一些旁注，只在源代码中存在，不会被编译，编译后的产物中是不存在注释，对编译后的产物进行反编译得到的源代码是没有注释的 注解(也被称为元数据)为在代码中添加信息提供了一种形式">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-19T14:27:29.651Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 使用 APT 在编译期生成代码">
+<meta name="twitter:description" content="APT(Annotation Processing Tool) 是一种处理注解的工具，可以在源代码中检测出注解并通过相应的 Processor 进行处理，以达到根据注解信息自动生成代码的目的。 注解与注释注释是对于辅助理解代码的一些旁注，只在源代码中存在，不会被编译，编译后的产物中是不存在注释，对编译后的产物进行反编译得到的源代码是没有注释的 注解(也被称为元数据)为在代码中添加信息提供了一种形式">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Android 使用 APT 在编译期生成代码</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2018/12/03/20190119213250/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2018/05/28/20190119212910/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2018/10/07/20190119213338/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2018/10/07/20190119213338/&text=Android 使用 APT 在编译期生成代码"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2018/10/07/20190119213338/&title=Android 使用 APT 在编译期生成代码"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2018/10/07/20190119213338/&is_video=false&description=Android 使用 APT 在编译期生成代码"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Android 使用 APT 在编译期生成代码&body=Check out this article: http://09ae9c.com/2018/10/07/20190119213338/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2018/10/07/20190119213338/&title=Android 使用 APT 在编译期生成代码"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2018/10/07/20190119213338/&title=Android 使用 APT 在编译期生成代码"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2018/10/07/20190119213338/&title=Android 使用 APT 在编译期生成代码"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2018/10/07/20190119213338/&title=Android 使用 APT 在编译期生成代码"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2018/10/07/20190119213338/&name=Android 使用 APT 在编译期生成代码&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#注解与注释"><span class="toc-number">1.</span> <span class="toc-text">注解与注释</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#项目结构"><span class="toc-number">2.</span> <span class="toc-text">项目结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码实现"><span class="toc-number">3.</span> <span class="toc-text">代码实现</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Android 使用 APT 在编译期生成代码
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-10-07T12:45:22.000Z" itemprop="datePublished">2018-10-07</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Android/">Android</a>
+    </div>
+
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>APT(Annotation Processing Tool) 是一种处理注解的工具，可以在源代码中检测出注解并通过相应的 Processor 进行处理，以达到根据注解信息自动生成代码的目的。</p>
+<h2 id="注解与注释"><a href="#注解与注释" class="headerlink" title="注解与注释"></a>注解与注释</h2><p>注释是对于辅助理解代码的一些旁注，只在源代码中存在，不会被编译，编译后的产物中是不存在注释，对编译后的产物进行反编译得到的源代码是没有注释的</p>
+<p>注解(也被称为元数据)为在代码中添加信息提供了一种形式化的方法，很多时候需要再代码中添加一些额外的描述信息，这些信息无法通过 java 语言来表达，或者当某些信息只需要在编译时存在而不需要在运行时存在，这时候就可以通过注解为类/方法/字段等添加注解信息，使得稍后再编译时可以通过 Processor 来解析注解并做相应的处理。关于注解的更详细的描述可以参考《Think in Java》 一书</p>
+<h2 id="项目结构"><a href="#项目结构" class="headerlink" title="项目结构"></a>项目结构</h2><p>在 Android 中使用 APT 需要借助官方的  annotationProcessor 工具，项目整体结构如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">app/</span><br><span class="line">+- src/main/</span><br><span class="line">    +- java/</span><br><span class="line">+- build.gradle</span><br><span class="line"></span><br><span class="line">library/</span><br><span class="line">+- src/main/</span><br><span class="line">    +- java/</span><br><span class="line">+- build.gradle</span><br><span class="line"></span><br><span class="line">processor/</span><br><span class="line">+- src/main/</span><br><span class="line">    +- java/</span><br><span class="line">    +- resources/</span><br><span class="line">+- build.gradle</span><br></pre></td></tr></table></figure>
+<p>app: 项目主 android module<br>library: 定义注解类型的 java module<br>processor: 解析注解的 java module</p>
+<p>他们的依赖关系是:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">app</span><br><span class="line">+---- :library</span><br><span class="line">+---- :processor</span><br><span class="line"></span><br><span class="line">processor</span><br><span class="line">+---- :library</span><br></pre></td></tr></table></figure></p>
+<p>注1: processor 和 library 是 java library<br>注2: 也可以选择不用 library module，因为它只是用来定义注解的，这个过程可以放在 app 中，也可以直接放在 processor 中，只要保证在 processor 中能知道对应的注解就行</p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><ol>
+<li>app 的 build.gradle 中添加如下配置:<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: &apos;kotlin-kapt&apos;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">    implementation fileTree(include: [&apos;*.jar&apos;], dir: &apos;libs&apos;)</span><br><span class="line">    implementation &quot;org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version&quot;</span><br><span class="line"></span><br><span class="line">    implementation project(&apos;:library&apos;)</span><br><span class="line">    kapt project(&apos;:processor&apos;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>由于我用的是 kotlin 开发，这里的引用的方式是用 kapt，如果是 java 开发，则用 <code>annotationProcesssor</code> 替代 <code>kapt</code></p>
+<ol start="2">
+<li><p>processor 的 build.gradle 中添加如下配置:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">apply plugin: &apos;java-library&apos;</span><br><span class="line">apply plugin: &apos;kotlin&apos;</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">    implementation fileTree(dir: &apos;libs&apos;, include: [&apos;*.jar&apos;])</span><br><span class="line">    implementation &quot;org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">sourceCompatibility = &quot;8&quot;</span><br><span class="line">targetCompatibility = &quot;8&quot;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在 library 中创建自定义注解类:</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">// filename: AptTestAnnotation.kt</span><br><span class="line"></span><br><span class="line">@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)</span><br><span class="line">@Retention(AnnotationRetention.RUNTIME)</span><br><span class="line">annotation class AptTestAnnotation</span><br></pre></td></tr></table></figure>
+<ol start="4">
+<li>在 processor 中创建注解解析类:</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">// 这里写死了一个注解类型，编译时会尝试寻找所有有这个注解的代码并做处理</span><br><span class="line">@SupportedAnnotationTypes(&quot;com.c9ea90.aptdemo.library.AptTestAnnotation&quot;)</span><br><span class="line">class AptTestProcessor : AbstractProcessor() &#123;</span><br><span class="line"></span><br><span class="line">    override fun getSupportedSourceVersion(): SourceVersion &#123;</span><br><span class="line">        return SourceVersion.RELEASE_8</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    override fun process(set: MutableSet&lt;out TypeElement&gt;?, roundEnvironment: RoundEnvironment?): Boolean &#123;</span><br><span class="line">        val text = &quot;&quot;&quot;</span><br><span class="line">        class HelloApt &#123;</span><br><span class="line">            init &#123;</span><br><span class="line">                System.out.println(&quot;Hello Apt&quot;)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        &quot;&quot;&quot;</span><br><span class="line">  </span><br><span class="line">        val writer = processingEnv.filer.createResource(</span><br><span class="line">              StandardLocation.SOURCE_OUTPUT,</span><br><span class="line">              &quot;&quot;,</span><br><span class="line">              &quot;HelloApt.kt&quot;)// 输出的文件名</span><br><span class="line">              .openWriter()</span><br><span class="line"></span><br><span class="line">        writer.write(text)</span><br><span class="line">        writer.flush()</span><br><span class="line">        writer.close()</span><br><span class="line">        </span><br><span class="line">        return false</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="5">
+<li>在 processor 的 resource 下添加解析类文件</li>
+</ol>
+<p>在 processor/src/main/resources/META-INF/serviecs/ (没有则新建)下添加文件 <code>javax.annotation.processing.Processor</code>，文件中添加解析类的全名:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">com.c9ea90.aptdemo.processor.AptTestProcessor</span><br></pre></td></tr></table></figure></p>
+<ol start="6">
+<li>编译项目，查看编译结果</li>
+</ol>
+<p>编译结果在 app 项目的 build/generated/source/kapt/debug/ 目录下</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#注解与注释"><span class="toc-number">1.</span> <span class="toc-text">注解与注释</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#项目结构"><span class="toc-number">2.</span> <span class="toc-text">项目结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#代码实现"><span class="toc-number">3.</span> <span class="toc-text">代码实现</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2018/10/07/20190119213338/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2018/10/07/20190119213338/&text=Android 使用 APT 在编译期生成代码"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2018/10/07/20190119213338/&title=Android 使用 APT 在编译期生成代码"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2018/10/07/20190119213338/&is_video=false&description=Android 使用 APT 在编译期生成代码"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Android 使用 APT 在编译期生成代码&body=Check out this article: http://09ae9c.com/2018/10/07/20190119213338/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2018/10/07/20190119213338/&title=Android 使用 APT 在编译期生成代码"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2018/10/07/20190119213338/&title=Android 使用 APT 在编译期生成代码"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2018/10/07/20190119213338/&title=Android 使用 APT 在编译期生成代码"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2018/10/07/20190119213338/&title=Android 使用 APT 在编译期生成代码"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2018/10/07/20190119213338/&name=Android 使用 APT 在编译期生成代码&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
