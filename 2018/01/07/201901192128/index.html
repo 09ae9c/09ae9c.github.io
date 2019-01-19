@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="原理使用 AccessibilityService 在 Android 7.0 中新增的方法: dispatchGesture 模拟触摸事件 Step 1 计算两点距离1234567891011121314151617181920212223override fun onTouchEvent(event: MotionEvent?): Boolean &amp;#123;       when (even">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 微信跳一跳外挂实现及原理分析">
+<meta property="og:url" content="http://09ae9c.com/2018/01/07/201901192128/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="原理使用 AccessibilityService 在 Android 7.0 中新增的方法: dispatchGesture 模拟触摸事件 Step 1 计算两点距离1234567891011121314151617181920212223override fun onTouchEvent(event: MotionEvent?): Boolean &amp;#123;       when (even">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://09ae9c.com/2018/01/07/201901192128/quiver-image-url/8CD10A4E3646DA1A30A3B76A4F3F2291.jpg%20=970x276">
+<meta property="og:updated_time" content="2019-01-19T14:26:47.796Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 微信跳一跳外挂实现及原理分析">
+<meta name="twitter:description" content="原理使用 AccessibilityService 在 Android 7.0 中新增的方法: dispatchGesture 模拟触摸事件 Step 1 计算两点距离1234567891011121314151617181920212223override fun onTouchEvent(event: MotionEvent?): Boolean &amp;#123;       when (even">
+<meta name="twitter:image" content="http://09ae9c.com/2018/01/07/201901192128/quiver-image-url/8CD10A4E3646DA1A30A3B76A4F3F2291.jpg%20=970x276">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Android 微信跳一跳外挂实现及原理分析</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2018/04/08/201901192130/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2018/01/02/201804261612/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2018/01/07/201901192128/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2018/01/07/201901192128/&text=Android 微信跳一跳外挂实现及原理分析"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2018/01/07/201901192128/&title=Android 微信跳一跳外挂实现及原理分析"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2018/01/07/201901192128/&is_video=false&description=Android 微信跳一跳外挂实现及原理分析"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Android 微信跳一跳外挂实现及原理分析&body=Check out this article: http://09ae9c.com/2018/01/07/201901192128/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2018/01/07/201901192128/&title=Android 微信跳一跳外挂实现及原理分析"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2018/01/07/201901192128/&title=Android 微信跳一跳外挂实现及原理分析"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2018/01/07/201901192128/&title=Android 微信跳一跳外挂实现及原理分析"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2018/01/07/201901192128/&title=Android 微信跳一跳外挂实现及原理分析"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2018/01/07/201901192128/&name=Android 微信跳一跳外挂实现及原理分析&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#原理"><span class="toc-number">1.</span> <span class="toc-text">原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Step-1-计算两点距离"><span class="toc-number">1.1.</span> <span class="toc-text">Step 1 计算两点距离</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Step-2-根据按压系数计算按压时间"><span class="toc-number">1.2.</span> <span class="toc-text">Step 2 根据按压系数计算按压时间</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Step-3-执行按压操作"><span class="toc-number">1.3.</span> <span class="toc-text">Step 3 执行按压操作</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Android-设备上实现自动触发模拟事件的方法"><span class="toc-number">2.</span> <span class="toc-text">Android 设备上实现自动触发模拟事件的方法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Android 微信跳一跳外挂实现及原理分析
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-01-07T14:24:01.000Z" itemprop="datePublished">2018-01-07</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Android/">Android</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Android/">Android</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><p>使用 AccessibilityService 在 Android 7.0 中新增的方法: <code>dispatchGesture</code> 模拟触摸事件<br><img src="quiver-image-url/8CD10A4E3646DA1A30A3B76A4F3F2291.jpg =970x276" alt="IMAGE"></p>
+<h2 id="Step-1-计算两点距离"><a href="#Step-1-计算两点距离" class="headerlink" title="Step 1 计算两点距离"></a>Step 1 计算两点距离</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">override fun onTouchEvent(event: MotionEvent?): Boolean &#123;</span><br><span class="line">       when (event?.action) &#123;</span><br><span class="line">           MotionEvent.ACTION_DOWN -&gt; &#123;</span><br><span class="line">               if (mStartPressed) &#123;</span><br><span class="line">                   mEndPosition = event.x to event.y</span><br><span class="line">                   mEndPressed = true</span><br><span class="line">               &#125; else &#123;</span><br><span class="line">                   mStartPosition = event.x to event.y</span><br><span class="line">                   mStartPressed = !mStartPressed</span><br><span class="line">                   mEndPressed = false</span><br><span class="line">               &#125;</span><br><span class="line">               invalidate()</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">           MotionEvent.ACTION_UP -&gt; &#123;</span><br><span class="line">               if (mEndPressed) &#123;</span><br><span class="line">                   val distance = calculateDistance(mStartPosition, mEndPosition)</span><br><span class="line">                   onDistanceCalculated?.invoke(distance)</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       return true</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Step-2-根据按压系数计算按压时间"><a href="#Step-2-根据按压系数计算按压时间" class="headerlink" title="Step 2 根据按压系数计算按压时间"></a>Step 2 根据按压系数计算按压时间</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// Thanks https://github.com/wangshub/wechat_jump_game/blob/master/wechat_jump.py</span><br><span class="line">val defaultCoefficient = 1.35</span><br><span class="line"></span><br><span class="line">fun getPressTime(distance: Float, coefficient: Double): Long &#123;</span><br><span class="line">      return (distance * coefficient).toLong()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Step-3-执行按压操作"><a href="#Step-3-执行按压操作" class="headerlink" title="Step 3 执行按压操作"></a>Step 3 执行按压操作</h2><p>不关心滑动的起点和终点位置(要在游戏界面内)，只关心在屏幕上的按压时间 duration</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">val path = Path()</span><br><span class="line">path.moveTo(point1[0], point1[1])</span><br><span class="line">path.lineTo(point2[0], point2[1])</span><br><span class="line"></span><br><span class="line">val description = GestureDescription.StrokeDescription(path, 0, duration)</span><br><span class="line"></span><br><span class="line">// AccessibilityService 实例</span><br><span class="line">service.dispatchGesture(GestureDescription.Builder().addStroke(description).build(), null, null)</span><br></pre></td></tr></table></figure>
+<p>Done!</p>
+<p>以上实现的优点是</p>
+<ul>
+<li>用户操作简单，不需要 PC 端配置，下载安装即可使用</li>
+</ul>
+<p>限制是</p>
+<ul>
+<li>并不是全自动，需要用户手动确定起点和终点</li>
+<li>必须在 Android 7.0 及以上的设备上运行</li>
+</ul>
+<h1 id="Android-设备上实现自动触发模拟事件的方法"><a href="#Android-设备上实现自动触发模拟事件的方法" class="headerlink" title="Android 设备上实现自动触发模拟事件的方法"></a>Android 设备上实现自动触发模拟事件的方法</h1><ul>
+<li><p>MotionEvent(必须在当前进程内使用)</p>
+</li>
+<li><p>InputManager(必须在当前进程内使用)</p>
+</li>
+<li><p>测试框架(必须有开发工具)</p>
+</li>
+<li><p>input 命令控制(必须连接安装有 ADB 的 PC / Root 后也可以直接在设备上执行)</p>
+</li>
+<li><p>sendevent 命令(存在很大的兼容性问题，不考虑)</p>
+</li>
+</ul>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>对于 MotionEvent 和 InputManager 必须在当前进程内的限制，可以将应用伪装成系统应用，绕过权限，但是不普适，有一定操作难度</p>
+<p>测试框架同理，有一定操作难度，不普适</p>
+<p>input 命令可以作为 Android 7.0 以下的解决方案（前提是必须 root）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">val cmd = &quot;input swipe $startX $lineY $endX $lineY $pressTime &quot;</span><br><span class="line">Thread &#123;</span><br><span class="line">    CommandHelper.exec(cmd, true)</span><br><span class="line">&#125;.start()</span><br></pre></td></tr></table></figure>
+<p>源码: <a href="https://github.com/09ae9c/JumpHelper" target="_blank" rel="noopener">JumpHelper</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#原理"><span class="toc-number">1.</span> <span class="toc-text">原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Step-1-计算两点距离"><span class="toc-number">1.1.</span> <span class="toc-text">Step 1 计算两点距离</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Step-2-根据按压系数计算按压时间"><span class="toc-number">1.2.</span> <span class="toc-text">Step 2 根据按压系数计算按压时间</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Step-3-执行按压操作"><span class="toc-number">1.3.</span> <span class="toc-text">Step 3 执行按压操作</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Android-设备上实现自动触发模拟事件的方法"><span class="toc-number">2.</span> <span class="toc-text">Android 设备上实现自动触发模拟事件的方法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2018/01/07/201901192128/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2018/01/07/201901192128/&text=Android 微信跳一跳外挂实现及原理分析"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2018/01/07/201901192128/&title=Android 微信跳一跳外挂实现及原理分析"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2018/01/07/201901192128/&is_video=false&description=Android 微信跳一跳外挂实现及原理分析"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Android 微信跳一跳外挂实现及原理分析&body=Check out this article: http://09ae9c.com/2018/01/07/201901192128/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2018/01/07/201901192128/&title=Android 微信跳一跳外挂实现及原理分析"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2018/01/07/201901192128/&title=Android 微信跳一跳外挂实现及原理分析"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2018/01/07/201901192128/&title=Android 微信跳一跳外挂实现及原理分析"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2018/01/07/201901192128/&title=Android 微信跳一跳外挂实现及原理分析"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2018/01/07/201901192128/&name=Android 微信跳一跳外挂实现及原理分析&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

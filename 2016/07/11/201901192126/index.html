@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="本文记录在阿里云 ECS 服务器上搭建简单的 Web 后端应用程序的过程，这个应用程序的需求是为移动客户端提供 API，用于提供和存储用户数据，还要提供一个官网用于展示，采用 Flask + MySql + Nginx 等框架">
+<meta name="keywords" content="Linux,Python,Flask">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flask 搭建 Web 应用">
+<meta property="og:url" content="http://09ae9c.com/2016/07/11/201901192126/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="本文记录在阿里云 ECS 服务器上搭建简单的 Web 后端应用程序的过程，这个应用程序的需求是为移动客户端提供 API，用于提供和存储用户数据，还要提供一个官网用于展示，采用 Flask + MySql + Nginx 等框架">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-19T14:26:47.811Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Flask 搭建 Web 应用">
+<meta name="twitter:description" content="本文记录在阿里云 ECS 服务器上搭建简单的 Web 后端应用程序的过程，这个应用程序的需求是为移动客户端提供 API，用于提供和存储用户数据，还要提供一个官网用于展示，采用 Flask + MySql + Nginx 等框架">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Flask 搭建 Web 应用</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2016/10/12/201901192103/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2016/06/10/201901192106/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2016/07/11/201901192126/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2016/07/11/201901192126/&text=Flask 搭建 Web 应用"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2016/07/11/201901192126/&title=Flask 搭建 Web 应用"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2016/07/11/201901192126/&is_video=false&description=Flask 搭建 Web 应用"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Flask 搭建 Web 应用&body=Check out this article: http://09ae9c.com/2016/07/11/201901192126/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2016/07/11/201901192126/&title=Flask 搭建 Web 应用"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2016/07/11/201901192126/&title=Flask 搭建 Web 应用"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2016/07/11/201901192126/&title=Flask 搭建 Web 应用"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2016/07/11/201901192126/&title=Flask 搭建 Web 应用"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2016/07/11/201901192126/&name=Flask 搭建 Web 应用&description=&lt;p&gt;本文记录在阿里云 ECS 服务器上搭建简单的 Web 后端应用程序的过程，这个应用程序的需求是为移动客户端提供 API，用于提供和存储用户数据，还要提供一个官网用于展示，采用 Flask + MySql + Nginx 等框架&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#服务器配置"><span class="toc-number">1.</span> <span class="toc-text">服务器配置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#连接到云服务器"><span class="toc-number">2.</span> <span class="toc-text">连接到云服务器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#基础配置"><span class="toc-number">3.</span> <span class="toc-text">基础配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-vim"><span class="toc-number">3.1.</span> <span class="toc-text">安装 vim</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#添加用户"><span class="toc-number">3.2.</span> <span class="toc-text">添加用户</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#禁止使用-root-账号登录"><span class="toc-number">3.3.</span> <span class="toc-text">禁止使用 root 账号登录</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#配置开发环境"><span class="toc-number">4.</span> <span class="toc-text">配置开发环境</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-Python-和-virtualenv"><span class="toc-number">4.1.</span> <span class="toc-text">安装 Python 和 virtualenv</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建虚拟环境"><span class="toc-number">4.1.1.</span> <span class="toc-text">创建虚拟环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#进入虚拟环境"><span class="toc-number">4.1.2.</span> <span class="toc-text">进入虚拟环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#退出虚拟环境"><span class="toc-number">4.1.3.</span> <span class="toc-text">退出虚拟环境</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-Flask"><span class="toc-number">4.2.</span> <span class="toc-text">安装 Flask</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-uWsgi"><span class="toc-number">4.3.</span> <span class="toc-text">安装 uWsgi</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-Nginx"><span class="toc-number">4.4.</span> <span class="toc-text">安装 Nginx</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-Supervisor"><span class="toc-number">4.5.</span> <span class="toc-text">安装 Supervisor</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装配置-MySql"><span class="toc-number">4.6.</span> <span class="toc-text">安装配置 MySql</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#简单-Demo"><span class="toc-number">5.</span> <span class="toc-text">简单 Demo</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#配置-uWsgi"><span class="toc-number">5.1.</span> <span class="toc-text">配置 uWsgi</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置-Supervisor"><span class="toc-number">5.2.</span> <span class="toc-text">配置 Supervisor</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置-Nginx"><span class="toc-number">5.3.</span> <span class="toc-text">配置 Nginx</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#测试运行"><span class="toc-number">5.4.</span> <span class="toc-text">测试运行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#本地文件上传到服务器"><span class="toc-number">5.5.</span> <span class="toc-text">本地文件上传到服务器</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#搭建本地同步开发环境"><span class="toc-number">6.</span> <span class="toc-text">搭建本地同步开发环境</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Flask 搭建 Web 应用
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2016-07-11T14:24:52.000Z" itemprop="datePublished">2016-07-11</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Python/">Python</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Flask/">Flask</a>, <a class="tag-link" href="/tags/Linux/">Linux</a>, <a class="tag-link" href="/tags/Python/">Python</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>本文记录在阿里云 ECS 服务器上搭建简单的 Web 后端应用程序的过程，这个应用程序的需求是为移动客户端提供 API，用于提供和存储用户数据，还要提供一个官网用于展示，采用 Flask + MySql + Nginx 等框架</p>
+<a id="more"></a>
+<h1 id="服务器配置"><a href="#服务器配置" class="headerlink" title="服务器配置"></a>服务器配置</h1><p>CPU：1核</p>
+<p>内存：1G</p>
+<p>操作系统：Ubuntu 14.04 64位</p>
+<h1 id="连接到云服务器"><a href="#连接到云服务器" class="headerlink" title="连接到云服务器"></a>连接到云服务器</h1><p>通过 SSH 远程连接到云服务器，这样就可以在本地电脑上操作服务器，在 Windows 系统上，可以使用 putty 这款软件进行 SSH 访问，Linux 或 Mac 系统使用系统自带的工具就行</p>
+<p>首次通过 SSH 访问远程服务器时，需要提供远程服务器的 root 用户的密码，这个在购买服务器时会得到</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">$ ssh root@123.45.67.89</span><br><span class="line">root@123.45.67.89&apos;s password:</span><br><span class="line">Welcome to Ubuntu 16.04.1 LTS (GNU/Linux 4.4.0-35-generic x86_64)</span><br><span class="line"></span><br><span class="line"> * Documentation:  https://help.ubuntu.com</span><br><span class="line"> * Management:     https://landscape.canonical.com</span><br><span class="line"> * Support:        https://ubuntu.com/advantage</span><br><span class="line"></span><br><span class="line">Welcome to aliyun Elastic Compute Service!</span><br><span class="line">root@iZ28ydyxtwlZ:~#</span><br></pre></td></tr></table></figure>
+<p>接下来输入正确的密码即可登录到远程服务器</p>
+<p>如果是初次以 root 用户身份登录服务器，建议修改一下 root 用户的密码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@iZ28ydyxtwlZ:~# passwd root</span><br></pre></td></tr></table></figure>
+<p>首次登录到服务器，可以执行一些更新操作，更新一些软件源和工具</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@iZ28ydyxtwlZ:~# apt-get update</span><br><span class="line">root@iZ28ydyxtwlZ:~# apt-get install dpkg</span><br><span class="line">root@iZ28ydyxtwlZ:~# do-release-upgrade</span><br></pre></td></tr></table></figure>
+<h1 id="基础配置"><a href="#基础配置" class="headerlink" title="基础配置"></a>基础配置</h1><h2 id="安装-vim"><a href="#安装-vim" class="headerlink" title="安装 vim"></a>安装 vim</h2><p>系统是 Ubuntu 14.04，建议安装 full 版的 vim 编辑器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@iZ28ydyxtwlZ:~# apt-get remove vim-common</span><br><span class="line">root@iZ28ydyxtwlZ:~# apt-get install vim</span><br></pre></td></tr></table></figure>
+<p>在安装过程中可能出现这样的警告信息：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">perl: warning: Setting locale failed.</span><br><span class="line">perl: warning: Please check that your locale settings:</span><br><span class="line">       	LANGUAGE = "en_US:",</span><br><span class="line">       	LC_ALL = (unset),</span><br><span class="line">       	LC_CTYPE = "UTF-8",</span><br><span class="line">       	LANG = "en_US.UTF-8"</span><br><span class="line">    are supported and installed on your system.</span><br><span class="line">perl: warning: Falling back to the standard locale ("C").</span><br><span class="line">locale: Cannot set LC_CTYPE to default locale: No such file or directory</span><br><span class="line">locale: Cannot set LC_ALL to default locale: No such file or directory</span><br></pre></td></tr></table></figure>
+<p>解决办法：</p>
+<p>1.修改系统配置文件 /etc/default/locale 为：</p>
+<p>LANG=”en_US.UTF-8”</p>
+<p>LANGUAGE=”en_US:en”</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@iZ28ydyxtwlZ:~# vi /etc/default/locale</span><br></pre></td></tr></table></figure>
+<p>2.修改 /etc/profile 文件，在文件尾部添加：</p>
+<p>export LC_ALL = C</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@iZ28ydyxtwlZ:~# vi /etc/profile</span><br></pre></td></tr></table></figure>
+<p>3.重启服务器，重新登录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@iz28ydyxtwlZ:~# shutdown -r now</span><br></pre></td></tr></table></figure>
+<h2 id="添加用户"><a href="#添加用户" class="headerlink" title="添加用户"></a>添加用户</h2><p>首次登录到 Linux 系统中，只有一个 root 用户，而使用 root 用户来管理应用的话，是存在风险的(误删系统文件等)，一般是建议使用子用户来管理应用，因此首先需要添加用户</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">root@iZ28ydyxtwlZ:~# adduser tc</span><br><span class="line">Adding user `tc&apos; ...</span><br><span class="line">Adding new group `tc&apos; (1000) ...</span><br><span class="line">Adding new user `tc&apos; (1000) with group `tc&apos; ...</span><br><span class="line">Creating home directory `/home/tc&apos; ...</span><br><span class="line">Copying files from `/etc/skel&apos; ...</span><br><span class="line">Enter new UNIX password:</span><br><span class="line">Retype new UNIX password:</span><br><span class="line">passwd: password updated successfully</span><br><span class="line">Changing the user information for tc</span><br><span class="line">Enter the new value, or press ENTER for the default</span><br><span class="line">       	Full Name []:</span><br><span class="line">       	Room Number []:</span><br><span class="line">       	Work Phone []:</span><br><span class="line">       	Home Phone []:</span><br><span class="line">       	Other []:</span><br><span class="line">Is the information correct? [Y/n] Y</span><br><span class="line">root@iZ28ydyxtwlZ:~#</span><br></pre></td></tr></table></figure>
+<p>接下来按照提示输入密码，输入确认密码，然后后面的步骤一般都使用默认配置即可，添加完成然后退出服务器，就能以用户 tc 进行登录了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$ ssh tc@123.45.67.89</span><br><span class="line">tc@123.45.67.89&apos;s password:</span><br><span class="line">Welcome to Ubuntu 16.04.1 LTS (GNU/Linux 4.4.0-35-generic x86_64)</span><br><span class="line"></span><br><span class="line">//...</span><br><span class="line"></span><br><span class="line">Welcome to aliyun Elastic Compute Service!</span><br><span class="line"></span><br><span class="line">tc@iZ28ydyxtwlZ:~$</span><br></pre></td></tr></table></figure>
+<p>很多时候需要修改系统配置，而子用户(如新建的用户 tc)默认是不具备修改系统文件的权限的，因此需要在执行命令之前加上 <code>sudo</code>，使子用户能够执行 root 用户的一些命令，而默认新建的子用户是不能使用<code>sudo</code>命令的，需要一些配置：</p>
+<p>(注：如果在执行带<code>sudo</code>命令时遇到<code>tc is not in the sudoers file.  This incident will be reported.</code>，则说明当前用户没有执行<code>sudo</code>的权限，需要按照下面的步骤操作)</p>
+<p>1.切换到 root 用户</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tc@iZ28ydyxtwlZ:~$ su -</span><br><span class="line">Password:</span><br><span class="line">root@iZ28ydyxtwlZ:/home/tc#</span><br></pre></td></tr></table></figure>
+<p>2.编辑 sudoers 文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root@iZ28ydyxtwlZ:/home/tc# vi /etc/sudoers</span><br></pre></td></tr></table></figure>
+<p>在 sudoers 文件中添加如下行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tc               ALL=(ALL)                NOPASSWD：ALL</span><br></pre></td></tr></table></figure>
+<p>然后保存退出</p>
+<p>3.切换回子用户</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root@iZ28ydyxtwlZ:/home/tc# su tc</span><br><span class="line">tc@iZ28ydyxtwlZ:~$</span><br></pre></td></tr></table></figure>
+<h2 id="禁止使用-root-账号登录"><a href="#禁止使用-root-账号登录" class="headerlink" title="禁止使用 root 账号登录"></a>禁止使用 root 账号登录</h2><p>因为 root 账户拥有至高的权限，如果有人窃取了 root 账号密码，登录到系统中，就可能对系统造成毁灭性的损坏，因此建议禁止使用 root 账号登录到系统</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tc@iZ28ydyxtwlZ:~$ sudo vi /etc/ssh/sshd_config</span><br></pre></td></tr></table></figure>
+<p>找到 <code>PermitRootLogin</code> 字段，其默认值为 <code>yes</code>，修改成 <code>no</code>，保存然后退出，执行下面的命令，使配置立即生效</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tc@iZ28ydyxtwlZ:~$ sudo systemctl reload sshd</span><br></pre></td></tr></table></figure>
+<p>这样配置后，从终端通过 root 用户就无法登录到服务器，只能通过子用户(tc)登录</p>
+<h1 id="配置开发环境"><a href="#配置开发环境" class="headerlink" title="配置开发环境"></a>配置开发环境</h1><p>基础的系统环境基本配置好了，如果在实际配置中遇到其他问题，建议在网上搜索下，一般都能找到解决办法的，下面开始配置开发环境</p>
+<p>先明确方案，用 Python 来搭建一个小型的后台应用程序，通过在网上查找资料，基本确定使用 <strong>Flask + uWsgi + Nginx</strong> 的组合</p>
+<ul>
+<li><strong>Flask:</strong> Python 中的一个轻量级 Web 开发框架，简单易用，功能强大，关于它的使用可以参考《Flask Web开发:基于Python的Web应用开发实战》这本书</li>
+<li><strong>uWsgi:</strong> 在生产环境下部署配置管理工具</li>
+<li><strong>Nginx:</strong> 是轻量级、性能强、占用资源少，能很好的处理高并发的反向代理软件</li>
+</ul>
+<p>接下来开始为应用开发做准备</p>
+<p>建立项目目录：(根据个人的习惯创建项目目录即可)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tc@iZ28ydyxtwlZ:~$ mkdir dev</span><br><span class="line">tc@iZ28ydyxtwlZ:~$ cd dev</span><br><span class="line">tc@iZ28ydyxtwlZ:~/dev$ mkdir demo</span><br><span class="line">tc@iZ28ydyxtwlZ:~/dev$ cd demo</span><br><span class="line">tc@iZ28ydyxtwlZ:~/dev/demo$</span><br><span class="line">tc@iZ28ydyxtwlZ:~/dev/demo$ pwd</span><br><span class="line">/home/tc/dev/demo</span><br></pre></td></tr></table></figure>
+<h2 id="安装-Python-和-virtualenv"><a href="#安装-Python-和-virtualenv" class="headerlink" title="安装 Python 和 virtualenv"></a>安装 Python 和 virtualenv</h2><p>Ubuntu 14.04 中默认安装的 Python 版本是 2.7，个人习惯使用 Python 3.5 进行开发，因此先手动安装 Python 3.5, 以及虚拟环境 virtualenv</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">tc@iZ28ydyxtwlZ:~/dev/demo$ sudo apt-get install python3.5</span><br><span class="line">tc@iZ28ydyxtwlZ:~/dev/demo$ sudo apt-get install python-pip</span><br><span class="line">tc@iZ28ydyxtwlZ:~/dev/demo$ sudo apt-get install python-virtualenv</span><br></pre></td></tr></table></figure>
+<p><strong>注：</strong> 如果在安装 python3.5 的过程中出现如下错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">tc@iZ28ydyxtwlZ:~/dev/demo$ sudo apt-get install python3.5</span><br><span class="line">Reading package lists... Done</span><br><span class="line">Building dependency tree</span><br><span class="line">Reading state information... Done</span><br><span class="line">E: Unable to locate package python3.5</span><br><span class="line">E: Couldn&apos;t find any package by regex &apos;python3.5&apos;</span><br></pre></td></tr></table></figure>
+<p>解决办法是：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tc@iZ28ydyxtwlZ:~/dev/demo$ sudo add-apt-repository ppa:fkrull/deadsnakes</span><br><span class="line">tc@iZ28ydyxtwlZ:~/dev/demo$ sudo apt-get update</span><br></pre></td></tr></table></figure>
+<h3 id="创建虚拟环境"><a href="#创建虚拟环境" class="headerlink" title="创建虚拟环境"></a>创建虚拟环境</h3><p>安装成功后，就可以开始创建 python 的虚拟运行环境，接下来创建一个虚拟环境，命名为<code>venv</code>，Python 版本为 3.5，默认不带任何模块</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tc@iZ28ydyxtwlZ:~/dev/demo$ virtualenv --python=python3.5 --no-site-packages venv</span><br></pre></td></tr></table></figure>
+<p>创建好后，当前目录下会增加一个目录 <code>venv</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">tc@iZ28ydyxtwlZ:~/dev/demo$ ls</span><br><span class="line">venv</span><br></pre></td></tr></table></figure>
+<h3 id="进入虚拟环境"><a href="#进入虚拟环境" class="headerlink" title="进入虚拟环境"></a>进入虚拟环境</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">tc@iZ28ydyxtwlZ:~/dev/demo$ source venv/bin/activate</span><br><span class="line">(venv) tc@iZ28ydyxtwlZ:~/dev/demo$ python --version</span><br><span class="line">Python 3.5.2</span><br><span class="line">(venv) tc@iZ28ydyxtwlZ:~/dev/demo$ pip list</span><br><span class="line">pip (8.1.2)</span><br><span class="line">pkg-resources (0.0.0)</span><br><span class="line">setuptools (25.2.0)</span><br><span class="line">wheel (0.29.0)</span><br><span class="line">(venv) tc@iZ28ydyxtwlZ:~/dev/demo$</span><br></pre></td></tr></table></figure>
+<p>一个纯净的 Python 3.5 的开发环境就创建好了，以后就在这里进行各种开发</p>
+<h3 id="退出虚拟环境"><a href="#退出虚拟环境" class="headerlink" title="退出虚拟环境"></a>退出虚拟环境</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">(venv) tc@iZ28ydyxtwlZ:~/dev/demo$ deactivate</span><br><span class="line">tc@iZ28ydyxtwlZ:~/dev/demo$ python --version</span><br><span class="line">Python 2.7.12</span><br><span class="line">tc@iZ28ydyxtwlZ:~/dev/demo$</span><br></pre></td></tr></table></figure>
+<p>这样就退出了虚拟环境，回到系统中，可以看到系统中的 Python 版本依然是 2.7</p>
+<p>到此 Python 和开发环境就配置好了，接下来安装开发工具的各种依赖</p>
+<h2 id="安装-Flask"><a href="#安装-Flask" class="headerlink" title="安装 Flask"></a>安装 Flask</h2><p>首先确保已经进入虚拟环境开发目录(参考上面的步骤)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) tc@iZ28ydyxtwlZ:~/dev/demo$</span><br></pre></td></tr></table></figure>
+<p>接着安装 Flask</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) tc@iZ28ydyxtwlZ:~/dev/demo$ pip install flask</span><br></pre></td></tr></table></figure>
+<p>默认会安装一堆其他的依赖，不过只要提示安装成功就可以放心，Flask 已经安装完成了</p>
+<h2 id="安装-uWsgi"><a href="#安装-uWsgi" class="headerlink" title="安装 uWsgi"></a>安装 uWsgi</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) tc@iZ28ydyxtwlZ:~/dev/demo$ pip install uwsgi</span><br></pre></td></tr></table></figure>
+<p>安装 uWsgi 时可能遇到一些坑，提示安装不成功，缺少一些组件等，一般会遇到<code>Python.h: No such file or directory</code> 这样的错误，通过下面的命令可以解决：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) tc@iZ28ydyxtwlZ:~/dev/demo$ sudo apt-get install python3.5-dev</span><br></pre></td></tr></table></figure>
+<p>注意这里要安装的<code>python3.5-dev</code> 根据你正在使用 python 版本而定，如果正在使用 Python 2.x 则安装 python-dev</p>
+<p><strong>更新：</strong> 后面有一次在安装 uWSGI 的时候，按照上面的步骤安装了 python3.5-dev 后，依然安装不了 uWSGI，报错为 <code>Exception: you need a C compiler to build uWSGI</code>, 解决办法是：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) tc@iZ28ydyxtwlZ:~/dev/demo$ apt-get install build-essential python</span><br></pre></td></tr></table></figure>
+<p>然后再安装 uWsgi 就好了</p>
+<h2 id="安装-Nginx"><a href="#安装-Nginx" class="headerlink" title="安装 Nginx"></a>安装 Nginx</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) tc@iZ28ydyxtwlZ:~/dev/demo$ sudo apt-get install nginx</span><br></pre></td></tr></table></figure>
+<h2 id="安装-Supervisor"><a href="#安装-Supervisor" class="headerlink" title="安装 Supervisor"></a>安装 Supervisor</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) tc@iZ28ydyxtwlZ:~/dev/demo$ sudo apt-get install supervisor</span><br></pre></td></tr></table></figure>
+<h2 id="安装配置-MySql"><a href="#安装配置-MySql" class="headerlink" title="安装配置 MySql"></a>安装配置 MySql</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) tc@iZ28ydyxtwlZ:~/dev/demo$ sudo apt-get install mysql-server</span><br></pre></td></tr></table></figure>
+<p>安装过程中会提示输入当前用户的密码以及 MySql 服务器的 root 管理员密码</p>
+<p>安装 Python 的 MySql 驱动，用以连接到 MySql 数据库中</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) tc@iZ28ydyxtwlZ:~/dev/demo$ pip install mysql-connector-python-rf</span><br></pre></td></tr></table></figure>
+<p>关于在 Ubuntu 中 MySql 的操作，可以参考<a href="http://www.tuicool.com/articles/6Jn2umj" target="_blank" rel="noopener">这篇文章</a></p>
+<p>到此，所有准备工作已经完成，接下来就写个 demo 测试下环境</p>
+<h1 id="简单-Demo"><a href="#简单-Demo" class="headerlink" title="简单 Demo"></a>简单 Demo</h1><p>项目的文件结构如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">|- demo/</span><br><span class="line">  |- logs/ 		 	 (日志目录)</span><br><span class="line">  |- tests/ 		 (测试目录)</span><br><span class="line">  |- venv/  		 (虚拟环境目录)</span><br><span class="line">  |- app/    		 (应用目录)</span><br><span class="line">    |- templates/ 	 (模版目录)</span><br><span class="line">    |- static/ 		 (静态资源目录)</span><br><span class="line">    |- main/ 		 (程序主目录)</span><br><span class="line">      |- __init__.py</span><br><span class="line">      |- errors.py</span><br><span class="line">      |- views.py</span><br><span class="line">    |- __init__.py</span><br><span class="line">  |- manage.py</span><br><span class="line">  |- uwsgi_config.ini</span><br><span class="line">  |- requirements.txt</span><br></pre></td></tr></table></figure>
+<p><a href="https://github.com/classTC/FlaskDemo" target="_blank" rel="noopener">示例项目代码</a></p>
+<p>通过 Git 操作，将示例代码拷贝到本地</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) tc@iZ28ydyxtwlZ:~/dev/demo$ git clone https://github.com/classTC/FlaskDemo.git</span><br></pre></td></tr></table></figure>
+<p>拷贝下来的项目目录结构有一点变化，需要稍微修改下，把项目文件放到 <code>/home/tc/dev/demo/</code>目录下，或者就按照拷贝下来的项目结构（如果通过 git 拷贝下来，项目文件目录是<code>/home/tc/dev/demo/FlaskDemo/</code>），修改配置文件中的一些路径相关的配置</p>
+<p>接下来初始化 Flask 运行需要的依赖包</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) tc@iZ28ydyxtwlZ:~/dev/demo$ pip install -r requirements.txt</span><br></pre></td></tr></table></figure>
+<h2 id="配置-uWsgi"><a href="#配置-uWsgi" class="headerlink" title="配置 uWsgi"></a>配置 uWsgi</h2><p>在项目目录下新建 uWsgi 的配置文件，例如 <code>uwsgi_confit.ini</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">[uwsgi]</span><br><span class="line"></span><br><span class="line"># 启动时使用的地址和端口</span><br><span class="line">socket = 127.0.0.1:9601</span><br><span class="line"></span><br><span class="line"># 启动 master 进程</span><br><span class="line">master = true</span><br><span class="line"></span><br><span class="line"># 指向项目目录</span><br><span class="line">pythonpath = /home/tc/dev/demo</span><br><span class="line"></span><br><span class="line"># 指向 manage.py</span><br><span class="line">module = manage</span><br><span class="line"></span><br><span class="line"># 在 manage.py 中的应用实例</span><br><span class="line">callable = app</span><br><span class="line"></span><br><span class="line"># 开启的进程数</span><br><span class="line">processes = 2</span><br><span class="line"></span><br><span class="line"># 每个进程中开启的线程数</span><br><span class="line">threads = 2</span><br></pre></td></tr></table></figure>
+<h2 id="配置-Supervisor"><a href="#配置-Supervisor" class="headerlink" title="配置 Supervisor"></a>配置 Supervisor</h2><p>Supervisor 的全局配置文件在 <code>/etc/supervisor/supervisor.conf</code>,在这个文件中又指向了 <code>conf.d</code>目录，只需要在 <code>conf.d</code> 目录下新建一个 <code>.conf</code> 后缀的文件，Supervisor 就能自动扫描到这个配置文件，这里我在 <code>/etc/supervisor/conf.d/</code>目录下 新建了 <code>demo_supervisor.conf</code> 文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(venv) tc@iZ28ydyxtwlZ:~/dev/demo$ cd /etc/supervisor/conf.d/</span><br><span class="line"></span><br><span class="line">(venv) tc@iZ28ydyxtwlZ:/etc/supervisor/conf.d$ sudo vi demo_supervisor.conf</span><br></pre></td></tr></table></figure>
+<p>然后写配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[program:demo]</span><br><span class="line"></span><br><span class="line">command=/home/tc/dev/demo/venv/bin/uwsgi /home/tc/dev/demo/uwsgi_config.ini</span><br><span class="line"></span><br><span class="line">directory=/home/tc/dev/demo/</span><br><span class="line"></span><br><span class="line">user=root</span><br><span class="line"></span><br><span class="line">autostart=true</span><br><span class="line">autorestart=true</span><br><span class="line"></span><br><span class="line">stdout_logfile=/home/tc/dev/demo/logs/supervisor.log</span><br></pre></td></tr></table></figure>
+<h2 id="配置-Nginx"><a href="#配置-Nginx" class="headerlink" title="配置 Nginx"></a>配置 Nginx</h2><p>Nginx 的配置文件在 <code>/etc/nginx/sites-available/</code>目录下，有一个 <code>default</code> 文件，只需要新建一个 default 文件替换掉原有的:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(venv) tc@iZ28ydyxtwlZ:~/dev/demo$ cd /etc/nginx/sites-available/</span><br><span class="line">(venv) tc@iZ28ydyxtwlZ:/etc/nginx/sites-available$ sudo rm default</span><br><span class="line">(venv) tc@iZ28ydyxtwlZ:/etc/nginx/sites-available$ sudo vi default</span><br></pre></td></tr></table></figure>
+<p>配置内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">       	listen 80;</span><br><span class="line">       	server_name 123.45.67.89;</span><br><span class="line"></span><br><span class="line">       	location / &#123;</span><br><span class="line">       		include uwsgi_params;</span><br><span class="line">       		uwsgi_pass 127.0.0.1:9601;</span><br><span class="line">            uwsgi_param UWSGI_PYTHON /home/tc/dev/demo/venv;</span><br><span class="line">       		uwsgi_param UWSGI_CHDIR /home/tc/dev/demo;</span><br><span class="line">            uwsgi_param UWSGI_SCRIPT manage:app;</span><br><span class="line">       	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="测试运行"><a href="#测试运行" class="headerlink" title="测试运行"></a>测试运行</h2><p>回到项目主目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(venv) tc@iZ28ydyxtwlZ:/etc/nginx/sites-available$ cd ~/dev/demo/</span><br></pre></td></tr></table></figure>
+<p>启动 Supervisor 和 Nginx</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(venv) tc@iZ28ydyxtwlZ:~/dev/demo$ sudo service supervisor start</span><br><span class="line">(venv) tc@iZ28ydyxtwlZ:~/dev/demo$ sudo service nginx start</span><br></pre></td></tr></table></figure>
+<p>然后通过浏览器访问服务器的 IP（例如 <a href="http://123.45.67.89），如果返回正确的结果，就说明服务器基本正常运行了:" target="_blank" rel="noopener">http://123.45.67.89），如果返回正确的结果，就说明服务器基本正常运行了:</a>)</p>
+<h2 id="本地文件上传到服务器"><a href="#本地文件上传到服务器" class="headerlink" title="本地文件上传到服务器"></a>本地文件上传到服务器</h2><p>在 Linux 环境下，用 scp 命令可以实现基于 SSH 的主机间文件复制。一般编写服务器应用，先是在本地编写调试，然后上传到服务器上运行，因此就可以使用 scp 命令来实现将本地代码复制到服务器端，用法如下：</p>
+<p><strong>复制文件到远程主机</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp manage.py tc@123.45.67.89:/home/tc/dev/demo</span><br></pre></td></tr></table></figure>
+<p>上述命令就是将当前目录下的 <code>manage.py</code> 文件复制到 远程主机(123.45.67.89) 中的 <code>/home/tc/dev/demo</code>目录下</p>
+<p><strong>复制文件夹到远程主机</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp -r tests/ tc@123.45.67.89:/home/tc/dev/demo</span><br></pre></td></tr></table></figure>
+<p>上述命令时将当前目录下的 <code>tests</code>文件夹复制到远程主机中的 <code>/home/tc/dev/demo</code>目录下</p>
+<h1 id="搭建本地同步开发环境"><a href="#搭建本地同步开发环境" class="headerlink" title="搭建本地同步开发环境"></a>搭建本地同步开发环境</h1><p>服务器应用开发一般是现在本地开发环境进行开发，然后将测试通过的代码发送到服务器上运行，因此在本地需要有一个与服务器环境一样的模拟开发环境，方便进行开发调试，这里我使用的是 Vagrant 来搭建本地开发环境，不同于其它虚拟机产品，Vagrant 最大的好处就是<strong>同步目录</strong>，即本地文件目录与 Vagrant 虚拟机中的文件目录是同步的，在本地同步目录中添加文件，虚拟机中也能看到并使用这个文件，非常好用！关于 Vagrant 的使用，可以参考<a href="https://www.vagrantup.com/" target="_blank" rel="noopener">官方文档</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#服务器配置"><span class="toc-number">1.</span> <span class="toc-text">服务器配置</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#连接到云服务器"><span class="toc-number">2.</span> <span class="toc-text">连接到云服务器</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#基础配置"><span class="toc-number">3.</span> <span class="toc-text">基础配置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-vim"><span class="toc-number">3.1.</span> <span class="toc-text">安装 vim</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#添加用户"><span class="toc-number">3.2.</span> <span class="toc-text">添加用户</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#禁止使用-root-账号登录"><span class="toc-number">3.3.</span> <span class="toc-text">禁止使用 root 账号登录</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#配置开发环境"><span class="toc-number">4.</span> <span class="toc-text">配置开发环境</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-Python-和-virtualenv"><span class="toc-number">4.1.</span> <span class="toc-text">安装 Python 和 virtualenv</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#创建虚拟环境"><span class="toc-number">4.1.1.</span> <span class="toc-text">创建虚拟环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#进入虚拟环境"><span class="toc-number">4.1.2.</span> <span class="toc-text">进入虚拟环境</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#退出虚拟环境"><span class="toc-number">4.1.3.</span> <span class="toc-text">退出虚拟环境</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-Flask"><span class="toc-number">4.2.</span> <span class="toc-text">安装 Flask</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-uWsgi"><span class="toc-number">4.3.</span> <span class="toc-text">安装 uWsgi</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-Nginx"><span class="toc-number">4.4.</span> <span class="toc-text">安装 Nginx</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装-Supervisor"><span class="toc-number">4.5.</span> <span class="toc-text">安装 Supervisor</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#安装配置-MySql"><span class="toc-number">4.6.</span> <span class="toc-text">安装配置 MySql</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#简单-Demo"><span class="toc-number">5.</span> <span class="toc-text">简单 Demo</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#配置-uWsgi"><span class="toc-number">5.1.</span> <span class="toc-text">配置 uWsgi</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置-Supervisor"><span class="toc-number">5.2.</span> <span class="toc-text">配置 Supervisor</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置-Nginx"><span class="toc-number">5.3.</span> <span class="toc-text">配置 Nginx</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#测试运行"><span class="toc-number">5.4.</span> <span class="toc-text">测试运行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#本地文件上传到服务器"><span class="toc-number">5.5.</span> <span class="toc-text">本地文件上传到服务器</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#搭建本地同步开发环境"><span class="toc-number">6.</span> <span class="toc-text">搭建本地同步开发环境</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2016/07/11/201901192126/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2016/07/11/201901192126/&text=Flask 搭建 Web 应用"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2016/07/11/201901192126/&title=Flask 搭建 Web 应用"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2016/07/11/201901192126/&is_video=false&description=Flask 搭建 Web 应用"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Flask 搭建 Web 应用&body=Check out this article: http://09ae9c.com/2016/07/11/201901192126/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2016/07/11/201901192126/&title=Flask 搭建 Web 应用"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2016/07/11/201901192126/&title=Flask 搭建 Web 应用"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2016/07/11/201901192126/&title=Flask 搭建 Web 应用"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2016/07/11/201901192126/&title=Flask 搭建 Web 应用"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2016/07/11/201901192126/&name=Flask 搭建 Web 应用&description=&lt;p&gt;本文记录在阿里云 ECS 服务器上搭建简单的 Web 后端应用程序的过程，这个应用程序的需求是为移动客户端提供 API，用于提供和存储用户数据，还要提供一个官网用于展示，采用 Flask + MySql + Nginx 等框架&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="Appium 是一个开源的自动化测试工具，支持 iOS 和安卓平台上的原生的，基于移动浏览器的，混合的应用，主要用户模拟用户操作，交互性的测试。 准备1. 安装 Appium Server官网 下载最新版，然后安装，一般不需要对 Server 端做任何修改，使用默认配置运行就好 注，需要确保 Android 开发环境准备好，比如 SDK 下载配置，环境变量设置等 2. 编写脚本Appium 脚本支">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Appium 实现自动测试 Android 应用">
+<meta property="og:url" content="http://09ae9c.com/2018/12/28/201901192134/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="Appium 是一个开源的自动化测试工具，支持 iOS 和安卓平台上的原生的，基于移动浏览器的，混合的应用，主要用户模拟用户操作，交互性的测试。 准备1. 安装 Appium Server官网 下载最新版，然后安装，一般不需要对 Server 端做任何修改，使用默认配置运行就好 注，需要确保 Android 开发环境准备好，比如 SDK 下载配置，环境变量设置等 2. 编写脚本Appium 脚本支">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-19T14:26:47.798Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Appium 实现自动测试 Android 应用">
+<meta name="twitter:description" content="Appium 是一个开源的自动化测试工具，支持 iOS 和安卓平台上的原生的，基于移动浏览器的，混合的应用，主要用户模拟用户操作，交互性的测试。 准备1. 安装 Appium Server官网 下载最新版，然后安装，一般不需要对 Server 端做任何修改，使用默认配置运行就好 注，需要确保 Android 开发环境准备好，比如 SDK 下载配置，环境变量设置等 2. 编写脚本Appium 脚本支">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Appium 实现自动测试 Android 应用</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2019/01/06/201901051801/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2018/12/03/201901192132/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2018/12/28/201901192134/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2018/12/28/201901192134/&text=Appium 实现自动测试 Android 应用"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2018/12/28/201901192134/&title=Appium 实现自动测试 Android 应用"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2018/12/28/201901192134/&is_video=false&description=Appium 实现自动测试 Android 应用"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Appium 实现自动测试 Android 应用&body=Check out this article: http://09ae9c.com/2018/12/28/201901192134/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2018/12/28/201901192134/&title=Appium 实现自动测试 Android 应用"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2018/12/28/201901192134/&title=Appium 实现自动测试 Android 应用"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2018/12/28/201901192134/&title=Appium 实现自动测试 Android 应用"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2018/12/28/201901192134/&title=Appium 实现自动测试 Android 应用"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2018/12/28/201901192134/&name=Appium 实现自动测试 Android 应用&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#准备"><span class="toc-number">1.</span> <span class="toc-text">准备</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-安装-Appium-Server"><span class="toc-number">1.1.</span> <span class="toc-text">1. 安装 Appium Server</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-编写脚本"><span class="toc-number">1.2.</span> <span class="toc-text">2. 编写脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化-Driver"><span class="toc-number">1.2.1.</span> <span class="toc-text">初始化 Driver</span></a></li></ol></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Appium 实现自动测试 Android 应用
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-12-28T12:45:22.000Z" itemprop="datePublished">2018-12-28</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Test/">Test</a>
+    </div>
+
+
+      
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>Appium 是一个开源的自动化测试工具，支持 iOS 和安卓平台上的原生的，基于移动浏览器的，混合的应用，主要用户模拟用户操作，交互性的测试。</p>
+<h1 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h1><h2 id="1-安装-Appium-Server"><a href="#1-安装-Appium-Server" class="headerlink" title="1. 安装 Appium Server"></a>1. 安装 Appium Server</h2><p><a href="http://appium.io/" target="_blank" rel="noopener">官网</a> 下载最新版，然后安装，一般不需要对 Server 端做任何修改，使用默认配置运行就好</p>
+<p>注，需要确保 Android 开发环境准备好，比如 SDK 下载配置，环境变量设置等</p>
+<h2 id="2-编写脚本"><a href="#2-编写脚本" class="headerlink" title="2. 编写脚本"></a>2. 编写脚本</h2><p>Appium 脚本支持多种语言，为了统一，这里使用 Python 编写脚本</p>
+<h3 id="初始化-Driver"><a href="#初始化-Driver" class="headerlink" title="初始化 Driver"></a>初始化 Driver</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">from appium import webdriver</span><br><span class="line"></span><br><span class="line">driver = webdriver.Remote(</span><br><span class="line">            command_executor=EXECUTOR,</span><br><span class="line">            desired_capabilities=&#123;</span><br><span class="line">                &apos;platformName&apos;: &apos;Android&apos;,</span><br><span class="line">                &apos;deviceName&apos;: ANDROID_DEVICE_NAME,</span><br><span class="line">                &apos;appPackage&apos;: &apos;com.netease.nim.demo&apos;,</span><br><span class="line">                &apos;appActivity&apos;: &apos;LoginActivity&apos;,</span><br><span class="line">                &apos;app&apos;: ANDROID_NETEASE_PATH</span><br><span class="line">            &#125;</span><br><span class="line">        )</span><br></pre></td></tr></table></figure>
+<p>初始化 Driver 的时候，需要提供 <code>command_executor</code> 和 <code>desired_capabilities</code>，<code>command_executor</code> 就是刚刚启动的 Appium Server 的地址，一般默认值是 <code>http://localhost:4723/wd/hub</code>，而 <code>desired_capabilities</code> 则是一些自定义配置，用于提供给 Appium 定位到具体要测试的设备和应用，上述几个参数具体描述是</p>
+<ul>
+<li>platformName: 平台名，分为 Android 和 iOS</li>
+<li>deviceName: 设备名，需要测试的设备名字，通过 <code>adb device</code> 命令可以看到当前已连接的设备的名字</li>
+<li>appPackage: 应用包名，需要测试的应用的包名</li>
+<li>appActivity: 需要启动的具体页面名字，Appium 会根据 appPackage + appActivity 拼接处完整的路径，所以如果有子目录，一定要写全路径</li>
+<li>app: 应用安装包路径，可选项，如果指定了 app 路径，Appium 每次测试都会从 app 指向的路径查找 apk 文件然后重新安装再测试</li>
+</ul>
+<p>初始化之后，就是通过这个 driver 进行一系列的模拟操作，比如根据某个控件的 id 查找对应 View<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">btn = driver.find_element_by_id(&apos;btn_test&apos;)</span><br><span class="line">btn.click()</span><br></pre></td></tr></table></figure></p>
+<p>找到控件后执行点击事件，这样就会执行一次模拟点击操作</p>
+<p>更多的操作可以查看 <a href="http://appium.io/docs/en/about-appium/intro/" target="_blank" rel="noopener">官方文档</a></p>
+<p>最后，在流程走完后，要退出当前的 Driver，以结束当前 Session<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">driver.quit()</span><br></pre></td></tr></table></figure></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#准备"><span class="toc-number">1.</span> <span class="toc-text">准备</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-安装-Appium-Server"><span class="toc-number">1.1.</span> <span class="toc-text">1. 安装 Appium Server</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-编写脚本"><span class="toc-number">1.2.</span> <span class="toc-text">2. 编写脚本</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#初始化-Driver"><span class="toc-number">1.2.1.</span> <span class="toc-text">初始化 Driver</span></a></li></ol></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2018/12/28/201901192134/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2018/12/28/201901192134/&text=Appium 实现自动测试 Android 应用"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2018/12/28/201901192134/&title=Appium 实现自动测试 Android 应用"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2018/12/28/201901192134/&is_video=false&description=Appium 实现自动测试 Android 应用"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Appium 实现自动测试 Android 应用&body=Check out this article: http://09ae9c.com/2018/12/28/201901192134/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2018/12/28/201901192134/&title=Appium 实现自动测试 Android 应用"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2018/12/28/201901192134/&title=Appium 实现自动测试 Android 应用"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2018/12/28/201901192134/&title=Appium 实现自动测试 Android 应用"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2018/12/28/201901192134/&title=Appium 实现自动测试 Android 应用"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2018/12/28/201901192134/&name=Appium 实现自动测试 Android 应用&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

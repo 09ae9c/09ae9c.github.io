@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="上篇文章 介绍了 Fresco  基础使用和实现图片圆角的方法，可以通过两种方式来实现圆角：BITMAP_ONLY 模式和 OVERLAY_COLOR 模式。本文通过分析 Fresco 源码来介绍这两种方式实现圆角的原理，并总结 Android 中常用的实现图片圆角的方法。 本文重点分析 Fresco 中实现图片圆角的源码，其他部分的源码，将在后续文章中介绍。 Fresco 中圆角实现原理在 co">
+<meta name="keywords" content="Fresco">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fresco 图片圆角实现原理">
+<meta property="og:url" content="http://09ae9c.com/2015/10/06/201901192122/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="上篇文章 介绍了 Fresco  基础使用和实现图片圆角的方法，可以通过两种方式来实现圆角：BITMAP_ONLY 模式和 OVERLAY_COLOR 模式。本文通过分析 Fresco 源码来介绍这两种方式实现圆角的原理，并总结 Android 中常用的实现图片圆角的方法。 本文重点分析 Fresco 中实现图片圆角的源码，其他部分的源码，将在后续文章中介绍。 Fresco 中圆角实现原理在 co">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://raw.githubusercontent.com/classTC/FrescoUseDemo/master/preview/how.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/classTC/FrescoUseDemo/master/preview/compare.gif">
+<meta property="og:image" content="https://raw.githubusercontent.com/classTC/FrescoUseDemo/master/preview/xFremode.png">
+<meta property="og:updated_time" content="2019-01-19T14:26:47.800Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Fresco 图片圆角实现原理">
+<meta name="twitter:description" content="上篇文章 介绍了 Fresco  基础使用和实现图片圆角的方法，可以通过两种方式来实现圆角：BITMAP_ONLY 模式和 OVERLAY_COLOR 模式。本文通过分析 Fresco 源码来介绍这两种方式实现圆角的原理，并总结 Android 中常用的实现图片圆角的方法。 本文重点分析 Fresco 中实现图片圆角的源码，其他部分的源码，将在后续文章中介绍。 Fresco 中圆角实现原理在 co">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/classTC/FrescoUseDemo/master/preview/how.jpg">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Fresco 图片圆角实现原理</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2015/10/12/201901192123/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2015/09/27/201901192114/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/10/06/201901192122/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/10/06/201901192122/&text=Fresco 图片圆角实现原理"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/10/06/201901192122/&title=Fresco 图片圆角实现原理"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/10/06/201901192122/&is_video=false&description=Fresco 图片圆角实现原理"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Fresco 图片圆角实现原理&body=Check out this article: http://09ae9c.com/2015/10/06/201901192122/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/10/06/201901192122/&title=Fresco 图片圆角实现原理"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/10/06/201901192122/&title=Fresco 图片圆角实现原理"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/10/06/201901192122/&title=Fresco 图片圆角实现原理"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/10/06/201901192122/&title=Fresco 图片圆角实现原理"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/10/06/201901192122/&name=Fresco 图片圆角实现原理&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Fresco-中圆角实现原理"><span class="toc-number">1.</span> <span class="toc-text">Fresco 中圆角实现原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#BITMAP-ONLY-模式"><span class="toc-number">1.1.</span> <span class="toc-text">BITMAP_ONLY 模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OVERLAY-COLOR-模式"><span class="toc-number">1.2.</span> <span class="toc-text">OVERLAY_COLOR 模式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Android-中实现圆角的方案"><span class="toc-number">2.</span> <span class="toc-text">Android 中实现圆角的方案</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#方案一：将原始图片中截取的圆角矩形图片放在一个新建的Bitmap中"><span class="toc-number">2.1.</span> <span class="toc-text">方案一：将原始图片中截取的圆角矩形图片放在一个新建的Bitmap中</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方案二：通过-Xfermode-实现"><span class="toc-number">2.2.</span> <span class="toc-text">方案二：通过 Xfermode 实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方案三：通过对-ViewGroup-进行设置，使包裹在内部的图片呈现圆角矩形"><span class="toc-number">2.3.</span> <span class="toc-text">方案三：通过对 ViewGroup 进行设置，使包裹在内部的图片呈现圆角矩形</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方案四：使用形状-Shape-覆盖"><span class="toc-number">2.4.</span> <span class="toc-text">方案四：使用形状 Shape 覆盖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方案五：使用-Android-自带的剪切方法"><span class="toc-number">2.5.</span> <span class="toc-text">方案五：使用 Android 自带的剪切方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方案六：-9-png-实现"><span class="toc-number">2.6.</span> <span class="toc-text">方案六： .9.png 实现</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Fresco 图片圆角实现原理
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2015-10-06T15:53:54.000Z" itemprop="datePublished">2015-10-06</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Fresco-源码解析/">Fresco 源码解析</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Fresco/">Fresco</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p><a href="http://blog.csdn.net/ttccaaa/article/details/50408515" target="_blank" rel="noopener">上篇文章</a> 介绍了 Fresco  基础使用和实现图片圆角的方法，可以通过两种方式来实现圆角：<strong>BITMAP_ONLY</strong> 模式和 <strong>OVERLAY_COLOR</strong> 模式。本文通过分析 Fresco 源码来介绍这两种方式实现圆角的原理，并总结 Android 中常用的实现图片圆角的方法。</p>
+<p>本文重点分析 Fresco 中实现图片圆角的源码，其他部分的源码，将在后续文章中介绍。</p>
+<h1 id="Fresco-中圆角实现原理"><a href="#Fresco-中圆角实现原理" class="headerlink" title="Fresco 中圆角实现原理"></a>Fresco 中圆角实现原理</h1><p>在 com.facebook.drawee.drawable 包中有如下文件</p>
+<ul>
+<li>Rounded.java</li>
+<li>RoundedBitmapDrawable.java</li>
+<li>RoundedColorDrawable.java</li>
+<li>RoundedCornersDrawable.java</li>
+</ul>
+<p>其中 Rounded 是圆角实现类的接口，定义了圆角类实现的方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Rounded</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">setCircle</span><span class="params">(<span class="keyword">boolean</span> isCircle)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">setRadius</span><span class="params">(<span class="keyword">float</span> radius)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">setRadii</span><span class="params">(<span class="keyword">float</span>[] radii)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">setBorder</span><span class="params">(<span class="keyword">int</span> color, <span class="keyword">float</span> width)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>其他三个类实现了 Rounded 接口，来实现两种不同模式的圆角，RoundedCornersDrawable.java 用于实现 OVERLAY_COLOR 模式的圆角，而 RoundedBitmapDrawable.java 和 RoundedCorlorDrawable.java 都是用于实现 BITMAP_ONLY 模式的圆角，两者的区别在于传入的资源类型不同，前者是对 BitmapDrawable 进行圆角处理，而后者是对 ColorDrawable 进行处理。</p>
+<p>了解了源码中实现图片圆角的结构，下面开始进入到具体的代码中了解具体的实现过程</p>
+<h2 id="BITMAP-ONLY-模式"><a href="#BITMAP-ONLY-模式" class="headerlink" title="BITMAP_ONLY 模式"></a>BITMAP_ONLY 模式</h2><p>作为默认的实现模式，首先来了解下这种模式的实现过程</p>
+<p>进入到 RoundedBitmapDrawable.java 中，首先看它的绘制过程，找到 draw() 方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">(Canvas canvas)</span> </span>&#123;</span><br><span class="line">    updateTransform();<span class="comment">//更新图片变换矩阵</span></span><br><span class="line">    updateNonzero();<span class="comment">//更新 0 值，判断有没有 设置圆形，圆角，边框等属性</span></span><br><span class="line">    <span class="keyword">if</span> (!mIsNonzero) &#123;<span class="comment">//如果没有设置以上属性，则 mIsNonzero 返回 false，直接调用父类的绘制</span></span><br><span class="line">      <span class="keyword">super</span>.draw(canvas);</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    updatePath();<span class="comment">//更新 Path</span></span><br><span class="line">    updatePaint();<span class="comment">//更新画笔</span></span><br><span class="line">    <span class="keyword">int</span> saveCount = canvas.save();<span class="comment">//保存画布状态</span></span><br><span class="line">    canvas.concat(mInverseTransform);<span class="comment">//设置变换矩阵</span></span><br><span class="line">    canvas.drawPath(mPath, mPaint);<span class="comment">//绘制 Path</span></span><br><span class="line">    <span class="keyword">if</span> (mBorderWidth != <span class="number">0</span>) &#123;<span class="comment">//绘制边框</span></span><br><span class="line">      mBorderPaint.setStrokeWidth(mBorderWidth);</span><br><span class="line">      mBorderPaint.setColor(DrawableUtils.multiplyColorAlpha(mBorderColor, mPaint.getAlpha()));</span><br><span class="line">      canvas.drawPath(mPath, mBorderPaint);</span><br><span class="line">    &#125;</span><br><span class="line">    canvas.restoreToCount(saveCount);<span class="comment">//合并图像</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>从 draw() 方法可以了解到圆角图片的绘制过程：</p>
+<ul>
+<li>更新变换矩阵，用于图片大小缩放适配</li>
+<li>判断有没有设置属性，如果没有则直接绘制，如果有则进行下一步</li>
+<li>更新 Path，根据属性确定绘制的形状</li>
+<li>更新 Paint，将图片资源填充到画笔</li>
+<li>绘制图片，绘制边框</li>
+</ul>
+<p>本文的重点是了解圆角的实现过程，所以接下来就进入到 updatePath() 和 updatePaint() 中看看 Path 和 Paint 是怎样实现圆角的<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">updatePath</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   <span class="keyword">if</span> (mIsPathDirty) &#123;<span class="comment">//大概是说如果有对图片进行设置</span></span><br><span class="line">     mPath.reset();<span class="comment">//重置 Path</span></span><br><span class="line">     mRootBounds.inset(mBorderWidth/<span class="number">2</span>, mBorderWidth/<span class="number">2</span>);<span class="comment">//矩形向内缩进半个边框宽度，避免边框遮挡图片</span></span><br><span class="line">     <span class="keyword">if</span> (mIsCircle) &#123;<span class="comment">//如果设置为圆形图片，则 Path 设置为圆形，否则就设置为矩形</span></span><br><span class="line">       mPath.addCircle(</span><br><span class="line">           mRootBounds.centerX(),</span><br><span class="line">           mRootBounds.centerY(),</span><br><span class="line">           Math.min(mRootBounds.width(), mRootBounds.height())/<span class="number">2</span>,</span><br><span class="line">           Path.Direction.CW);</span><br><span class="line">     &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">       mPath.addRoundRect(mRootBounds, mCornerRadii, Path.Direction.CW);</span><br><span class="line">     &#125;</span><br><span class="line">     mRootBounds.inset(-(mBorderWidth/<span class="number">2</span>), -(mBorderWidth/<span class="number">2</span>));<span class="comment">//Path 设置完成，恢复矩形</span></span><br><span class="line">     mPath.setFillType(Path.FillType.WINDING);</span><br><span class="line">     mIsPathDirty = <span class="keyword">false</span>;</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
+<p>从上面的代码中可以大致了解到其主要是根据属性值 (mIsCircle) 来配置 Path，主要使用到 Path 的两个方法：addCircle() 和 addRoundRect(),这两个方法分别实现绘制圆形和绘制矩形，其参数描述如下：</p>
+<ul>
+<li>addCircle(float x,float y,float radius,Direction dir)<ul>
+<li>圆心 x 坐标</li>
+<li>圆心 y 坐标</li>
+<li>圆的半径</li>
+<li>绘制圆的方向，值 Direction.CCW 为逆时针方向，值 Directin.CW 为顺时针方向</li>
+</ul>
+</li>
+<li>addRoundRect(RectF rect,float[] radii,Direction dir)<ul>
+<li>外接矩形</li>
+<li>圆角半径数组，共 8 个值，每两个为一对，顺序为:左上 -&gt; 右上 -&gt; 右下 -&gt; 左下</li>
+<li>绘制圆的方向，同上</li>
+</ul>
+</li>
+</ul>
+<p>以上，便完成了 Path 的更新，接下来是对 Paint 的更新<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">updatePaint</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Bitmap bitmap = getBitmap();<span class="comment">//获取需要绘制的 Bitmap</span></span><br><span class="line">    <span class="keyword">if</span> (mLastBitmap == <span class="keyword">null</span> || mLastBitmap.get() != bitmap) &#123;<span class="comment">//防止重复引用</span></span><br><span class="line">      mLastBitmap = <span class="keyword">new</span> WeakReference&lt;Bitmap&gt;(bitmap);<span class="comment">//新建一个弱引用 Bitmap 对象</span></span><br><span class="line">      mPaint.setShader(<span class="keyword">new</span> BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));<span class="comment">//设置 Shader</span></span><br><span class="line">      mIsShaderTransformDirty = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (mIsShaderTransformDirty) &#123;<span class="comment">//设置变换矩阵</span></span><br><span class="line">      mPaint.getShader().setLocalMatrix(mTransform);</span><br><span class="line">      mIsShaderTransformDirty = <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>从这里大概清楚了这种方式是通过 BitmapShader 方式来实现图片圆角的。于是这里产生了一个疑问：<strong>既然可以直接使用 BitmapShader 来实现圆角，那如果接下来再直接使用 canvas 的 drawCircle() 和 drawRoundRect()也能实现圆形图片和圆角图片，为什么还要多此一举的使用 Path 来绘制圆形和圆角矩形呢？</strong> 我对此的理解是：canvas 的drawRoundRect() 没有办法<strong>实现四个不同大小的圆角</strong>，而通过 Path 的 addRoundRect() 方法是能够实现不同圆角的图片，使用Path是为了满足这个需求。至于为什么不能在 xml 布局文件中设置不同大小的圆角而只能在代码中设置这个问题，依然不明白，期待在后续的分析中能够解决这个问题。</p>
+<p>以上，是实现图片圆角过程中主要的步骤，至于后面的绘制边框，没太大的难度，这里就不再叙述。</p>
+<h2 id="OVERLAY-COLOR-模式"><a href="#OVERLAY-COLOR-模式" class="headerlink" title="OVERLAY_COLOR 模式"></a>OVERLAY_COLOR 模式</h2><p>这种模式的实现在 RoundedCornersDrawable.java 文件中，可以看到，其实这个类中还存在着另外一种模式：CLIPPING 模式，从<a href="http://fresco-cn.org/docs/rounded-corners-and-circles.html#_" target="_blank" rel="noopener">官方文档</a>中可以了解到不使用这个模式的原因,这里就不再叙述。直接看使用 OVERLAY_COLOR 模式的代码实现，同样的，首先找到绘制过程 draw() 方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">(Canvas canvas)</span> </span>&#123;</span><br><span class="line">   Rect bounds = getBounds();</span><br><span class="line">   <span class="keyword">switch</span> (mType) &#123;</span><br><span class="line">     <span class="keyword">case</span> CLIPPING:<span class="comment">//暂不支持这种方式，跳过</span></span><br><span class="line">       <span class="comment">// clip, note: doesn't support anti-aliasing</span></span><br><span class="line">       <span class="keyword">int</span> saveCount = canvas.save();</span><br><span class="line">       mPath.setFillType(Path.FillType.EVEN_ODD);</span><br><span class="line">       canvas.clipPath(mPath);</span><br><span class="line">       <span class="keyword">super</span>.draw(canvas);</span><br><span class="line">       canvas.restoreToCount(saveCount);</span><br><span class="line">       <span class="keyword">break</span>;</span><br><span class="line">     <span class="keyword">case</span> OVERLAY_COLOR:</span><br><span class="line">       <span class="keyword">super</span>.draw(canvas);<span class="comment">//首先让父类绘制图像</span></span><br><span class="line">       mPaint.setColor(mOverlayColor);<span class="comment">//设置画笔颜色</span></span><br><span class="line">       mPaint.setStyle(Paint.Style.FILL);<span class="comment">//设置画笔样式为填充</span></span><br><span class="line">       mPath.setFillType(Path.FillType.INVERSE_EVEN_ODD);<span class="comment">//设置 Path 的填充模式</span></span><br><span class="line">       canvas.drawPath(mPath, mPaint);<span class="comment">//画遮盖图层</span></span><br><span class="line"></span><br><span class="line">       <span class="keyword">if</span> (mIsCircle) &#123;<span class="comment">//如果是圆形，则用 Canvas 画一个圆形</span></span><br><span class="line">         <span class="comment">// INVERSE_EVEN_ODD will only draw inverse circle within its bounding box, so we need to</span></span><br><span class="line">         <span class="comment">// fill the rest manually if the bounds are not square.</span></span><br><span class="line">         <span class="keyword">float</span> paddingH = (bounds.width() - bounds.height() + mBorderWidth) / <span class="number">2f</span>;</span><br><span class="line">         <span class="keyword">float</span> paddingV = (bounds.height() - bounds.width() + mBorderWidth) / <span class="number">2f</span>;</span><br><span class="line">         <span class="keyword">if</span> (paddingH &gt; <span class="number">0</span>) &#123;</span><br><span class="line">           canvas.drawRect(bounds.left, bounds.top, bounds.left + paddingH, bounds.bottom, mPaint);</span><br><span class="line">           canvas.drawRect(</span><br><span class="line">               bounds.right - paddingH,</span><br><span class="line">               bounds.top,</span><br><span class="line">               bounds.right,</span><br><span class="line">               bounds.bottom,</span><br><span class="line">               mPaint);</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="keyword">if</span> (paddingV &gt; <span class="number">0</span>) &#123;</span><br><span class="line">           canvas.drawRect(bounds.left, bounds.top, bounds.right, bounds.top + paddingV, mPaint);</span><br><span class="line">           canvas.drawRect(</span><br><span class="line">               bounds.left,</span><br><span class="line">               bounds.bottom - paddingV,</span><br><span class="line">               bounds.right,</span><br><span class="line">               bounds.bottom,</span><br><span class="line">               mPaint);</span><br><span class="line">         &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">break</span>;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> (mBorderColor != Color.TRANSPARENT) &#123;<span class="comment">//画边框</span></span><br><span class="line">     mPaint.setStyle(Paint.Style.STROKE);</span><br><span class="line">     mPaint.setColor(mBorderColor);</span><br><span class="line">     mPaint.setStrokeWidth(mBorderWidth);</span><br><span class="line">     mPath.setFillType(Path.FillType.EVEN_ODD);</span><br><span class="line">     canvas.drawPath(mPath, mPaint);</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
+<p>从上面的代码中可以了解到这种方式的实现原理大致如下：</p>
+<ul>
+<li>每次设置属性的时候都更新一下 Path ,也就是根据属性决定 Path 是画圆形还是圆角矩形</li>
+<li>将图片按照正常的方式先画出来(调用super.draw())</li>
+<li>对Path设置填充模式为 INVERSE_EVEN_ODD,取 Path 未占用的区域(占用的是圆形或者圆角矩形区域)</li>
+<li>画出 Path，这样未占用的区域就是指定的背景色了，占用区域就是圆角图片</li>
+<li>判断如果是圆形，则再画一个圆形，按照上述填充规则</li>
+<li>最后如果有边框就画边框，同样的规则</li>
+</ul>
+<p>下面通过一幅示意图简单描述一下这种方式的实现原理：<br><img src="https://raw.githubusercontent.com/classTC/FrescoUseDemo/master/preview/how.jpg" alt="实现原理"></p>
+<p>绘制过程大致是这样，我认为只要理解了 Path 的填充模式，这个原理就很好理解的，关于 Path 的填充模式，<a href="http://blog.csdn.net/tianjian4592/article/details/45652257" target="_blank" rel="noopener">这篇文章</a>中有详细介绍，可以参考一下。</p>
+<p>以上，通过源码分析的方式理解了 Fresco 中圆角矩形的实现原理，在分析这些代码的时候我查阅了一些资料，包括 Drawable 类，Path 类，Paint 类等一些类的使用方法，然后结合源码，跟着思路慢慢得出结果，并实现了一个简单的自定义 View 来验证结果。效果如下，代码在 <a href="https://github.com/classTC/FrescoUseDemo" target="_blank" rel="noopener">GitHub</a> 上</p>
+<p><img src="https://raw.githubusercontent.com/classTC/FrescoUseDemo/master/preview/compare.gif" alt="运行效果"></p>
+<h1 id="Android-中实现圆角的方案"><a href="#Android-中实现圆角的方案" class="headerlink" title="Android 中实现圆角的方案"></a>Android 中实现圆角的方案</h1><p>在 Android 中有很多方法能够实现圆角矩形。根据现实生活中的经验，要对一张图片实现圆角，无非两种方式，一种是剪出圆角，另一种是遮住圆角。因此，可以简单的将实现圆角的方案分成两类：</p>
+<ul>
+<li><strong>剪裁：</strong>从原始图片中剪出一个圆角图片</li>
+<li><strong>覆盖：</strong>在原始图片上遮盖住圆角多余的部分，剩下的可见部分就是圆角矩形了</li>
+</ul>
+<p>基于这两类方法，我大概总结了一些可以实现圆角矩形的方法，如下</p>
+<h2 id="方案一：将原始图片中截取的圆角矩形图片放在一个新建的Bitmap中"><a href="#方案一：将原始图片中截取的圆角矩形图片放在一个新建的Bitmap中" class="headerlink" title="方案一：将原始图片中截取的圆角矩形图片放在一个新建的Bitmap中"></a>方案一：将原始图片中截取的圆角矩形图片放在一个新建的Bitmap中</h2><p>这种方式大致是 <strong>剪裁</strong> 类的方式，主要代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Bitmap <span class="title">toRoundCorner</span><span class="params">(Bitmap bitmap, <span class="keyword">int</span> pixels)</span> </span>&#123;</span><br><span class="line">    Bitmap output = Bitmap.createBitmap(bitmap.getWidth(),</span><br><span class="line">            bitmap.getHeight(), Config.ARGB_8888);</span><br><span class="line">    Canvas canvas = <span class="keyword">new</span> Canvas(output);</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> color = <span class="number">0xff424242</span>;</span><br><span class="line">    <span class="keyword">final</span> Paint paint = <span class="keyword">new</span> Paint();</span><br><span class="line">    <span class="keyword">final</span> Rect rect = <span class="keyword">new</span> Rect(<span class="number">0</span>, <span class="number">0</span>, bitmap.getWidth(), bitmap.getHeight());</span><br><span class="line">    <span class="keyword">final</span> RectF rectF = <span class="keyword">new</span> RectF(rect);</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">float</span> roundPx = pixels;</span><br><span class="line">    paint.setAntiAlias(<span class="keyword">true</span>);</span><br><span class="line">    canvas.drawARGB(<span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    paint.setColor(color);</span><br><span class="line">    canvas.drawRoundRect(rectF, roundPx, roundPx, paint);</span><br><span class="line">    paint.setXfermode(<span class="keyword">new</span> PorterDuffXfermode(Mode.SRC_IN));</span><br><span class="line">    canvas.drawBitmap(bitmap, rect, rect, paint);</span><br><span class="line">    <span class="keyword">return</span> output;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到，这个方法中新建了一个指定宽高的 Bitmap 对象，然后创建了一个相同大小的矩形，利用画布绘制时指定圆角大小，这样在画布上就有了一个圆角矩形，然后设置画笔的剪裁方式为 Mode.SRC_IN,将原图添加到画布上，就形成了一个圆角矩形的图片。<strong>不推荐使用这种方式来实现图片圆角</strong>，因为这种方式会对每一个要实现圆角的图片生成一个新的 Bitmap 对象，将会增加内存消耗，在需要加载大量图片的时候就会很可能引发内存泄漏。</p>
+<h2 id="方案二：通过-Xfermode-实现"><a href="#方案二：通过-Xfermode-实现" class="headerlink" title="方案二：通过 Xfermode 实现"></a>方案二：通过 Xfermode 实现</h2><p>这种方式是一种 覆盖 类的方式，关于 Xfremode 有一张比较经典的示意图可以很好的解释他是做什么的<br><img src="https://raw.githubusercontent.com/classTC/FrescoUseDemo/master/preview/xFremode.png" alt="xFremode"><br>使用 Xfremode 的具体实现就不多叙述，感兴趣的可以参考<a href="http://blog.csdn.net/lmj623565791/article/details/42094215" target="_blank" rel="noopener">这篇文章</a></p>
+<h2 id="方案三：通过对-ViewGroup-进行设置，使包裹在内部的图片呈现圆角矩形"><a href="#方案三：通过对-ViewGroup-进行设置，使包裹在内部的图片呈现圆角矩形" class="headerlink" title="方案三：通过对 ViewGroup 进行设置，使包裹在内部的图片呈现圆角矩形"></a>方案三：通过对 ViewGroup 进行设置，使包裹在内部的图片呈现圆角矩形</h2><p>这种方式依然是一种 <strong>覆盖</strong> 的方式，只不过不是对当前要显示的图片进行覆盖，而是上升到父容器，对父容器进行设置，内部的图片不做任何改变。依然不推荐这种方式，因为通过这种方式实现圆角图片会增加布局的层级，在Android性能优化中有提到过尽量减少布局的层次嵌套，因此这种方式仅作参考，下面是实现代码：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RoundRelativeLayout</span> <span class="keyword">extends</span> <span class="title">RelativeLayout</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> radius;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> isPathValid;</span><br><span class="line">    <span class="keyword">private</span> Path mPath = <span class="keyword">new</span> Path();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RoundRelativeLayout</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RoundRelativeLayout</span><span class="params">(Context context, AttributeSet attrs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>(context, attrs, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">RoundRelativeLayout</span><span class="params">(Context context, AttributeSet attrs, <span class="keyword">int</span> defStyleAttr)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, attrs, defStyleAttr);</span><br><span class="line"></span><br><span class="line">        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.RoundRelativeLayout);</span><br><span class="line">        radius = ta.getDimension(R.styleable.RoundRelativeLayout_radius, <span class="number">0</span>);</span><br><span class="line">        ta.recycle();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">dispatchDraw</span><span class="params">(Canvas canvas)</span> </span>&#123;</span><br><span class="line">        canvas.clipPath(getRoundRectPath());</span><br><span class="line">        <span class="keyword">super</span>.dispatchDraw(canvas);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">draw</span><span class="params">(Canvas canvas)</span> </span>&#123;</span><br><span class="line">        canvas.clipPath(getRoundRectPath());</span><br><span class="line">        <span class="keyword">super</span>.draw(canvas);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> oldWidth = getMeasuredWidth();</span><br><span class="line">        <span class="keyword">int</span> oldHeight = getMeasuredHeight();</span><br><span class="line">        <span class="keyword">super</span>.onMeasure(widthMeasureSpec, heightMeasureSpec);</span><br><span class="line">        <span class="keyword">int</span> newWidth = getMeasuredWidth();</span><br><span class="line">        <span class="keyword">int</span> newHeight = getMeasuredHeight();</span><br><span class="line">        <span class="keyword">if</span> (newWidth != oldWidth || newHeight != oldHeight) &#123;</span><br><span class="line">            isPathValid = <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Path <span class="title">getRoundRectPath</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (isPathValid) &#123;</span><br><span class="line">            <span class="keyword">return</span> mPath;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        mPath.reset();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> width = getWidth();</span><br><span class="line">        <span class="keyword">int</span> height = getHeight();</span><br><span class="line"></span><br><span class="line">        RectF bounds = <span class="keyword">new</span> RectF(<span class="number">0</span>, <span class="number">0</span>, width, height);</span><br><span class="line">        mPath.addRoundRect(bounds, radius, radius, Path.Direction.CW);</span><br><span class="line"></span><br><span class="line">        isPathValid = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">return</span> mPath;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在使用时，只需要将要实现圆角的图片放在这个自定义Layout内部就行了：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">com.tc.view.RoundRelativeLayout</span></span></span><br><span class="line"><span class="tag">           <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">app:radius</span>=<span class="string">"20dp"</span>&gt;</span></span><br><span class="line">           <span class="tag">&lt;<span class="name">ImageView</span></span></span><br><span class="line"><span class="tag">               <span class="attr">android:layout_width</span>=<span class="string">"80dp"</span></span></span><br><span class="line"><span class="tag">               <span class="attr">android:layout_height</span>=<span class="string">"80dp"</span></span></span><br><span class="line"><span class="tag">               <span class="attr">android:src</span>=<span class="string">"@mipmap/img_test"</span>/&gt;</span></span><br><span class="line">       <span class="tag">&lt;/<span class="name">com.tc.view.RoundRelativeLayout</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="方案四：使用形状-Shape-覆盖"><a href="#方案四：使用形状-Shape-覆盖" class="headerlink" title="方案四：使用形状 Shape 覆盖"></a>方案四：使用形状 Shape 覆盖</h2><p>上层是一个圆角矩形的圆环形状，覆盖在下层要显示的 ImageView 上，这是一种 <strong>覆盖</strong> 的方式。作为了解，这种方式也不推荐，因为要使用两个ImageView来显示一张图片，上层圆角矩形圆环形状需要先定制，包括圆角大小，颜色等属性，导致可定制性不强，使用不方便，仅作参考。实现代码如下：<br>首先在 /res/drawable 目录下新建形状 frame.xml :<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">shape</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span> <span class="attr">android:shape</span>=<span class="string">"rectangle"</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">solid</span> <span class="attr">android:color</span>=<span class="string">"#00ffffff"</span> /&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">corners</span> <span class="attr">android:radius</span>=<span class="string">"12dp"</span> /&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">stroke</span> <span class="attr">android:width</span>=<span class="string">"6dp"</span> <span class="attr">android:color</span>=<span class="string">"#ffffffff"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">shape</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>接着在使用时将两个 ImageView 放在同一个 ViewGroup 中即可：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">FrameLayout</span></span></span><br><span class="line"><span class="tag">      <span class="attr">android:layout_width</span>=<span class="string">"wrap_content"</span></span></span><br><span class="line"><span class="tag">      <span class="attr">android:layout_height</span>=<span class="string">"wrap_content"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">      <span class="tag">&lt;<span class="name">ImageView</span></span></span><br><span class="line"><span class="tag">          <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">android:padding</span>=<span class="string">"6dp"</span></span></span><br><span class="line"><span class="tag">          <span class="attr">android:src</span>=<span class="string">"@mipmap/img_test"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">      <span class="tag">&lt;<span class="name">ImageView</span></span></span><br><span class="line"><span class="tag">           <span class="attr">android:src</span>=<span class="string">"@drawable/frame"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">android:layout_width</span>=<span class="string">"match_parent"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">android:layout_height</span>=<span class="string">"match_parent"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;/<span class="name">FrameLayout</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="方案五：使用-Android-自带的剪切方法"><a href="#方案五：使用-Android-自带的剪切方法" class="headerlink" title="方案五：使用 Android 自带的剪切方法"></a>方案五：使用 Android 自带的剪切方法</h2><p><strong>这种方式仅支持 API 21 及以上版本</strong>，具体使用方法如下：<br>首先在 res/drawable/ 目录下创建 形状文件 round_corners.xml:<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">shape</span> <span class="attr">xmlns:android</span>=<span class="string">"http://schemas.android.com/apk/res/android"</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:shape</span>=<span class="string">"rectangle"</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">corners</span> <span class="attr">android:radius</span>=<span class="string">"10dp"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">shape</span>&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>接着在使用时，只需要对 View 设置 background 属性为这个 形状文件即可：<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ImageView</span></span></span><br><span class="line"><span class="tag">           <span class="attr">android:id</span>=<span class="string">"@+id/clip_img"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">android:layout_width</span>=<span class="string">"80dp"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">android:layout_height</span>=<span class="string">"80dp"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">android:src</span>=<span class="string">"@mipmap/img_test"</span></span></span><br><span class="line"><span class="tag">           <span class="attr">android:background</span>=<span class="string">"@drawable/round_corners"</span>/&gt;</span></span><br></pre></td></tr></table></figure></p>
+<p>接着在 java 代码中 findView 并设置 ImageView.setClipToOutline(true);<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ImageView clipImg= (ImageView) findViewById(R.id.clip_img);</span><br><span class="line">clipImg.setClipToOutline(<span class="keyword">true</span>);</span><br></pre></td></tr></table></figure></p>
+<h2 id="方案六：-9-png-实现"><a href="#方案六：-9-png-实现" class="headerlink" title="方案六： .9.png 实现"></a>方案六： .9.png 实现</h2><p>通过添加一个.9.png 的背景来实现图片的圆角，关于.9.png 图的制作，可以参考网上的一些资料教程，难度不大，这里只做介绍，感兴趣的朋友可以尝试一下。</p>
+<p>以上，介绍了 Fresco 中实现圆角图片的两种方式，并总结了一些 Android 中实现圆角图片的方案，文章中用到的代码放在 <a href="https://github.com/classTC/FrescoUseDemo" target="_blank" rel="noopener">GitHub</a> 上。水平有限，如有错误或疏漏，还望不吝赐教。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Fresco-中圆角实现原理"><span class="toc-number">1.</span> <span class="toc-text">Fresco 中圆角实现原理</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#BITMAP-ONLY-模式"><span class="toc-number">1.1.</span> <span class="toc-text">BITMAP_ONLY 模式</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OVERLAY-COLOR-模式"><span class="toc-number">1.2.</span> <span class="toc-text">OVERLAY_COLOR 模式</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Android-中实现圆角的方案"><span class="toc-number">2.</span> <span class="toc-text">Android 中实现圆角的方案</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#方案一：将原始图片中截取的圆角矩形图片放在一个新建的Bitmap中"><span class="toc-number">2.1.</span> <span class="toc-text">方案一：将原始图片中截取的圆角矩形图片放在一个新建的Bitmap中</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方案二：通过-Xfermode-实现"><span class="toc-number">2.2.</span> <span class="toc-text">方案二：通过 Xfermode 实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方案三：通过对-ViewGroup-进行设置，使包裹在内部的图片呈现圆角矩形"><span class="toc-number">2.3.</span> <span class="toc-text">方案三：通过对 ViewGroup 进行设置，使包裹在内部的图片呈现圆角矩形</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方案四：使用形状-Shape-覆盖"><span class="toc-number">2.4.</span> <span class="toc-text">方案四：使用形状 Shape 覆盖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方案五：使用-Android-自带的剪切方法"><span class="toc-number">2.5.</span> <span class="toc-text">方案五：使用 Android 自带的剪切方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#方案六：-9-png-实现"><span class="toc-number">2.6.</span> <span class="toc-text">方案六： .9.png 实现</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/10/06/201901192122/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/10/06/201901192122/&text=Fresco 图片圆角实现原理"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/10/06/201901192122/&title=Fresco 图片圆角实现原理"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/10/06/201901192122/&is_video=false&description=Fresco 图片圆角实现原理"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Fresco 图片圆角实现原理&body=Check out this article: http://09ae9c.com/2015/10/06/201901192122/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/10/06/201901192122/&title=Fresco 图片圆角实现原理"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/10/06/201901192122/&title=Fresco 图片圆角实现原理"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/10/06/201901192122/&title=Fresco 图片圆角实现原理"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/10/06/201901192122/&title=Fresco 图片圆角实现原理"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/10/06/201901192122/&name=Fresco 图片圆角实现原理&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

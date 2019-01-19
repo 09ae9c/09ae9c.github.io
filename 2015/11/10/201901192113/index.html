@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="本文主要记录通过网页解析得到自己想要的数据，也就是一个简单的爬虫。将使用第三方库 jsoup 实现，通过第三方库，能够快速方便的解析html。在开始之前，需要具备以下能力：  首先，需要对网页编程有一点了解，知道一个页面的结构，标签的含义，知道html网页其实是一种xml格式的文件。如果对这些都了解的话，就可以很方便的进行网页解析了，如果不太熟悉，建议先了解一下网页编程。 然后，在使用第三方库之前">
+<meta name="keywords" content="Android,Jsoup,爬虫">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 解析 Html">
+<meta property="og:url" content="http://09ae9c.com/2015/11/10/201901192113/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="本文主要记录通过网页解析得到自己想要的数据，也就是一个简单的爬虫。将使用第三方库 jsoup 实现，通过第三方库，能够快速方便的解析html。在开始之前，需要具备以下能力：  首先，需要对网页编程有一点了解，知道一个页面的结构，标签的含义，知道html网页其实是一种xml格式的文件。如果对这些都了解的话，就可以很方便的进行网页解析了，如果不太熟悉，建议先了解一下网页编程。 然后，在使用第三方库之前">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://img.blog.csdn.net/20151124121345016">
+<meta property="og:image" content="http://img.blog.csdn.net/20151124193843928">
+<meta property="og:updated_time" content="2019-01-19T14:26:47.793Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 解析 Html">
+<meta name="twitter:description" content="本文主要记录通过网页解析得到自己想要的数据，也就是一个简单的爬虫。将使用第三方库 jsoup 实现，通过第三方库，能够快速方便的解析html。在开始之前，需要具备以下能力：  首先，需要对网页编程有一点了解，知道一个页面的结构，标签的含义，知道html网页其实是一种xml格式的文件。如果对这些都了解的话，就可以很方便的进行网页解析了，如果不太熟悉，建议先了解一下网页编程。 然后，在使用第三方库之前">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20151124121345016">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Android 解析 Html</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2015/12/01/201901192112/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2015/10/12/201901192123/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/11/10/201901192113/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/11/10/201901192113/&text=Android 解析 Html"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/11/10/201901192113/&title=Android 解析 Html"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/11/10/201901192113/&is_video=false&description=Android 解析 Html"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Android 解析 Html&body=Check out this article: http://09ae9c.com/2015/11/10/201901192113/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/11/10/201901192113/&title=Android 解析 Html"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/11/10/201901192113/&title=Android 解析 Html"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/11/10/201901192113/&title=Android 解析 Html"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/11/10/201901192113/&title=Android 解析 Html"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/11/10/201901192113/&name=Android 解析 Html&description=&lt;p&gt;本文主要记录通过网页解析得到自己想要的数据，也就是一个简单的爬虫。将使用第三方库 jsoup 实现，通过第三方库，能够快速方便的解析html。在开始之前，需要具备以下能力：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;首先，需要对网页编程有一点了解，知道一个页面的结构，标签的含义，知道html网页其实是一种xml格式的文件。如果对这些都了解的话，就可以很方便的进行网页解析了，如果不太熟悉，建议先了解一下网页编程。&lt;/li&gt;
+&lt;li&gt;然后，在使用第三方库之前，最好是先看一下官方文档：&lt;a href=&#34;http://jsoup.org/cookbook/introduction/parsing-a-document&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Jsoup官方文档&lt;/a&gt;，&lt;a href=&#34;http://www.open-open.com/jsoup/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Jsoup文档中文版&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-分析网页结构"><span class="toc-number">1.</span> <span class="toc-text">1.分析网页结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-配置jsoup"><span class="toc-number">2.</span> <span class="toc-text">2.配置jsoup</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-下载："><span class="toc-number">2.1.</span> <span class="toc-text">2.1 下载：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-添加依赖："><span class="toc-number">2.2.</span> <span class="toc-text">2.2 添加依赖：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-写代码"><span class="toc-number">3.</span> <span class="toc-text">3. 写代码</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Android 解析 Html
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2015-11-10T12:53:52.000Z" itemprop="datePublished">2015-11-10</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Android/">Android</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Android/">Android</a>, <a class="tag-link" href="/tags/Jsoup/">Jsoup</a>, <a class="tag-link" href="/tags/爬虫/">爬虫</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>本文主要记录通过网页解析得到自己想要的数据，也就是一个简单的爬虫。将使用第三方库 jsoup 实现，通过第三方库，能够快速方便的解析html。在开始之前，需要具备以下能力：</p>
+<ul>
+<li>首先，需要对网页编程有一点了解，知道一个页面的结构，标签的含义，知道html网页其实是一种xml格式的文件。如果对这些都了解的话，就可以很方便的进行网页解析了，如果不太熟悉，建议先了解一下网页编程。</li>
+<li>然后，在使用第三方库之前，最好是先看一下官方文档：<a href="http://jsoup.org/cookbook/introduction/parsing-a-document" target="_blank" rel="noopener">Jsoup官方文档</a>，<a href="http://www.open-open.com/jsoup/" target="_blank" rel="noopener">Jsoup文档中文版</a></li>
+</ul>
+<a id="more"></a>
+<p>接下来就通过一个具体需求来实现。假设需求是一个Android端的博客浏览器，第一页是博客标题的列表，点击单个标题可以进入第二个页面，第二个页面是一个WebView，通过第一个页面传入的url加载指定博客的网页。以上这个简单的需求，两个页面实现，当然重点是在第一个页面，<strong>怎样获取博客标题的列表？</strong></p>
+<h2 id="1-分析网页结构"><a href="#1-分析网页结构" class="headerlink" title="1.分析网页结构"></a>1.分析网页结构</h2><p>在解析一个网页之前，需要先了解这个网页的结构，在PC端通过浏览器的开发者工具就能很方便的查看网页结构，比如在Chrome中，按F12就可以出现开发者工具。接下来就是分析博客列表页面的结构：<br>根据需求，我要得到博客标题的列表，于是，在Chrome中，打开指定页面，右键选择某个标题，选择“审查元素”在右边就能看到指定标题的代码：<br><img src="http://img.blog.csdn.net/20151124121345016" alt="这里写图片描述"></p>
+<p>从网页源码中，需要的内容的结构：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;span class=&quot;link_title&quot;&gt;&lt;a href=&quot;/ttccaaa/article/details/49282851&quot;&gt;</span><br><span class="line">      Win10与Ubuntu 15.04双系统安装方法            </span><br><span class="line">      &lt;/a&gt;&lt;/span&gt;</span><br></pre></td></tr></table></figure>
+<p>一个&lt; span &gt;标签，里面有一个超链接标签&lt; a &gt;，链接指向博客内容的网页，到此，思路就比较清晰了，只需要提取出当前页面中class为“link_title”的&lt; span &gt;标签下的超链接标签&lt; a &gt;的内容即可，然后封装到ListView中，显示到界面，就能实现功能了。</p>
+<h2 id="2-配置jsoup"><a href="#2-配置jsoup" class="headerlink" title="2.配置jsoup"></a>2.配置jsoup</h2><p>关于jsoup的介绍和使用可以从官网了解到，下面开始配置和使用：</p>
+<h3 id="2-1-下载："><a href="#2-1-下载：" class="headerlink" title="2.1 下载："></a>2.1 下载：</h3><p>首先需要下载jar包，目前最新版是1.8.3,如果只是简单的使用，可以只下载jsoup-1.8.3.jar 官方下载：<a href="http://jsoup.org/download" target="_blank" rel="noopener">jsoup下载</a></p>
+<h3 id="2-2-添加依赖："><a href="#2-2-添加依赖：" class="headerlink" title="2.2 添加依赖："></a>2.2 添加依赖：</h3><p>如同以前的步骤，先将下载的jar包放在libs下，然后对它右键选择“Add As Library”这样就完成了依赖添加。</p>
+<h2 id="3-写代码"><a href="#3-写代码" class="headerlink" title="3. 写代码"></a>3. 写代码</h2><p>根据上面的分析，需要找到文章标题，首先要找到class=”link_title”的&lt; span &gt;标签，然后获取到其中的&lt; a &gt;标签的属性和内容，就是需要的标题和url，所以，第一步，先写一个bean，<strong>用来保存title和对应的url</strong>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">public class TitleBean &#123;</span><br><span class="line">    private String title;</span><br><span class="line">    private String url;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public String getTitle() &#123;</span><br><span class="line">        return title;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setTitle(String title) &#123;</span><br><span class="line">        this.title = title;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public String getUrl() &#123;</span><br><span class="line">        return url;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public void setUrl(String url) &#123;</span><br><span class="line">        this.url = url;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来就是把刚才的思路转换成代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">private class GetDataThd extends Thread &#123;</span><br><span class="line">     @Override</span><br><span class="line">     public void run() &#123;</span><br><span class="line">         super.run();</span><br><span class="line">         try &#123;</span><br><span class="line">             Document doc = Jsoup.connect(BLOG_URL).get();//通过url获取到网页内容</span><br><span class="line"></span><br><span class="line">             Elements elements = doc.getElementsByClass(&quot;link_title&quot;);//查找所有class为&quot;link_title&quot;的元素</span><br><span class="line">             for (Element e : elements) &#123;</span><br><span class="line">                 Elements titles = e.getElementsByTag(&quot;a&quot;);//在每一个找到的元素中，查找&lt;a&gt;标签</span><br><span class="line">                 for (Element title : titles) &#123;</span><br><span class="line">                     //将找到的标签数据封装起来</span><br><span class="line">                     TitleBean bean = new TitleBean();</span><br><span class="line">                     bean.setTitle(title.text());//获取标签的内容，也就是文章标题</span><br><span class="line">                     bean.setUrl(&quot;http://blog.csdn.net&quot; + title.attr(&quot;href&quot;));//获取标签属性，也就是文章链接</span><br><span class="line">                     list.add(bean);</span><br><span class="line">                 &#125;</span><br><span class="line">             &#125;</span><br><span class="line">             msgHandler.sendEmptyMessage(MSG_LOAD_OK);//通知UI更新List</span><br><span class="line">         &#125; catch (IOException e) &#123;</span><br><span class="line">             e.printStackTrace();</span><br><span class="line">         &#125;</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>在Adapter中，设置点击事件，跳转到详情页面：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line"> public View getView(int position, View convertView, ViewGroup parent) &#123;</span><br><span class="line">     ViewHolder holder;</span><br><span class="line">     if (convertView == null) &#123;</span><br><span class="line">         convertView = mInflater.inflate(R.layout.item_title_list, null);</span><br><span class="line">         holder = new ViewHolder();</span><br><span class="line">         holder.tvTitle = (TextView) convertView.findViewById(R.id.tv_item_title);</span><br><span class="line">         convertView.setTag(holder);</span><br><span class="line">     &#125; else &#123;</span><br><span class="line">         holder = (ViewHolder) convertView.getTag();</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     TitleBean bean = mList.get(position);</span><br><span class="line">     holder.tvTitle.setText(bean.getTitle());</span><br><span class="line"></span><br><span class="line">     holder.tvTitle.setOnClickListener(new ItemClickListener(bean.getUrl()));</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">     return convertView;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> private class ItemClickListener implements View.OnClickListener &#123;</span><br><span class="line">     private String url;</span><br><span class="line"></span><br><span class="line">     public ItemClickListener(String url) &#123;</span><br><span class="line">         this.url = url;</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     @Override</span><br><span class="line">     public void onClick(View v) &#123;</span><br><span class="line">         Intent toDetail = new Intent(mContext, DetailActivity.class);</span><br><span class="line">         toDetail.putExtra(&quot;detailUrl&quot;, url);</span><br><span class="line">         mContext.startActivity(toDetail);</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>接下来在详情页面，通过getIntent获取到url，然后用webView加载这个url即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">   protected void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">       super.onCreate(savedInstanceState);</span><br><span class="line">       setContentView(R.layout.activity_detail);</span><br><span class="line"></span><br><span class="line">       String url = getIntent().getStringExtra(&quot;detailUrl&quot;);</span><br><span class="line">       WebView mWebView = (WebView) findViewById(R.id.web_detail);</span><br><span class="line"></span><br><span class="line">       mWebView.getSettings().setLoadWithOverviewMode(true);</span><br><span class="line">       mWebView.getSettings().setUseWideViewPort(true);</span><br><span class="line"></span><br><span class="line">       mWebView.loadUrl(url);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>运行效果：<br><img src="http://img.blog.csdn.net/20151124193843928" alt="这里写图片描述"></p>
+<p>到此，通过解析网页得到指定数据的小例子就完成了，思路还是比较简单的。当然，多亏了第三方库jsoup，才能够简单方便的抓取网页的指定内容。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-分析网页结构"><span class="toc-number">1.</span> <span class="toc-text">1.分析网页结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-配置jsoup"><span class="toc-number">2.</span> <span class="toc-text">2.配置jsoup</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-下载："><span class="toc-number">2.1.</span> <span class="toc-text">2.1 下载：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-添加依赖："><span class="toc-number">2.2.</span> <span class="toc-text">2.2 添加依赖：</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-写代码"><span class="toc-number">3.</span> <span class="toc-text">3. 写代码</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/11/10/201901192113/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/11/10/201901192113/&text=Android 解析 Html"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/11/10/201901192113/&title=Android 解析 Html"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/11/10/201901192113/&is_video=false&description=Android 解析 Html"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Android 解析 Html&body=Check out this article: http://09ae9c.com/2015/11/10/201901192113/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/11/10/201901192113/&title=Android 解析 Html"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/11/10/201901192113/&title=Android 解析 Html"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/11/10/201901192113/&title=Android 解析 Html"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/11/10/201901192113/&title=Android 解析 Html"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/11/10/201901192113/&name=Android 解析 Html&description=&lt;p&gt;本文主要记录通过网页解析得到自己想要的数据，也就是一个简单的爬虫。将使用第三方库 jsoup 实现，通过第三方库，能够快速方便的解析html。在开始之前，需要具备以下能力：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;首先，需要对网页编程有一点了解，知道一个页面的结构，标签的含义，知道html网页其实是一种xml格式的文件。如果对这些都了解的话，就可以很方便的进行网页解析了，如果不太熟悉，建议先了解一下网页编程。&lt;/li&gt;
+&lt;li&gt;然后，在使用第三方库之前，最好是先看一下官方文档：&lt;a href=&#34;http://jsoup.org/cookbook/introduction/parsing-a-document&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Jsoup官方文档&lt;/a&gt;，&lt;a href=&#34;http://www.open-open.com/jsoup/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Jsoup文档中文版&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

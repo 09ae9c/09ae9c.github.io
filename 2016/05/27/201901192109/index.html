@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="在学习 NDK 开发之前，很多次听说过相关技术，但是由于平时做应用层开发，基本不会涉及到底层开发，很少了解。现在由于技术需求，需要做串口通信相关，开始学习 NDK 开发，本文是学习 NDK 开发的第一篇笔记，记录在初次接触 NDK 开发时学到的一些知识和遇到的问题，如果想要全面的了解 NDK 相关技术，可以查看 官方文档">
+<meta name="keywords" content="Android,NDK,JNI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android NDK 基础">
+<meta property="og:url" content="http://09ae9c.com/2016/05/27/201901192109/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="在学习 NDK 开发之前，很多次听说过相关技术，但是由于平时做应用层开发，基本不会涉及到底层开发，很少了解。现在由于技术需求，需要做串口通信相关，开始学习 NDK 开发，本文是学习 NDK 开发的第一篇笔记，记录在初次接触 NDK 开发时学到的一些知识和遇到的问题，如果想要全面的了解 NDK 相关技术，可以查看 官方文档">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://img.blog.csdn.net/20151219172008546">
+<meta property="og:image" content="http://img.blog.csdn.net/20151219172758530">
+<meta property="og:image" content="http://img.blog.csdn.net/20151219192852306">
+<meta property="og:image" content="http://7xu736.com1.z0.glb.clouddn.com/blog/images/160527/001.jpg">
+<meta property="og:image" content="http://7xu736.com1.z0.glb.clouddn.com/blog/images/160527/002.jpg">
+<meta property="og:image" content="http://7xu736.com1.z0.glb.clouddn.com/blog/images/160527/004.jpg">
+<meta property="og:updated_time" content="2019-01-19T14:26:47.794Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android NDK 基础">
+<meta name="twitter:description" content="在学习 NDK 开发之前，很多次听说过相关技术，但是由于平时做应用层开发，基本不会涉及到底层开发，很少了解。现在由于技术需求，需要做串口通信相关，开始学习 NDK 开发，本文是学习 NDK 开发的第一篇笔记，记录在初次接触 NDK 开发时学到的一些知识和遇到的问题，如果想要全面的了解 NDK 相关技术，可以查看 官方文档">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20151219172008546">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Android NDK 基础</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2016/06/10/201901192106/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2016/04/02/201901192110/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2016/05/27/201901192109/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2016/05/27/201901192109/&text=Android NDK 基础"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2016/05/27/201901192109/&title=Android NDK 基础"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2016/05/27/201901192109/&is_video=false&description=Android NDK 基础"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Android NDK 基础&body=Check out this article: http://09ae9c.com/2016/05/27/201901192109/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2016/05/27/201901192109/&title=Android NDK 基础"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2016/05/27/201901192109/&title=Android NDK 基础"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2016/05/27/201901192109/&title=Android NDK 基础"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2016/05/27/201901192109/&title=Android NDK 基础"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2016/05/27/201901192109/&name=Android NDK 基础&description=&lt;p&gt;在学习 NDK 开发之前，很多次听说过相关技术，但是由于平时做应用层开发，基本不会涉及到底层开发，很少了解。现在由于技术需求，需要做串口通信相关，开始学习 NDK 开发，本文是学习 NDK 开发的第一篇笔记，记录在初次接触 NDK 开发时学到的一些知识和遇到的问题，如果想要全面的了解 NDK 相关技术，可以查看 &lt;a href=&#34;https://developer.android.com/ndk/index.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;官方文档&lt;/a&gt;&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#环境搭建"><span class="toc-number">1.</span> <span class="toc-text">环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#下载"><span class="toc-number">1.1.</span> <span class="toc-text">下载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置"><span class="toc-number">1.2.</span> <span class="toc-text">配置</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#一个简单的-NDK-应用"><span class="toc-number">2.</span> <span class="toc-text">一个简单的 NDK 应用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#在-MainActivity-中添加-native-接口"><span class="toc-number">2.1.</span> <span class="toc-text">在 MainActivity 中添加 native 接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#生成-classes-文件夹"><span class="toc-number">2.2.</span> <span class="toc-text">生成 classes 文件夹</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#生成-C-头文件"><span class="toc-number">2.3.</span> <span class="toc-text">生成 C 头文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编写-C-文件"><span class="toc-number">2.4.</span> <span class="toc-text">编写 C 文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置-NDK"><span class="toc-number">2.5.</span> <span class="toc-text">配置 NDK</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#生成-so-文件"><span class="toc-number">2.6.</span> <span class="toc-text">生成 .so 文件</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Android NDK 基础
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2016-05-27T14:44:23.000Z" itemprop="datePublished">2016-05-27</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Android/">Android</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Android/">Android</a>, <a class="tag-link" href="/tags/JNI/">JNI</a>, <a class="tag-link" href="/tags/NDK/">NDK</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>在学习 NDK 开发之前，很多次听说过相关技术，但是由于平时做应用层开发，基本不会涉及到底层开发，很少了解。现在由于技术需求，需要做串口通信相关，开始学习 NDK 开发，本文是学习 NDK 开发的第一篇笔记，记录在初次接触 NDK 开发时学到的一些知识和遇到的问题，如果想要全面的了解 NDK 相关技术，可以查看 <a href="https://developer.android.com/ndk/index.html" target="_blank" rel="noopener">官方文档</a></p>
+<a id="more"></a>
+<p>NDK(Native Development Kit) 是一套在 Android App 中支持 C/C++ 开发的工具集，JNI(Java Native Interface) 是 Java 本地编程接口，它使得在 Java 虚拟机 (VM) 内部运行的 Java 代码能够与用其它编程语言(如 C、C++ 和汇编语言)编写的应用程序和库进行交互操作</p>
+<p>系统环境：OS X<br>开发工具：Android Studio 2.0<br>NDK版本：r11c</p>
+<hr>
+<h1 id="环境搭建"><a href="#环境搭建" class="headerlink" title="环境搭建"></a>环境搭建</h1><p>要使用 NDK 来开发，首先需要配置 NDK 的开发环境，最新的 Android Studio 中配置 NDK 非常方便，只需要简单几步就能完成 NDK 环境搭建，具体步骤如下：</p>
+<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p>在 Android Studio 中打开 SDK Manager 找到 SDK Tools 可以看到如下图所示的 Android NDK 选项，如果之前没有勾选，说明还没有下载 NDK，需要勾选，然后等待下载</p>
+<p><img src="http://img.blog.csdn.net/20151219172008546" alt=""></p>
+<p>等待下载完成，就可以在 sdk 目录中看到 ndk-bundle 目录</p>
+<p><img src="http://img.blog.csdn.net/20151219172758530" alt=""></p>
+<p>如果使用 Eclipse 或者其他开发工具，可以按照 <a href="https://developer.android.com/ndk/guides/setup.html" target="_blank" rel="noopener">官方文档 Setup</a> 的描述下载配置</p>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><p>下载好 NDK 后，需要在环境变量中添加路径指向它，OS X 下的环境变量在当前用户目录的 .bash_profile 文件中，因此需要在这个文件中添加 NDK 的环境变量，步骤如下:</p>
+<ul>
+<li><p><strong>定位到.bash_profile 文件</strong></p>
+<p> 启动终端 Terminal，一般默认启动时就是在当前用户的目录，所以接下来直接输入</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">open .bash_profile</span><br></pre></td></tr></table></figure>
+<p> <strong>注：</strong>如果是第一次使用，可能还没有这个文件，所以需要先创建这个文件</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">touch .bash_profile</span><br><span class="line">open .bash_profile</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>添加 NDK 的路径到环境变量中</strong></p>
+<p>  添加如下内容到 .bash_profile 文件中</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export ANDROID_NDK_ROOT=/Users/your-path/sdk/ndk-bundle</span><br><span class="line">export PATH=\$PATH:\$ANDROID_NDK_ROOT</span><br></pre></td></tr></table></figure>
+<p>  在上面的内容中， your-path 是 SDk 文件夹的具体路径，ANDROID_NDK_ROOT 变量指向的是 NDK 的文件夹路径，接下来保存并退出，在终端执行更新的命令</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source .bash_profile</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>验证是否添加成功</strong></p>
+<p>  在终端执行</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ndk-build</span><br></pre></td></tr></table></figure>
+<p>  如果有反应，则说明配置成功，如下图：<br><img src="http://img.blog.csdn.net/20151219192852306" alt="这里写图片描述"></p>
+</li>
+</ul>
+<h1 id="一个简单的-NDK-应用"><a href="#一个简单的-NDK-应用" class="headerlink" title="一个简单的 NDK 应用"></a>一个简单的 NDK 应用</h1><p>在 Android Studio 中新建一个项目，我这里命名为 FirstNDK</p>
+<p>现在假设需求是在 MainActivity 中调用 C/C++ 层编写的一个方法，得到它的返回结果，这个 C/C++ 层的代码很简单，就是返回一个字符串，因此需要，下面是具体步骤：</p>
+<h2 id="在-MainActivity-中添加-native-接口"><a href="#在-MainActivity-中添加-native-接口" class="headerlink" title="在 MainActivity 中添加 native 接口"></a>在 MainActivity 中添加 native 接口</h2><p>在 MainActivity 中定义一个 native 接口，自定义命名为 getStringFromJNI(),这时在 Android Studio 中这个方法会报错，暂时不用管<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">public class MainActivity extends AppCompatActivity &#123;</span><br><span class="line"></span><br><span class="line">	//类初始化时加载 libHelloNDK.so 这个文件</span><br><span class="line">	static&#123;</span><br><span class="line">		System.loadLibrary(&quot;HelloNDK&quot;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">	//定义 native 接口</span><br><span class="line">    public static native String getStringFromJNI();</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onCreate(Bundle savedInstanceState) &#123;</span><br><span class="line">        super.onCreate(savedInstanceState);</span><br><span class="line">        setContentView(R.layout.activity_main);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="生成-classes-文件夹"><a href="#生成-classes-文件夹" class="headerlink" title="生成 classes 文件夹"></a>生成 classes 文件夹</h2><p>在菜单栏选择 Build -&gt; Make Project，稍等，该操作会在项目 module 目录下的 build/intermediates/ 目录下生成 classes 目录（<strong>注意</strong>，是对应的 module 下的 build 目录，而不是 整个 Project 下的 build 目录），如果生成了 classes 目录，说明操作成功；如果在路径下没有找到这个目录，则可以先 <strong>clean Project</strong> ，然后 <strong>Rebuild Project</strong>，再执行 Make Project 操作。多次尝试，直到出现 classes 目录。</p>
+<p><img src="http://7xu736.com1.z0.glb.clouddn.com/blog/images/160527/001.jpg" alt=""></p>
+<h2 id="生成-C-头文件"><a href="#生成-C-头文件" class="headerlink" title="生成 C 头文件"></a>生成 C 头文件</h2><p>接下来需要在 main 目录下新建一个 jni 目录，用来存放 C/C++ 代码，使用下面的命令，便可以自动创建这个目录和 C 头文件：</p>
+<ul>
+<li><p>在 Android Studio 中打开终端 Terminal，定位到当前项目的 /java 目录下：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd app/src/main/java</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>执行如下命令：</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">javah -d ../jni com.tc.firstndk.MainActivity</span><br></pre></td></tr></table></figure>
+<p>  这条命令的解释是：</p>
+<ul>
+<li>javah：使用 javah 命令</li>
+<li>-d： 输入到指定文件夹</li>
+<li>../jni：输出文件夹是上层目录的 jni 文件夹</li>
+<li>com.tc.firstndk.MainActivity：目标文件，需要指明目标文件的路径</li>
+</ul>
+</li>
+</ul>
+<p>执行完后，会发现在 main 目录下多了一个 jni 目录，里面有一个 .h 文件：</p>
+<p><img src="http://7xu736.com1.z0.glb.clouddn.com/blog/images/160527/002.jpg" alt=""></p>
+<p>这个头文件中的内容是这样的：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* DO NOT EDIT THIS FILE - it is machine generated */</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;jni.h&gt;</span></span></span><br><span class="line"><span class="comment">/* Header for class com_tc_firstndk_MainActivity */</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> _Included_com_tc_firstndk_MainActivity</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> _Included_com_tc_firstndk_MainActivity</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></span><br><span class="line"><span class="keyword">extern</span> <span class="string">"C"</span> &#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Class:     com_tc_firstndk_MainActivity</span></span><br><span class="line"><span class="comment"> * Method:    getStringFromJNI</span></span><br><span class="line"><span class="comment"> * Signature: ()Ljava/lang/String;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">JNIEXPORT jstring JNICALL Java_com_tc_firstndk_MainActivity_getStringFromJNI</span><br><span class="line">  (JNIEnv *, jclass);</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifdef</span> __cplusplus</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+<p>可以看到，在这个头文件中定义了一个方法，这个方式就是在之前的 MainActivity 中定义的那个方法的 C 语言定义</p>
+<h2 id="编写-C-文件"><a href="#编写-C-文件" class="headerlink" title="编写 C 文件"></a>编写 C 文件</h2><p>在 jni 目录下，新建一个自定义的 C 文件，我这里命名为 MainC.c，用来实现刚才生成的头文件中的方法</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"com_tc_firstndk_MainActivity.h"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;android/log.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>  LOG_TAG    <span class="meta-string">"JNILog"</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span>  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)</span></span><br><span class="line"></span><br><span class="line">JNIEXPORT jstring JNICALL Java_com_tc_firstndk_MainActivity_getStringFromJNI</span><br><span class="line">        (JNIEnv *env, jclass jobj) &#123;</span><br><span class="line">    LOGI(<span class="string">"JNI Log..."</span>);</span><br><span class="line">    <span class="keyword">return</span> (*env)-&gt;NewStringUTF(env, <span class="string">"Hello NDK"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到，对这个方法的实现就是返回一个字符串 “Hello NDK”</p>
+<h2 id="配置-NDK"><a href="#配置-NDK" class="headerlink" title="配置 NDK"></a>配置 NDK</h2><p>在 gradle.properties 文件中添加如下语句：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">android.useDeprecatedNdk=true</span><br></pre></td></tr></table></figure>
+<p>查看 local.properties 文件中是否有 ndk 的路径，如果没有，则添加之前配置 ndk 时，ndk 放置的路径，如果使用 Android Studio 中内置的 SDK Manager 下载 ndk，系统默认已经添加了 ndk 的路径。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ndk.dir=/your-path/sdk/ndk-bundle</span><br><span class="line">sdk.dir=/your-path/sdk</span><br></pre></td></tr></table></figure>
+<p>在当前 Module 下的 build.gradle 中的 defaultConfig 节点，添加 ndk 节点的配置信息：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">defaultConfig &#123;</span><br><span class="line">        applicationId <span class="string">"com.tc.firstndk"</span></span><br><span class="line">        minSdkVersion <span class="number">14</span></span><br><span class="line">        targetSdkVersion <span class="number">23</span></span><br><span class="line">        versionCode <span class="number">1</span></span><br><span class="line">        versionName <span class="string">"1.0"</span></span><br><span class="line"></span><br><span class="line">        ndk &#123;</span><br><span class="line">            moduleName <span class="string">"HelloNDK"</span> <span class="comment">//生成这个 moduleName 加上 lib 前缀和 .so 后缀的文件,在加载时只需要输入这个值即可</span></span><br><span class="line">            abiFilters <span class="string">"armeabi"</span>, <span class="string">"armeabi-v7a"</span>, <span class="string">"x86"</span> <span class="comment">//输出三种 abi 体系结构下的so库</span></span><br><span class="line">            ldLibs <span class="string">"log"</span> <span class="comment">//在 C 代码中打印 log 到控制台</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h2 id="生成-so-文件"><a href="#生成-so-文件" class="headerlink" title="生成 .so 文件"></a>生成 .so 文件</h2><p>按照上面的步骤配置完成后，在菜单栏 选择 Build-&gt; Rebuild Project，即可生成 .so 文件，文件在当前 Module 下的 /build/intermediates/ndk/debug/lib 目录下：</p>
+<p><img src="http://7xu736.com1.z0.glb.clouddn.com/blog/images/160527/004.jpg" alt=""></p>
+<p>接下来在 MainActivity 中像往常一样调用定义的 native 接口，到此，一个使用 JNI 的例子程序就完成了</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>通过以上流程，便能够实现最基本的 JNI 操作，通过 JNI 操作可以实现很多涉及到底层的操作，目前我所了解到的，比如串口通信，需要读写 /dev 目录下的文件来实现与硬件的通信，虽然 Java 层也能做到，但是必须要有 root 权限的设备才行，而通过 JNI，不需要 root 权限的设备也能完成同样的操作。</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#环境搭建"><span class="toc-number">1.</span> <span class="toc-text">环境搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#下载"><span class="toc-number">1.1.</span> <span class="toc-text">下载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置"><span class="toc-number">1.2.</span> <span class="toc-text">配置</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#一个简单的-NDK-应用"><span class="toc-number">2.</span> <span class="toc-text">一个简单的 NDK 应用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#在-MainActivity-中添加-native-接口"><span class="toc-number">2.1.</span> <span class="toc-text">在 MainActivity 中添加 native 接口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#生成-classes-文件夹"><span class="toc-number">2.2.</span> <span class="toc-text">生成 classes 文件夹</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#生成-C-头文件"><span class="toc-number">2.3.</span> <span class="toc-text">生成 C 头文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#编写-C-文件"><span class="toc-number">2.4.</span> <span class="toc-text">编写 C 文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置-NDK"><span class="toc-number">2.5.</span> <span class="toc-text">配置 NDK</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#生成-so-文件"><span class="toc-number">2.6.</span> <span class="toc-text">生成 .so 文件</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#总结"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2016/05/27/201901192109/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2016/05/27/201901192109/&text=Android NDK 基础"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2016/05/27/201901192109/&title=Android NDK 基础"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2016/05/27/201901192109/&is_video=false&description=Android NDK 基础"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Android NDK 基础&body=Check out this article: http://09ae9c.com/2016/05/27/201901192109/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2016/05/27/201901192109/&title=Android NDK 基础"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2016/05/27/201901192109/&title=Android NDK 基础"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2016/05/27/201901192109/&title=Android NDK 基础"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2016/05/27/201901192109/&title=Android NDK 基础"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2016/05/27/201901192109/&name=Android NDK 基础&description=&lt;p&gt;在学习 NDK 开发之前，很多次听说过相关技术，但是由于平时做应用层开发，基本不会涉及到底层开发，很少了解。现在由于技术需求，需要做串口通信相关，开始学习 NDK 开发，本文是学习 NDK 开发的第一篇笔记，记录在初次接触 NDK 开发时学到的一些知识和遇到的问题，如果想要全面的了解 NDK 相关技术，可以查看 &lt;a href=&#34;https://developer.android.com/ndk/index.html&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;官方文档&lt;/a&gt;&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

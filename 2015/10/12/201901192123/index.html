@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="GIF，是一种动画图片格式，其原理是将多张图片放在一个文件中连续播放，从而产生动画效果，其中一张图片称为一帧。如果通过 PS 打开一个 GIF 图片，便可以看到每一帧的图片。在 Android 中加载显示一张静态的图片（比如常用的 png 格式，jpg 格式）很简单，官方提供了 ImageView 来显示一张图片，而对于动态图片（比如 GIF 格式），官方并没有直接给出可用的组件，需要开发者自行编">
+<meta name="keywords" content="Fresco">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Fresco 播放动态图片的原理">
+<meta property="og:url" content="http://09ae9c.com/2015/10/12/201901192123/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="GIF，是一种动画图片格式，其原理是将多张图片放在一个文件中连续播放，从而产生动画效果，其中一张图片称为一帧。如果通过 PS 打开一个 GIF 图片，便可以看到每一帧的图片。在 Android 中加载显示一张静态的图片（比如常用的 png 格式，jpg 格式）很简单，官方提供了 ImageView 来显示一张图片，而对于动态图片（比如 GIF 格式），官方并没有直接给出可用的组件，需要开发者自行编">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-19T14:26:47.798Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Fresco 播放动态图片的原理">
+<meta name="twitter:description" content="GIF，是一种动画图片格式，其原理是将多张图片放在一个文件中连续播放，从而产生动画效果，其中一张图片称为一帧。如果通过 PS 打开一个 GIF 图片，便可以看到每一帧的图片。在 Android 中加载显示一张静态的图片（比如常用的 png 格式，jpg 格式）很简单，官方提供了 ImageView 来显示一张图片，而对于动态图片（比如 GIF 格式），官方并没有直接给出可用的组件，需要开发者自行编">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Fresco 播放动态图片的原理</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2015/11/10/201901192113/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2015/10/06/201901192122/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/10/12/201901192123/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/10/12/201901192123/&text=Fresco 播放动态图片的原理"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/10/12/201901192123/&title=Fresco 播放动态图片的原理"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/10/12/201901192123/&is_video=false&description=Fresco 播放动态图片的原理"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Fresco 播放动态图片的原理&body=Check out this article: http://09ae9c.com/2015/10/12/201901192123/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/10/12/201901192123/&title=Fresco 播放动态图片的原理"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/10/12/201901192123/&title=Fresco 播放动态图片的原理"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/10/12/201901192123/&title=Fresco 播放动态图片的原理"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/10/12/201901192123/&title=Fresco 播放动态图片的原理"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/10/12/201901192123/&name=Fresco 播放动态图片的原理&description=&lt;p&gt;GIF，是一种动画图片格式，其原理是将多张图片放在一个文件中连续播放，从而产生动画效果，其中一张图片称为一帧。如果通过 PS 打开一个 GIF 图片，便可以看到每一帧的图片。在 Android 中加载显示一张静态的图片（比如常用的 png 格式，jpg 格式）很简单，官方提供了 ImageView 来显示一张图片，而对于动态图片（比如 GIF 格式），官方并没有直接给出可用的组件，需要开发者自行编写相关自定义组件。在 Fresco 中，也是通过编写一个自定义类（AnimatedDrawable）来加载显示 GIF 图片，本文从源码入手，分析在 Fresco 中加载 GIF 图片的原理&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#简单使用-GIF-图片"><span class="toc-number">1.</span> <span class="toc-text">简单使用 GIF 图片</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#布局"><span class="toc-number">1.1.</span> <span class="toc-text">布局</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#根据-URL-加载网络-GIF-图片"><span class="toc-number">1.2.</span> <span class="toc-text">根据 URL 加载网络 GIF 图片</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#源码分析"><span class="toc-number">2.</span> <span class="toc-text">源码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#加载动画图片"><span class="toc-number">2.1.</span> <span class="toc-text">加载动画图片</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建-Drawable"><span class="toc-number">2.2.</span> <span class="toc-text">创建 Drawable</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自定义动画图片类-AnimatedDrawable"><span class="toc-number">2.3.</span> <span class="toc-text">自定义动画图片类 AnimatedDrawable</span></a></li></ol></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Fresco 播放动态图片的原理
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2015-10-12T02:23:54.000Z" itemprop="datePublished">2015-10-12</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Fresco-源码解析/">Fresco 源码解析</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Fresco/">Fresco</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>GIF，是一种动画图片格式，其原理是将多张图片放在一个文件中连续播放，从而产生动画效果，其中一张图片称为一帧。如果通过 PS 打开一个 GIF 图片，便可以看到每一帧的图片。在 Android 中加载显示一张静态的图片（比如常用的 png 格式，jpg 格式）很简单，官方提供了 ImageView 来显示一张图片，而对于动态图片（比如 GIF 格式），官方并没有直接给出可用的组件，需要开发者自行编写相关自定义组件。在 Fresco 中，也是通过编写一个自定义类（AnimatedDrawable）来加载显示 GIF 图片，本文从源码入手，分析在 Fresco 中加载 GIF 图片的原理</p>
+<a id="more"></a>
+<h2 id="简单使用-GIF-图片"><a href="#简单使用-GIF-图片" class="headerlink" title="简单使用 GIF 图片"></a>简单使用 GIF 图片</h2><p>在介绍 Fresco 中加载 GIF 图片的实现原理之前，先看看它的简单使用</p>
+<p>根据官方文档中的描述，使用 GIF 图片的方式和其他图片大致是相同的，下面通过代码来介绍下它的具体使用</p>
+<h3 id="布局"><a href="#布局" class="headerlink" title="布局"></a>布局</h3><p>如同使用静态图片一样，使用 GIF 图片也是通过 SimpleDraweeView 显示<br><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">com.facebook.drawee.view.SimpleDraweeView</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:id</span>=<span class="string">"@+id/sdv_gif"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:layout_width</span>=<span class="string">"100dp"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:layout_height</span>=<span class="string">"100dp"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:background</span>=<span class="string">"#444444"</span></span></span><br><span class="line"><span class="tag">     <span class="attr">android:layout_centerInParent</span>=<span class="string">"true"</span>/&gt;</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="根据-URL-加载网络-GIF-图片"><a href="#根据-URL-加载网络-GIF-图片" class="headerlink" title="根据 URL 加载网络 GIF 图片"></a>根据 URL 加载网络 GIF 图片</h3><p>如同使用静态图片一样，GIF 图片的来源可以是网络或本地存储，示例中使用了网络加载<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">      setContentView(R.layout.activity_gif);</span><br><span class="line"></span><br><span class="line">      gifView = (SimpleDraweeView) findViewById(R.id.sdv_gif);</span><br><span class="line">      DraweeController controller = Fresco.newDraweeControllerBuilder()</span><br><span class="line">              .setUri(Uri.parse(GIF_URL))</span><br><span class="line">              .setAutoPlayAnimations(<span class="keyword">true</span>)<span class="comment">//设置自动播放，如果不设置，没有动画</span></span><br><span class="line">              .build();</span><br><span class="line"></span><br><span class="line">      gifView.setController(controller);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过以上代码便能实现最简单的加载 GIF 图片，可以看到，设置 setAutoPlayAnimations 值为 true 就能使 GIF 图片下载完成后自动播放，如果不设置或者设置其值为 false，则没有动画，将只显示 GIF 中第一帧的图片，运行效果如下：</p>
+<p>上面的代码是执行下载完成后自动播放动画，也可以设置手动播放，通过设置一个下载监听器监听是否下载完成，具体的步骤在官方文档中有给出，这里就不再赘述</p>
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><p>了解基础使用后，开始分析实现原理</p>
+<p>###怎样播放动画<br>很好奇为什么添加一行 setAutoPlayAnimations(true) 就能让 GIF 图片动起来，于是先分析这里的代码</p>
+<p>通过快捷键 <strong>CTRL ＋ 鼠标左键</strong> 点击 <code>setAutoPlayAnimations(true)</code> 进入到这个方法所在的类，可以看到，这个方法是在 <code>AbstractDraweeControllerBuilder.java</code> 类中，方法将参数的 boolean 值传递给一个全局变量 <code>mAutoPlayAnimations</code>， 这个变量控制是否自动播放动画，可以在下面这个方法中看到他的使用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Attaches listeners (if specified) to the given controller. */</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">maybeAttachListeners</span><span class="params">(AbstractDraweeController controller)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (mBoundControllerListeners != <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="keyword">for</span> (ControllerListener&lt;? <span class="keyword">super</span> INFO&gt; listener : mBoundControllerListeners) &#123;</span><br><span class="line">      controller.addControllerListener(listener);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (mControllerListener != <span class="keyword">null</span>) &#123;</span><br><span class="line">    controller.addControllerListener(mControllerListener);</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">if</span> (mAutoPlayAnimations) &#123;<span class="comment">//值为 true 则添加监听</span></span><br><span class="line">    controller.addControllerListener(sAutoPlayAnimationsListener);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在这个方法中，通过<code>mAutoPlayAnimations</code>的值来判断是否给 Controller 添加一个播放的监听器，监听器的内容如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> ControllerListener&lt;Object&gt; sAutoPlayAnimationsListener =</span><br><span class="line">    <span class="keyword">new</span> BaseControllerListener&lt;Object&gt;() &#123;</span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onFinalImageSet</span><span class="params">(String id, @Nullable Object info, @Nullable Animatable anim)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (anim != <span class="keyword">null</span>) &#123;</span><br><span class="line">          anim.start();<span class="comment">//动画开始执行</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>到这里，自动播放的思路就大致清晰了，通过一个 boolean 值来控制是否<strong>给 controller 添加监听器</strong>，监听图片是否加载完成，加载完成则调用动画的 start() 方法。</p>
+<p>自动播放的原理是这样，那么很容易理解到手动控制动画播放的原理，就是开发者自己编写这个监听器，然后添加到 controller 中，这个代码可以在 官方文档中看到</p>
+<h3 id="加载动画图片"><a href="#加载动画图片" class="headerlink" title="加载动画图片"></a>加载动画图片</h3><p>在使用中，对 controller 配置完成后，只需要调用 <code>SimpleDraweeView</code> 的 <code>SetController(DraweeController controller)</code> 方法就能完成使用，接下来就从这里入手，看看 controller 是怎样一步一步执行的</p>
+<p>通过 CTRL ＋ 鼠标左键点击 <code>setController(controller)</code> 进入到 <code>DraweeView.java</code>类中看到这个方法的具体实现<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Sets the controller. */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setController</span><span class="params">(@Nullable DraweeController draweeController)</span> </span>&#123;</span><br><span class="line">    mDraweeHolder.setController(draweeController);</span><br><span class="line">    <span class="keyword">super</span>.setImageDrawable(mDraweeHolder.getTopLevelDrawable());</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里将 controller 传递给了 DraweeHolder，接下来进入到 <code>DraweeHolder.java</code>类中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * Sets a new controller.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setController</span><span class="params">(@Nullable DraweeController draweeController)</span> </span>&#123;</span><br><span class="line">   <span class="keyword">boolean</span> wasAttached = mIsControllerAttached;</span><br><span class="line">   <span class="keyword">if</span> (wasAttached) &#123;</span><br><span class="line">     detachController();</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// Clear the old controller</span></span><br><span class="line">   <span class="keyword">if</span> (mController != <span class="keyword">null</span>) &#123;</span><br><span class="line">     mEventTracker.recordEvent(Event.ON_CLEAR_OLD_CONTROLLER);</span><br><span class="line">     mController.setHierarchy(<span class="keyword">null</span>);</span><br><span class="line">   &#125;</span><br><span class="line">   mController = draweeController;<span class="comment">//赋值给全局变量</span></span><br><span class="line">   <span class="keyword">if</span> (mController != <span class="keyword">null</span>) &#123;</span><br><span class="line">     mEventTracker.recordEvent(Event.ON_SET_CONTROLLER);</span><br><span class="line">     mController.setHierarchy(mHierarchy);</span><br><span class="line">   &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">     mEventTracker.recordEvent(Event.ON_CLEAR_CONTROLLER);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="keyword">if</span> (wasAttached) &#123;</span><br><span class="line">     attachController();<span class="comment">//绑定控制器</span></span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>进入到 <code>attachController()</code>方法中<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">attachController</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (mIsControllerAttached) &#123;</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    mEventTracker.recordEvent(Event.ON_ATTACH_CONTROLLER);</span><br><span class="line">    mIsControllerAttached = <span class="keyword">true</span>;</span><br><span class="line">    <span class="keyword">if</span> (mController != <span class="keyword">null</span> &amp;&amp;</span><br><span class="line">        mController.getHierarchy() != <span class="keyword">null</span>) &#123;</span><br><span class="line">      mController.onAttach();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到，这里主要是调用了 <code>mController</code>的<code>onAttach()</code>方法，而这个 mController 在前面的 setController() 方法中由传入的 controller，<strong>最终执行了 controller 的 onAttach() 方法</strong></p>
+<p>那么这个 onAttach() 方法的具体实现在哪里呢，首先来梳理下 Controller 的继承关系，如下图</p>
+<p>从图中可以看到，控制器的最终实现由 PipeDraweeViewController 和 VolleyDraweeViewController 来完成，在调用 Controller 的 onAttach() 方法后，整个图片加载的流程大致描述如下：</p>
+<ul>
+<li>在 onAttach() 中调用 submitRequest()</li>
+<li>在 submitRequest() 中设置监听器，订阅图片数据，添加回调</li>
+<li>如果数据加载成功，则调用 onNewResultInternal() 方法(还有一个加载失败时的回调和加载进度的回调)</li>
+<li>在 onNewResultInternal() 中将获取到的数据通过 <strong>createDrawable()</strong> 转换成 Drawable，并设置到视图中，通知监听器。</li>
+</ul>
+<h3 id="创建-Drawable"><a href="#创建-Drawable" class="headerlink" title="创建 Drawable"></a>创建 Drawable</h3><p>通过上面的分析，得到一个图片数据(网络加载或者本地加载)后，最终会使用 createDrawable() 方法来将 dataSource 中的数据 转换成 Drawable 才能在 Android 设备上显示。也就是说 createDrawable() 方法才是正篇文章的重点！在 AbstractDraweeController.java 中，createDrawable() 是一个抽象方法，具体实现交由其子类完成，那到底是由 PipelineDraweeController 来完成的，还是由 VolleyDraweeController 来完成的呢？可以在 Fresco 的初始化中找到答案</p>
+<p>根据官方文档的描述，在 Application 中初始化 Fresco 的时候，需要执行如下代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Fresco.initialize(<span class="keyword">this</span>);</span><br></pre></td></tr></table></figure>
+<p>通过查看源码，可以发现，在这个初始化过程中，默认创建了一个 <code>PipelineDraweeControllerBuilderSupplier</code> 用于为 SimpleDraweeView 提供控制器，也就是说，默认的控制器实现是由 PipelineDraweeController 完成的。接下来就到这个类中看看其具体的 createDrawable() 方法的实现</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> Drawable <span class="title">createDrawable</span><span class="params">(CloseableReference&lt;CloseableImage&gt; image)</span> </span>&#123;</span><br><span class="line">    Preconditions.checkState(CloseableReference.isValid(image));</span><br><span class="line">    CloseableImage closeableImage = image.get();</span><br><span class="line">    <span class="keyword">if</span> (closeableImage <span class="keyword">instanceof</span> CloseableStaticBitmap) &#123;<span class="comment">//创建静态图片</span></span><br><span class="line">      CloseableStaticBitmap closeableStaticBitmap = (CloseableStaticBitmap) closeableImage;</span><br><span class="line">      BitmapDrawable bitmapDrawable = <span class="keyword">new</span> BitmapDrawable(</span><br><span class="line">          mResources,</span><br><span class="line">          closeableStaticBitmap.getUnderlyingBitmap());</span><br><span class="line">      <span class="keyword">if</span> (closeableStaticBitmap.getRotationAngle() == <span class="number">0</span> ||</span><br><span class="line">          closeableStaticBitmap.getRotationAngle() == EncodedImage.UNKNOWN_ROTATION_ANGLE) &#123;</span><br><span class="line">        <span class="keyword">return</span> bitmapDrawable;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> OrientedDrawable(bitmapDrawable, closeableStaticBitmap.getRotationAngle());</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (closeableImage <span class="keyword">instanceof</span> CloseableAnimatedImage) &#123;<span class="comment">//创建动态图片</span></span><br><span class="line">      <span class="keyword">return</span> mAnimatedDrawableFactory.create(</span><br><span class="line">          ((CloseableAnimatedImage) closeableImage).getImageResult());</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException(<span class="string">"Unrecognized image class: "</span> + closeableImage);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>在这个方法中，根据不同的资源类型创建不同的图片，这里主要关注创建动态图片，可以看到，是通过 mAnimatedDrawableFactory 创建的 Drawable，创建的 Drawable 类型是<strong>自定义的 AnimatedDrawable</strong>，关于工厂模式创建的过程就不细说，下面主要看看创建出来的 AnimatedDrawable 类</p>
+<h3 id="自定义动画图片类-AnimatedDrawable"><a href="#自定义动画图片类-AnimatedDrawable" class="headerlink" title="自定义动画图片类 AnimatedDrawable"></a>自定义动画图片类 AnimatedDrawable</h3><p>通过阅读源码，可以发现在 AnimatedDrawable 中，将 GIF 图片逐帧画在界面上，通过调用 start() 方法，开始逐帧更新界面：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">   <span class="keyword">if</span> (mDurationMs == <span class="number">0</span> || mFrameCount &lt;= <span class="number">1</span>) &#123;</span><br><span class="line">     <span class="keyword">return</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   mIsRunning = <span class="keyword">true</span>;</span><br><span class="line">   scheduleSelf(mStartTask, mMonotonicClock.now());</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>关于AnimatedDrawable 类的具体实现可以查看源码，代码在 <code>imagepipeline/animated/base/AnimatedDrawable.java</code></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#简单使用-GIF-图片"><span class="toc-number">1.</span> <span class="toc-text">简单使用 GIF 图片</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#布局"><span class="toc-number">1.1.</span> <span class="toc-text">布局</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#根据-URL-加载网络-GIF-图片"><span class="toc-number">1.2.</span> <span class="toc-text">根据 URL 加载网络 GIF 图片</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#源码分析"><span class="toc-number">2.</span> <span class="toc-text">源码分析</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#加载动画图片"><span class="toc-number">2.1.</span> <span class="toc-text">加载动画图片</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建-Drawable"><span class="toc-number">2.2.</span> <span class="toc-text">创建 Drawable</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#自定义动画图片类-AnimatedDrawable"><span class="toc-number">2.3.</span> <span class="toc-text">自定义动画图片类 AnimatedDrawable</span></a></li></ol></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/10/12/201901192123/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/10/12/201901192123/&text=Fresco 播放动态图片的原理"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/10/12/201901192123/&title=Fresco 播放动态图片的原理"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/10/12/201901192123/&is_video=false&description=Fresco 播放动态图片的原理"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Fresco 播放动态图片的原理&body=Check out this article: http://09ae9c.com/2015/10/12/201901192123/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/10/12/201901192123/&title=Fresco 播放动态图片的原理"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/10/12/201901192123/&title=Fresco 播放动态图片的原理"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/10/12/201901192123/&title=Fresco 播放动态图片的原理"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/10/12/201901192123/&title=Fresco 播放动态图片的原理"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/10/12/201901192123/&name=Fresco 播放动态图片的原理&description=&lt;p&gt;GIF，是一种动画图片格式，其原理是将多张图片放在一个文件中连续播放，从而产生动画效果，其中一张图片称为一帧。如果通过 PS 打开一个 GIF 图片，便可以看到每一帧的图片。在 Android 中加载显示一张静态的图片（比如常用的 png 格式，jpg 格式）很简单，官方提供了 ImageView 来显示一张图片，而对于动态图片（比如 GIF 格式），官方并没有直接给出可用的组件，需要开发者自行编写相关自定义组件。在 Fresco 中，也是通过编写一个自定义类（AnimatedDrawable）来加载显示 GIF 图片，本文从源码入手，分析在 Fresco 中加载 GIF 图片的原理&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

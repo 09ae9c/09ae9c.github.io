@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="1. Realm 不支持级联删除一个对象中存储了另外一个对象，当删除这个对象的时候，不会删除它所指向的另外一个对象，不管子对象有没有主键，都不会删除默认的 Realm 支持整个表的删除，假设有一个 Member 表和其子表 Avatar，结构是：1234567891011121314151617open class Member : RealmObject()&amp;#123;    lateinit">
+<meta name="keywords" content="Android,Realm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Realm 在 Android 开发中的使用经验">
+<meta property="og:url" content="http://09ae9c.com/2018/05/28/201901192129/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="1. Realm 不支持级联删除一个对象中存储了另外一个对象，当删除这个对象的时候，不会删除它所指向的另外一个对象，不管子对象有没有主键，都不会删除默认的 Realm 支持整个表的删除，假设有一个 Member 表和其子表 Avatar，结构是：1234567891011121314151617open class Member : RealmObject()&amp;#123;    lateinit">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-19T14:26:47.791Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Realm 在 Android 开发中的使用经验">
+<meta name="twitter:description" content="1. Realm 不支持级联删除一个对象中存储了另外一个对象，当删除这个对象的时候，不会删除它所指向的另外一个对象，不管子对象有没有主键，都不会删除默认的 Realm 支持整个表的删除，假设有一个 Member 表和其子表 Avatar，结构是：1234567891011121314151617open class Member : RealmObject()&amp;#123;    lateinit">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Realm 在 Android 开发中的使用经验</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2018/10/07/201901192133/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2018/04/08/201901192130/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2018/05/28/201901192129/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2018/05/28/201901192129/&text=Realm 在 Android 开发中的使用经验"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2018/05/28/201901192129/&title=Realm 在 Android 开发中的使用经验"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2018/05/28/201901192129/&is_video=false&description=Realm 在 Android 开发中的使用经验"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Realm 在 Android 开发中的使用经验&body=Check out this article: http://09ae9c.com/2018/05/28/201901192129/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2018/05/28/201901192129/&title=Realm 在 Android 开发中的使用经验"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2018/05/28/201901192129/&title=Realm 在 Android 开发中的使用经验"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2018/05/28/201901192129/&title=Realm 在 Android 开发中的使用经验"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2018/05/28/201901192129/&title=Realm 在 Android 开发中的使用经验"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2018/05/28/201901192129/&name=Realm 在 Android 开发中的使用经验&description="><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Realm-不支持级联删除"><span class="toc-number">1.</span> <span class="toc-text">1. Realm 不支持级联删除</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-字段名不能为-private"><span class="toc-number">2.</span> <span class="toc-text">2. 字段名不能为 private</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Realm-中非基本数据类型的更新"><span class="toc-number">3.</span> <span class="toc-text">3. Realm 中非基本数据类型的更新</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Realm-的-Transaction"><span class="toc-number">4.</span> <span class="toc-text">4. Realm 的 Transaction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-关于-Realm-的更新操作"><span class="toc-number">5.</span> <span class="toc-text">5. 关于 Realm 的更新操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用-Realm-注意事项"><span class="toc-number">6.</span> <span class="toc-text">使用 Realm 注意事项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#放弃使用-Realm-的原因"><span class="toc-number">7.</span> <span class="toc-text">放弃使用 Realm 的原因</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Realm 在 Android 开发中的使用经验
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2018-05-28T15:33:22.000Z" itemprop="datePublished">2018-05-28</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Android/">Android</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Android/">Android</a>, <a class="tag-link" href="/tags/Realm/">Realm</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <h2 id="1-Realm-不支持级联删除"><a href="#1-Realm-不支持级联删除" class="headerlink" title="1. Realm 不支持级联删除"></a>1. Realm 不支持级联删除</h2><p>一个对象中存储了另外一个对象，当删除这个对象的时候，不会删除它所指向的另外一个对象，不管子对象有没有主键，都不会删除<br>默认的 Realm 支持整个表的删除，假设有一个 <code>Member</code> 表和其子表 <code>Avatar</code>，结构是：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">open class Member : RealmObject()&#123;</span><br><span class="line">  </span><br><span class="line">  lateinit var id : String</span><br><span class="line">  </span><br><span class="line">  lateinit var name : String</span><br><span class="line">  </span><br><span class="line">  var avatar : Avatar? = null</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">open class Avatar : RealmObject()&#123;</span><br><span class="line">  </span><br><span class="line">  var small : String</span><br><span class="line">  </span><br><span class="line">  var medium : String</span><br><span class="line">  </span><br><span class="line">  var large : String</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到 Member 和 Avatar 的对应关系是 1:1，在 Realm 中会有两张表来存储它们，在 Member 表中存储的 是对应的 Avatar 的引用，现在要删除 Member 表，按常理，应该是要删除 Member 表中引用所指向的对应的 Avatar 字段</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">realm.delete(Member::class.java)</span><br></pre></td></tr></table></figure>
+<p>这个操作是把整个 Member 表的内容都删掉，但是由于 Avatar 表中没有主键，Realm 不会自动删除 Member 中对应的 Avatar，所以，当执行完上面的 delete 之后，Avatar 表中的数据仍然存在，成了脏数据。</p>
+<h2 id="2-字段名不能为-private"><a href="#2-字段名不能为-private" class="headerlink" title="2. 字段名不能为 private"></a>2. 字段名不能为 private</h2><p>在 Model 中定义变量时，变量如果名字是 private，则不会存储到 realm 中，例如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">var private: Boolean = false</span><br></pre></td></tr></table></figure></p>
+<p>这个字段不会存储到 Realm 中…</p>
+<h2 id="3-Realm-中非基本数据类型的更新"><a href="#3-Realm-中非基本数据类型的更新" class="headerlink" title="3. Realm 中非基本数据类型的更新"></a>3. Realm 中非基本数据类型的更新</h2><p>需要创建一个新的对象，然后要保存到 Realm 中，然后还要删除原有字段存储的实体，再赋值<br>或者直接更新自对象的字段…</p>
+<h2 id="4-Realm-的-Transaction"><a href="#4-Realm-的-Transaction" class="headerlink" title="4. Realm 的 Transaction"></a>4. Realm 的 Transaction</h2><p>可以在一个 transaction 中执行读写操作，并且在同一个 transaction 中写入的数据可以立即被查询到</p>
+<h2 id="5-关于-Realm-的更新操作"><a href="#5-关于-Realm-的更新操作" class="headerlink" title="5. 关于 Realm 的更新操作"></a>5. 关于 Realm 的更新操作</h2><p>Realm 支持更新操作，但是只针对有主键的对象，如果没有主键，是不能调用 createOrUpdate 方法的，而且 Realm 的级联操作很多坑，非常不方便，比如 A 对象(有主键)中包含 B 对象(没有主键)，如果更新 A 对象(含有一个新的 B 对象)，那么 Realm 自己不会删除旧的 B 对象，这时表里面就会存在没有被引用的脏数据，只有在 A 对象中的 B 对象包含主键并且新的 B 对象的主键跟旧的 B 对象主键相同的情况下，Realm 的更新操作才会不会产生脏数据</p>
+<h2 id="使用-Realm-注意事项"><a href="#使用-Realm-注意事项" class="headerlink" title="使用 Realm 注意事项"></a>使用 Realm 注意事项</h2><ol>
+<li>尽量不要在主线程中操作 Realm，尽管 Realm 宣称非常快，但是在主线程中操作还是会有一定延迟，影响UI渲染</li>
+<li>代码层面尽量区分从Realm中查询出来的结果和没有在 Realm 中的 Model</li>
+</ol>
+<h2 id="放弃使用-Realm-的原因"><a href="#放弃使用-Realm-的原因" class="headerlink" title="放弃使用 Realm 的原因"></a>放弃使用 Realm 的原因</h2><p>Realm 相比于其他数据库产品，已经非常好用了，但是由于他的特性，反而造成了一些困扰</p>
+<ol>
+<li><p>Realm 中数据都是活的<br>Realm 官方宣传的特性之一，所有 Realm 查询出来的数据都是 live 的，开发者不用关心数据的状态，查询出来的数据会自动更新，这个特点大大方便了开发，会少处理很多逻辑，提高开发效率，但是，这种方式的实现原理是通过查询引用来实现的，也就是说，在调用 Relam 的查询的时候，只是查询了数据的引用，真实数据并没有被加载到内存中，所以这个过程非常快，而在数据真正被使用的时候（获取属性），才会通过代理类去获取存储在数据库中的真实数据。这一特性看似很不错，但是在某些场景下并不适用，因为在真正获取数据的时候，是比较耗时的（需要从数据库中取），如果是在列表中，需要大量数据的情况下，这种操作只能在 UI 线程中进行，也就是说在渲染页面的时候，会首先去取真实数据，然后渲染到页面中，这个过程就比较漫长了。</p>
+</li>
+<li><p>Realm 不支持跨线程访问<br>Realm 对线程的限制非常严格，同一个 Realm 实例不能在不同线程中使用，查询出来的结果也不能在别的线程中使用，完全的线程隔离，而这种特性而在 Android 中就会遇到一个尴尬，Android 中的 UI 线程不能进行耗时操作，那如果想要在 UI 中展示大量的数据，那就只能在 UI 线程创建 Realm 实例，并查询数据，从数据库中获取数据，这些所有的操作都只能在 UI 线程完成，如果遇到数据量大的情况，就会出现明显的卡顿，尽管 Realm 通过查询引用，代理获取真实数据等方法确保了查询操作可以非常快，但是始终是要去拿到真实的数据，不可避免的要进行耗时操作，而 Realm 对线程的隔离也隔离了从子线程查数据发送给 UI 线程的可能性。</p>
+</li>
+<li><p>Realm 的写操作都需要自己手动加 Transaction<br>写操作完全可以 Realm 内部自动实现，没有必要要求开发者手动写 Transaction</p>
+</li>
+</ol>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Realm-不支持级联删除"><span class="toc-number">1.</span> <span class="toc-text">1. Realm 不支持级联删除</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-字段名不能为-private"><span class="toc-number">2.</span> <span class="toc-text">2. 字段名不能为 private</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Realm-中非基本数据类型的更新"><span class="toc-number">3.</span> <span class="toc-text">3. Realm 中非基本数据类型的更新</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-Realm-的-Transaction"><span class="toc-number">4.</span> <span class="toc-text">4. Realm 的 Transaction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-关于-Realm-的更新操作"><span class="toc-number">5.</span> <span class="toc-text">5. 关于 Realm 的更新操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用-Realm-注意事项"><span class="toc-number">6.</span> <span class="toc-text">使用 Realm 注意事项</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#放弃使用-Realm-的原因"><span class="toc-number">7.</span> <span class="toc-text">放弃使用 Realm 的原因</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2018/05/28/201901192129/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2018/05/28/201901192129/&text=Realm 在 Android 开发中的使用经验"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2018/05/28/201901192129/&title=Realm 在 Android 开发中的使用经验"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2018/05/28/201901192129/&is_video=false&description=Realm 在 Android 开发中的使用经验"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Realm 在 Android 开发中的使用经验&body=Check out this article: http://09ae9c.com/2018/05/28/201901192129/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2018/05/28/201901192129/&title=Realm 在 Android 开发中的使用经验"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2018/05/28/201901192129/&title=Realm 在 Android 开发中的使用经验"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2018/05/28/201901192129/&title=Realm 在 Android 开发中的使用经验"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2018/05/28/201901192129/&title=Realm 在 Android 开发中的使用经验"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2018/05/28/201901192129/&name=Realm 在 Android 开发中的使用经验&description="><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+

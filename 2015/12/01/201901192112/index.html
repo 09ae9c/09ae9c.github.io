@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="触摸事件用MotionEvent表示，在Android中，一个触摸事件从产生到最终起作用，是一个很复杂的过程，但思路还是很清晰的，就是一层一层的传递，通过一个boolean值判断是否拦截或者消耗（也就是使用掉这个事件）。">
+<meta name="keywords" content="Android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 触摸事件传递机制">
+<meta property="og:url" content="http://09ae9c.com/2015/12/01/201901192112/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="触摸事件用MotionEvent表示，在Android中，一个触摸事件从产生到最终起作用，是一个很复杂的过程，但思路还是很清晰的，就是一层一层的传递，通过一个boolean值判断是否拦截或者消耗（也就是使用掉这个事件）。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://img.blog.csdn.net/20151009171847860">
+<meta property="og:image" content="http://img.blog.csdn.net/20151009211001193">
+<meta property="og:image" content="http://img.blog.csdn.net/20151009204349353">
+<meta property="og:image" content="http://img.blog.csdn.net/20151009204046783">
+<meta property="og:image" content="http://img.blog.csdn.net/20151009204619409">
+<meta property="og:updated_time" content="2019-01-19T14:26:47.799Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 触摸事件传递机制">
+<meta name="twitter:description" content="触摸事件用MotionEvent表示，在Android中，一个触摸事件从产生到最终起作用，是一个很复杂的过程，但思路还是很清晰的，就是一层一层的传递，通过一个boolean值判断是否拦截或者消耗（也就是使用掉这个事件）。">
+<meta name="twitter:image" content="http://img.blog.csdn.net/20151009171847860">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Android 触摸事件传递机制</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2016/03/30/201901192111/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2015/11/10/201901192113/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/12/01/201901192112/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/12/01/201901192112/&text=Android 触摸事件传递机制"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/12/01/201901192112/&title=Android 触摸事件传递机制"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/12/01/201901192112/&is_video=false&description=Android 触摸事件传递机制"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Android 触摸事件传递机制&body=Check out this article: http://09ae9c.com/2015/12/01/201901192112/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/12/01/201901192112/&title=Android 触摸事件传递机制"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/12/01/201901192112/&title=Android 触摸事件传递机制"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/12/01/201901192112/&title=Android 触摸事件传递机制"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/12/01/201901192112/&title=Android 触摸事件传递机制"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/12/01/201901192112/&name=Android 触摸事件传递机制&description=&lt;p&gt;触摸事件用MotionEvent表示，在Android中，一个触摸事件从产生到最终起作用，是一个很复杂的过程，但思路还是很清晰的，就是一层一层的传递，通过一个boolean值判断是否拦截或者消耗（也就是使用掉这个事件）。&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Android 触摸事件传递机制
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2015-12-01T13:23:52.000Z" itemprop="datePublished">2015-12-01</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Android/">Android</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Android/">Android</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>触摸事件用MotionEvent表示，在Android中，一个触摸事件从产生到最终起作用，是一个很复杂的过程，但思路还是很清晰的，就是一层一层的传递，通过一个boolean值判断是否拦截或者消耗（也就是使用掉这个事件）。</p>
+<a id="more"></a>
+<p>下面从基础的事件产生过程开始梳理整个流程：</p>
+<p>##事件的类型：<br>一般使用手机，在屏幕上的操作就是点击或滑动，所以一般触摸事件分为两类：</p>
+<ul>
+<li>点击事件：ACTION_DOWN–&gt;ACTION_UP</li>
+<li>滑动事件：ACTION_DOWN–&gt;ACTION_MOVE–&gt;ACTION_MOVE … … –&gt;ACTION_UP</li>
+</ul>
+<p>可以看到，<strong>事件的开始都是ACTION_DOWN</strong>，结束是ACTION_UP。滑动事件相比点击事件，多了n个ACTION_MOVE事件,也就是滑动过程中手指与屏幕的交互，其他就没什么区别了。</p>
+<p>##事件的传递过程：<br>在Android中，Activity作为界面显示的基础，通常用来接收触摸事件，然后分发给界面中的视图控件。当一个触摸事件产生时，最先传递给当前Activity，然后由Activity内部的Window将事件传递给DecorView（也就是当前屏幕显示的界面的底层容器）接下来就是在开发者编写的ViewGroup和View中传递了，所以整理下事件传递过程如下图：<br><img src="http://img.blog.csdn.net/20151009171847860" alt="这里写图片描述"></p>
+<p>从图中可以看到，由于DecorView继承自FrameLayout，所以它是一个ViewGroup，ContentView也是一个ViewGroup，因此，整个传递过程可以简化为三个步骤：</p>
+<p><strong>Activity—-&gt;ViewGroup…—-&gt;View</strong></p>
+<p>也就是从Activity传递到ViewGroup，再经过n步的ViewGroup之间传递，最终传递给View。</p>
+<p>##事件传递的代码实现：<br>将以上传递规则通过代码实现，主要涉及到以下三个方法：</p>
+<ul>
+<li><p><strong>dispatchTouchEvent()：</strong>分发触摸事件，默认返回super.dispatchTouchEvent(ev)，事件向上分发。(一般,在这个方法中会有命中测试，也就是判断点击的坐标在当前viewGroup的哪个子布局中，然后将事件分发给对应的子布局)</p>
+</li>
+<li><p><strong>onInterceptTouchEvent()：</strong>拦截触摸事件，默认返回false，表示不拦截事件</p>
+</li>
+<li><p><strong>onTouchEvent()：</strong>处理触摸事件，默认返回false，表示不消耗事件</p>
+</li>
+</ul>
+<p>在Activity中存在两个回调方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">public boolean dispatchTouchEvent(MotionEvent ev)；    </span><br><span class="line">public boolean onTouchEvent(MotionEvent ev);</span><br></pre></td></tr></table></figure>
+<p>在ViewGroup中存在三个回调方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public boolean dispatchTouchEvent(MotionEvent ev)；    </span><br><span class="line">public boolean onInterceptTouchEvent(MotionEvent ev);    </span><br><span class="line">public boolean onTouchEvent(MotionEvent ev);</span><br></pre></td></tr></table></figure>
+<p>在View中存在两个回调方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">public boolean dispatchTouchEvent(MotionEvent ev)；    </span><br><span class="line">public boolean onTouchEvent(MotionEvent ev);</span><br></pre></td></tr></table></figure>
+<p>可以看到，以上三个方法的返回值类型都是boolean类型，正如前面所说，在事件的传递过程中，通过boolean值判断是否<strong>拦截</strong>或者<strong>消耗</strong>，因此，有必要搞明白这三个方法的不同返回值的意义。</p>
+<p>接下来通过测试代码加图解的方式来说明这三个方法的工作流程以及一些返回值的意义</p>
+<p>###点击View时的事件传递</p>
+<p>一个自定义的ViewGroup，里面有一个自定义View，都是通过重写上述三个方法，用logcat跟踪事件流向，整个界面布局中只有这一个ViewGroup和其中的view，在MaintActivity中给他们都设置了onTouchListener，代码很简单，所以就不贴出来了。</p>
+<p>下面是<strong>当View的onTouch返回false时</strong>，运行的logcat：</p>
+<p><img src="http://img.blog.csdn.net/20151009211001193" alt="这里写图片描述"></p>
+<p>然后是根据运行情况，画的一个简单的流程图：</p>
+<p><img src="http://img.blog.csdn.net/20151009204349353" alt="这里写图片描述"></p>
+<p>接下来是<strong>当View的onTouch返回true时</strong>，运行的logcat：</p>
+<p><img src="http://img.blog.csdn.net/20151009204046783" alt="这里写图片描述"></p>
+<p>然后是流程图：</p>
+<p><img src="http://img.blog.csdn.net/20151009204619409" alt="这里写图片描述"></p>
+<p>通过以上对比可以得出结论：</p>
+<ul>
+<li><p>view的onTouchEvent返回值为<strong>false</strong>时，这个事件会往底层传由其父ViewGroup的onTouchEvent处理，直到某一层父ViewGroup的onTouchEvent返回true，如果传到顶层view依然返回false，则这个事件会消失,后续的事件序列也不会再被传递</p>
+</li>
+<li><p>view的onTouchEvent返回值为<strong>true</strong>，则这个view消耗此事件，后续事件序列也将交给这个view处理</p>
+</li>
+</ul>
+<p>以上，关于View的触摸事件传递，就先分析到这里</p>
+<p>参考资料：<br><a href="http://blog.csdn.net/xyz_lmn/article/details/12517911" target="_blank" rel="noopener">http://blog.csdn.net/xyz_lmn/article/details/12517911</a></p>
+<p><a href="http://www.eoeandroid.com/thread-319301-1-1.html" target="_blank" rel="noopener">http://www.eoeandroid.com/thread-319301-1-1.html</a></p>
+<p><a href="http://blog.csdn.net/qiushuiqifei/article/details/9918527" target="_blank" rel="noopener">http://blog.csdn.net/qiushuiqifei/article/details/9918527</a></p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2015/12/01/201901192112/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2015/12/01/201901192112/&text=Android 触摸事件传递机制"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2015/12/01/201901192112/&title=Android 触摸事件传递机制"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2015/12/01/201901192112/&is_video=false&description=Android 触摸事件传递机制"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Android 触摸事件传递机制&body=Check out this article: http://09ae9c.com/2015/12/01/201901192112/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2015/12/01/201901192112/&title=Android 触摸事件传递机制"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2015/12/01/201901192112/&title=Android 触摸事件传递机制"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2015/12/01/201901192112/&title=Android 触摸事件传递机制"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2015/12/01/201901192112/&title=Android 触摸事件传递机制"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2015/12/01/201901192112/&name=Android 触摸事件传递机制&description=&lt;p&gt;触摸事件用MotionEvent表示，在Android中，一个触摸事件从产生到最终起作用，是一个很复杂的过程，但思路还是很清晰的，就是一层一层的传递，通过一个boolean值判断是否拦截或者消耗（也就是使用掉这个事件）。&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
