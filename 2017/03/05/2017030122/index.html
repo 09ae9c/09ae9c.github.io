@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+    <!-- so meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="description" content="虽然很早就接触 git，但是由于没有参加过团队协作的项目，一只都只是单线使用，也仅仅掌握了一些基础命令，现在参与到公司的项目中，日常开发用到 Git 作版本管理，于是需要掌握一些高级用法，下面总结 git 的一些用法">
+<meta name="keywords" content="Git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Git 使用总结">
+<meta property="og:url" content="http://09ae9c.com/2017/03/05/2017030122/index.html">
+<meta property="og:site_name" content="09AE9C&#39;s Blog">
+<meta property="og:description" content="虽然很早就接触 git，但是由于没有参加过团队协作的项目，一只都只是单线使用，也仅仅掌握了一些基础命令，现在参与到公司的项目中，日常开发用到 Git 作版本管理，于是需要掌握一些高级用法，下面总结 git 的一些用法">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-01-19T13:42:12.902Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Git 使用总结">
+<meta name="twitter:description" content="虽然很早就接触 git，但是由于没有参加过团队协作的项目，一只都只是单线使用，也仅仅掌握了一些基础命令，现在参与到公司的项目中，日常开发用到 Git 作版本管理，于是需要掌握一些高级用法，下面总结 git 的一些用法">
+    
+    
+        
+          
+              <link rel="shortcut icon" href="/images/favicon.ico">
+          
+        
+        
+          
+            <link rel="icon" type="image/png" href="/images/favicon-192x192.png" sizes="192x192">
+          
+        
+        
+          
+            <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+          
+        
+    
+    <!-- title -->
+    <title>Git 使用总结</title>
+    <!-- styles -->
+    <link rel="stylesheet" href="/css/style.css">
+    <!-- persian styles -->
+    
+      <link rel="stylesheet" href="/css/rtl.css">
+    
+    <!-- rss -->
+    
+    
+</head>
+
+<body class="max-width mx-auto px3 ltr">
+    
+      <div id="header-post">
+  <a id="menu-icon" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="menu-icon-tablet" href="#"><i class="fas fa-bars fa-lg"></i></a>
+  <a id="top-icon-tablet" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');" style="display:none;"><i class="fas fa-chevron-up fa-lg"></i></a>
+  <span id="menu">
+    <span id="nav">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </span>
+    <br>
+    <span id="actions">
+      <ul>
+        
+        <li><a class="icon" href="/2017/10/15/2017090100/"><i class="fas fa-chevron-left" aria-hidden="true" onmouseover="$('#i-prev').toggle();" onmouseout="$('#i-prev').toggle();"></i></a></li>
+        
+        
+        <li><a class="icon" href="/2017/02/13/2019011920/"><i class="fas fa-chevron-right" aria-hidden="true" onmouseover="$('#i-next').toggle();" onmouseout="$('#i-next').toggle();"></i></a></li>
+        
+        <li><a class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up" aria-hidden="true" onmouseover="$('#i-top').toggle();" onmouseout="$('#i-top').toggle();"></i></a></li>
+        <li><a class="icon" href="#"><i class="fas fa-share-alt" aria-hidden="true" onmouseover="$('#i-share').toggle();" onmouseout="$('#i-share').toggle();" onclick="$('#share').toggle();return false;"></i></a></li>
+      </ul>
+      <span id="i-prev" class="info" style="display:none;">Previous post</span>
+      <span id="i-next" class="info" style="display:none;">Next post</span>
+      <span id="i-top" class="info" style="display:none;">Back to top</span>
+      <span id="i-share" class="info" style="display:none;">Share post</span>
+    </span>
+    <br>
+    <div id="share" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2017/03/05/2017030122/"><i class="fab fa-facebook " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2017/03/05/2017030122/&text=Git 使用总结"><i class="fab fa-twitter " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2017/03/05/2017030122/&title=Git 使用总结"><i class="fab fa-linkedin " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2017/03/05/2017030122/&is_video=false&description=Git 使用总结"><i class="fab fa-pinterest " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Git 使用总结&body=Check out this article: http://09ae9c.com/2017/03/05/2017030122/"><i class="fas fa-envelope " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2017/03/05/2017030122/&title=Git 使用总结"><i class="fab fa-get-pocket " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2017/03/05/2017030122/&title=Git 使用总结"><i class="fab fa-reddit " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2017/03/05/2017030122/&title=Git 使用总结"><i class="fab fa-stumbleupon " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2017/03/05/2017030122/&title=Git 使用总结"><i class="fab fa-digg " aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2017/03/05/2017030122/&name=Git 使用总结&description=&lt;p&gt;虽然很早就接触 git，但是由于没有参加过团队协作的项目，一只都只是单线使用，也仅仅掌握了一些基础命令，现在参与到公司的项目中，日常开发用到 Git 作版本管理，于是需要掌握一些高级用法，下面总结 git 的一些用法&lt;/p&gt;"><i class="fab fa-tumblr " aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+    <div id="toc">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#全局配置"><span class="toc-number">1.</span> <span class="toc-text">全局配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建本地-git-仓库"><span class="toc-number">2.</span> <span class="toc-text">创建本地 git 仓库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置-ssh"><span class="toc-number">3.</span> <span class="toc-text">配置 ssh</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#拷贝项目"><span class="toc-number">4.</span> <span class="toc-text">拷贝项目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常用命令"><span class="toc-number">5.</span> <span class="toc-text">常用命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#远程仓库"><span class="toc-number">6.</span> <span class="toc-text">远程仓库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#从分支同步代码"><span class="toc-number">7.</span> <span class="toc-text">从分支同步代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#将别的分支的修改同步到自己的分支"><span class="toc-number">8.</span> <span class="toc-text">将别的分支的修改同步到自己的分支</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#合并冲突解决"><span class="toc-number">9.</span> <span class="toc-text">合并冲突解决</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#版本回滚查看"><span class="toc-number">10.</span> <span class="toc-text">版本回滚查看</span></a></li></ol>
+    </div>
+  </span>
+</div>
+
+    
+    <div class="content index py4">
+        
+        <article class="post" itemscope="" itemtype="http://schema.org/BlogPosting">
+  <header>
+    
+    <h1 class="posttitle" itemprop="name headline">
+        Git 使用总结
+    </h1>
+
+
+
+    <div class="meta">
+      <span class="author" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+        <span itemprop="name">09AE9C's Blog</span>
+      </span>
+      
+    <div class="postdate">
+        <time datetime="2017-03-05T15:46:22.000Z" itemprop="datePublished">2017-03-05</time>
+    </div>
+
+
+      
+    <div class="article-category">
+        <i class="fas fa-archive"></i>
+        <a class="category-link" href="/categories/Git/">Git</a>
+    </div>
+
+
+      
+    <div class="article-tag">
+        <i class="fas fa-tag"></i>
+        <a class="tag-link" href="/tags/Git/">Git</a>
+    </div>
+
+
+    </div>
+  </header>
+  
+
+  <div class="content" itemprop="articleBody">
+    <p>虽然很早就接触 git，但是由于没有参加过团队协作的项目，一只都只是单线使用，也仅仅掌握了一些基础命令，现在参与到公司的项目中，日常开发用到 Git 作版本管理，于是需要掌握一些高级用法，下面总结 git 的一些用法</p>
+<a id="more"></a>
+<h2 id="全局配置"><a href="#全局配置" class="headerlink" title="全局配置"></a>全局配置</h2><p>首先确保以正确安装 git，并可以正常使用，然后配置一些全局变量，比如 user 信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;your name&quot;</span><br><span class="line"></span><br><span class="line">git config --global user.email &quot;your email&quot;</span><br></pre></td></tr></table></figure>
+<p>全局配置文件存放在 <code>$HOME/.gitconfig</code>文件中，也可以手动修改这个文件来配置</p>
+<h2 id="创建本地-git-仓库"><a href="#创建本地-git-仓库" class="headerlink" title="创建本地 git 仓库"></a>创建本地 git 仓库</h2><p>明确需要在哪个目录使用 git，假设我在目录 <code>/dev/project/</code> 下使用 git，那么需要先定位到这个目录：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd /dev/project</span><br></pre></td></tr></table></figure>
+<p>接着初始化本地仓库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure>
+<p>执行这个命令后，会在当前目录下创建一个 <code>.git</code> 的目录，里面保存了 git 的所有数据</p>
+<h2 id="配置-ssh"><a href="#配置-ssh" class="headerlink" title="配置 ssh"></a>配置 ssh</h2><p>如果需要将项目上传到远程仓库，需要配置一下 ssh，例如我所在的团队使用 gitlab 作为远程仓库，在 gitlab 的个人面板就能找到添加 ssh key 的功能，并有详细的介绍</p>
+<h2 id="拷贝项目"><a href="#拷贝项目" class="headerlink" title="拷贝项目"></a>拷贝项目</h2><p>从项目主页找到 clone 的地址，然后使用 <code>git clone</code> 命令拷贝到当前目录，例如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone [project url]</span><br></pre></td></tr></table></figure>
+<h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><ul>
+<li><p>添加指定文件到缓存区</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git add [file name]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>添加当前目录到缓存区</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git add .</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>添加所有改动过的文件到缓存区</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git add -A</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>将缓存区的内容提交到 git 仓库</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git commit -m &quot;description&quot;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>description 是对本次提交的描述，便于后期查看整理</p>
+<ul>
+<li>查看当前状态<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git status</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>状态大致有三种</p>
+<ul>
+<li>未添加：在项目中对文件进行了修改，但是没有执行 <code>git add</code> 将改动添加到缓存区</li>
+<li>未提交：已将改动添加到缓存区，但是没有执行 <code>git commit</code> 提交到 git 仓库</li>
+<li>已提交：已将改动提交到仓库</li>
+</ul>
+<ul>
+<li>查看修改日志<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git log</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>每次提交都会生成一个对应的日志，通过 commit id 唯一确定一次提交</p>
+<h2 id="远程仓库"><a href="#远程仓库" class="headerlink" title="远程仓库"></a>远程仓库</h2><p>远程仓库就是一个集中的代码仓库，可以从远程仓库下载代码(pull)，也可以上传代码到远程仓库(push)，在此之前需要先关联远程仓库，操作如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git remote add origin [project url]</span><br></pre></td></tr></table></figure>
+<p>添加一个名叫 origin 的远程仓库(自定义命名),[project url] 一般在项目的主页可以找到</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git pull origin master</span><br></pre></td></tr></table></figure>
+<p>从 origin 下载代码到本地当前目录，分支名是 master</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
+<p>将本地的 master 分支上传到远程仓库 origin 中</p>
+<h2 id="从分支同步代码"><a href="#从分支同步代码" class="headerlink" title="从分支同步代码"></a>从分支同步代码</h2><p>假设服务器上有三个分支，master,devlop,dev_tc，现在三个分支的代码都是最新的，然后在本地创建了 git 仓库并初始化：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git init</span><br></pre></td></tr></table></figure></p>
+<p>从服务器拉取 dev_tc 分支：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git remote add origin [url]</span><br><span class="line">git pull origin dev_tc</span><br></pre></td></tr></table></figure></p>
+<p>然后切换到 dev_tc 分支：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout dev_tc</span><br></pre></td></tr></table></figure></p>
+<p>现在本地已经有一个和服务器上 dev_tc 分支同步的版本了，以后要将改动提交到服务器的 dev_tc 分支，执行命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git push origin dev_tc</span><br></pre></td></tr></table></figure></p>
+<h2 id="将别的分支的修改同步到自己的分支"><a href="#将别的分支的修改同步到自己的分支" class="headerlink" title="将别的分支的修改同步到自己的分支"></a>将别的分支的修改同步到自己的分支</h2><p>上面提到，在服务器上有三个分支 master,develop,dev_tc,起初三个分支的代码都是最新版，现在有人在 develop 分支上提交了修改，而我仍然在 dev_tc 上提交修改，这样我需要定期把 develop 上的代码同步到自己的分支上，以确保除我负责的部分以外的部分保持最新，这时可能面临冲突的问题，需要谨慎操作，首先提交我当前分支的修改，然后此时查看本地的所有分支<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch -a</span><br></pre></td></tr></table></figure></p>
+<p>会发现本地有三个个分支：master,dev_tc,remotes/origin/dev_tc，其中 remotes/origin/dev_tc 显示为红色，表示他是一个远程分支（这就是 -a 参数的效果，显示所有的分支），在现实的结果中并没有 develop 分支，这是因为最开始并没有把 develop 分支拉到本地（而且也没有这个必要），现在要想同步服务器上的 develop 分支，首先需要将 develop 分支拉到本地：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git fetch</span><br></pre></td></tr></table></figure></p>
+<p>此时如果再次执行 git branch -a，会发现服务器上的分支都以红色显示出来了，那接下来就将服务器上的 develop 分支合并到本地的 dev_tc 分支上：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git merge origin/develop</span><br></pre></td></tr></table></figure></p>
+<p>这样就完成了从服务器上的 develop 分支合并代码到当前的 dev_tc 分支，接下来就可以把本地的 dev_tc 分支提交到服务器上。</p>
+<p>如果合并时提示Automatic merge failed;表示合并失败，也就是产生了冲突，下面开始记录处理冲突的方法</p>
+<h2 id="合并冲突解决"><a href="#合并冲突解决" class="headerlink" title="合并冲突解决"></a>合并冲突解决</h2><p>如果在合并时提示了合并失败，一般会显示产生冲突的文件，当然，如果用 IDE，可以直接查看到产生冲突的文件，要解决冲突，就需要手动的删除文件中冲突的部分，一般 git 会在文件中将冲突的代码都显示出来，并以明显的符号分隔线，我们只需要定位到文件，然后将分隔线和不要的代码删除即可，例如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String[] DEFAULT_XHDPI_WALLPAPER_NAME =</span><br><span class="line">&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</span><br><span class="line">            &#123;<span class="string">""</span>, <span class="string">"1.webp"</span>, <span class="string">"2.webp"</span>, <span class="string">"3.png"</span>, <span class="string">"4.webp"</span>&#125;;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String[] DEFAULT_MDPI_WALLPAPER_NAME =</span><br><span class="line">            &#123;<span class="string">""</span>, <span class="string">"1.jpg"</span>, <span class="string">"2.webp"</span>, <span class="string">"3.png"</span>, <span class="string">"4.webp"</span>&#125;;</span><br><span class="line">=======</span><br><span class="line">            &#123;<span class="string">"0.webp"</span>, <span class="string">"1.webp"</span>, <span class="string">"2.webp"</span> ,<span class="string">"3.png"</span>, <span class="string">"4.webp"</span>&#125;;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String[] DEFAULT_MDPI_WALLPAPER_NAME =</span><br><span class="line">            &#123;<span class="string">"0.png"</span>, <span class="string">"1.jpg"</span>, <span class="string">"2.webp"</span> ,<span class="string">"3.png"</span>, <span class="string">"4.webp"</span>&#125;;</span><br><span class="line">&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/develop</span><br></pre></td></tr></table></figure></p>
+<p>对于这段冲突代码，从 <code>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD</code> 到 <code>=======</code> 的内容是本地 dev_tc 最新分支上的代码，而从 <code>=======</code> 到 <code>&gt;&gt;&gt;&gt;&gt;&gt;&gt; origin/develop</code> 的代码是服务器上 develop 分支的代码，由于我和他都对这段代码进行了修改，所以 git 不知道保留谁的修改，于是这样显示出来，供合并者取舍，那我们根据需要删除掉多余的就好了。删除掉多余的部分后，提交一下修改，本地代码就是合并 develop 分支后的最新代码。</p>
+<h2 id="版本回滚查看"><a href="#版本回滚查看" class="headerlink" title="版本回滚查看"></a>版本回滚查看</h2><p>对于版本回滚，可以使用 checkout 命令，要回滚到指定的历史版本，首先需要知道历时版本的 commit id，这个通过<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git log</span><br></pre></td></tr></table></figure></p>
+<p>就能倒序查看从当前分支到初始分支的日志，从而得到分支的 commit id，然后：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git checkout [commit id]</span><br></pre></td></tr></table></figure></p>
+<p>就能回到指定版本</p>
+<p>注意，如果想再回到最新的版本，一定要记住最新版本的 commit id，不过一般 IDE 都能自动记住 commit id 时间线，如果没用 IDE，可以使用<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git reflog</span><br></pre></td></tr></table></figure></p>
+<p>查看使用 git 命令的历史记录</p>
+
+  </div>
+</article>
+
+
+
+        
+          <div id="footer-post-container">
+  <div id="footer-post">
+
+    <div id="nav-footer" style="display: none">
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </div>
+
+    <div id="toc-footer" style="display: none">
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#全局配置"><span class="toc-number">1.</span> <span class="toc-text">全局配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建本地-git-仓库"><span class="toc-number">2.</span> <span class="toc-text">创建本地 git 仓库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#配置-ssh"><span class="toc-number">3.</span> <span class="toc-text">配置 ssh</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#拷贝项目"><span class="toc-number">4.</span> <span class="toc-text">拷贝项目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#常用命令"><span class="toc-number">5.</span> <span class="toc-text">常用命令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#远程仓库"><span class="toc-number">6.</span> <span class="toc-text">远程仓库</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#从分支同步代码"><span class="toc-number">7.</span> <span class="toc-text">从分支同步代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#将别的分支的修改同步到自己的分支"><span class="toc-number">8.</span> <span class="toc-text">将别的分支的修改同步到自己的分支</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#合并冲突解决"><span class="toc-number">9.</span> <span class="toc-text">合并冲突解决</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#版本回滚查看"><span class="toc-number">10.</span> <span class="toc-text">版本回滚查看</span></a></li></ol>
+    </div>
+
+    <div id="share-footer" style="display: none">
+      <ul>
+  <li><a class="icon" href="http://www.facebook.com/sharer.php?u=http://09ae9c.com/2017/03/05/2017030122/"><i class="fab fa-facebook fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://twitter.com/share?url=http://09ae9c.com/2017/03/05/2017030122/&text=Git 使用总结"><i class="fab fa-twitter fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.linkedin.com/shareArticle?url=http://09ae9c.com/2017/03/05/2017030122/&title=Git 使用总结"><i class="fab fa-linkedin fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://pinterest.com/pin/create/bookmarklet/?url=http://09ae9c.com/2017/03/05/2017030122/&is_video=false&description=Git 使用总结"><i class="fab fa-pinterest fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="mailto:?subject=Git 使用总结&body=Check out this article: http://09ae9c.com/2017/03/05/2017030122/"><i class="fas fa-envelope fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="https://getpocket.com/save?url=http://09ae9c.com/2017/03/05/2017030122/&title=Git 使用总结"><i class="fab fa-get-pocket fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://reddit.com/submit?url=http://09ae9c.com/2017/03/05/2017030122/&title=Git 使用总结"><i class="fab fa-reddit fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.stumbleupon.com/submit?url=http://09ae9c.com/2017/03/05/2017030122/&title=Git 使用总结"><i class="fab fa-stumbleupon fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://digg.com/submit?url=http://09ae9c.com/2017/03/05/2017030122/&title=Git 使用总结"><i class="fab fa-digg fa-lg" aria-hidden="true"></i></a></li>
+  <li><a class="icon" href="http://www.tumblr.com/share/link?url=http://09ae9c.com/2017/03/05/2017030122/&name=Git 使用总结&description=&lt;p&gt;虽然很早就接触 git，但是由于没有参加过团队协作的项目，一只都只是单线使用，也仅仅掌握了一些基础命令，现在参与到公司的项目中，日常开发用到 Git 作版本管理，于是需要掌握一些高级用法，下面总结 git 的一些用法&lt;/p&gt;"><i class="fab fa-tumblr fa-lg" aria-hidden="true"></i></a></li>
+</ul>
+
+    </div>
+
+    <div id="actions-footer">
+        <a id="menu" class="icon" href="#" onclick="$('#nav-footer').toggle();return false;"><i class="fas fa-bars fa-lg" aria-hidden="true"></i> Menu</a>
+        <a id="toc" class="icon" href="#" onclick="$('#toc-footer').toggle();return false;"><i class="fas fa-list fa-lg" aria-hidden="true"></i> TOC</a>
+        <a id="share" class="icon" href="#" onclick="$('#share-footer').toggle();return false;"><i class="fas fa-share-alt fa-lg" aria-hidden="true"></i> Share</a>
+        <a id="top" style="display:none" class="icon" href="#" onclick="$('html, body').animate({ scrollTop: 0 }, 'fast');"><i class="fas fa-chevron-up fa-lg" aria-hidden="true"></i> Top</a>
+    </div>
+
+  </div>
+</div>
+
+        
+        <footer id="footer">
+  <div class="footer-left">
+    Copyright &copy; 2019 09AE9C
+  </div>
+  <div class="footer-right">
+    <nav>
+      <ul>
+         
+          <li><a href="/">Home</a></li>
+         
+          <li><a href="/about/">About</a></li>
+         
+          <li><a href="/archives/">Writing</a></li>
+         
+          <li><a href="http://github.com/09ae9c">Projects</a></li>
+        
+      </ul>
+    </nav>
+  </div>
+</footer>
+
+    </div>
+</body>
+</html>
+<!-- styles -->
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/justified-gallery/css/justifiedGallery.min.css">
+
+<!-- jquery -->
+<script src="/lib/jquery/jquery.min.js"></script>
+<script src="/lib/justified-gallery/js/jquery.justifiedGallery.min.js"></script>
+<script src="/js/main.js"></script>
+<!-- search -->
+
+<!-- Google Analytics -->
+
+<!-- Baidu Analytics -->
+
+<!-- Disqus Comments -->
+
+
